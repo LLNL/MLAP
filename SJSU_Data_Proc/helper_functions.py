@@ -58,8 +58,8 @@ def downsample_data_files (data_files_list, percent_files_to_use):
     sampled_file_indices = random.sample(file_indices, k = downsample_files_count)
     sampled_data_files = list(np.array(data_files_list)[sampled_file_indices])
     print('Selected {} data files'.format(len(sampled_data_files)))
-    print('Indices of the randomly selected files \n {}'.format(sampled_file_indices))
-    print('Names of the randomly selected files \n {}'.format(sampled_data_files))
+    print('Indices of the randomly selected files: \n {}'.format(sampled_file_indices))
+    print('Names of the randomly selected files: \n {}'.format(sampled_data_files))
     print('=========================================================================')
     return sampled_file_indices, sampled_data_files
 
@@ -67,23 +67,41 @@ def downsample_data_files (data_files_list, percent_files_to_use):
 '''
 Downsample the grid indices to use from all the grid points where data are available
 '''
-def downsample_grid_indices (dfm_file_data, percent_grid_points_to_use):
-    #random.setstate(random_state)
-    print('\nRandomly selecting {} % of the grid points'.format(percent_grid_points_to_use))
+def downsample_grid_indices (dfm_file_data, percent_grid_points_to_use, max_history_to_consider, history_interval, frames_in_file):
+    df_for_single_file = pd.DataFrame()
+
     ny, nx = dfm_file_data.dims['south_north'], dfm_file_data.dims['west_east']
     n_grid_points = nx*ny
-    print('Dimensions: {} X {}, Num of grid points: {}'.format(nx, ny, n_grid_points))
+    #print('Dimensions: {} X {}, Number of grid points: {}'.format(nx, ny, n_grid_points))
     grid_indices = list(range(n_grid_points))
     downsample_grid_point_count = round(percent_grid_points_to_use*n_grid_points/100.0)
-    print('Selected {} grid points'.format(downsample_grid_point_count))
-    sampled_grid_indices = random.sample(grid_indices, k = downsample_grid_point_count)
-    j_indices = np.array(sampled_grid_indices) //  nx
-    i_indices = sampled_grid_indices - nx*j_indices
-    print('Sampled grid indices: \n{}'.format(sampled_grid_indices))
-    print('Sampled i-indices: \n{}'.format(i_indices))
-    print('Sampled j-indices: \n{}'.format(j_indices))
+    #print('Selecting {} grid points (approx {} % of a total of {} grid points)\n'.format(
+        #downsample_grid_point_count, percent_grid_points_to_use, n_grid_points))
+    #print('-----------------------------------------------------------------------')
     
-    return i_indices, j_indices, sampled_grid_indices
+    grid_indices_selected = []
+    while (len(grid_indices_selected) < downsample_grid_point_count):
+        grid_ind_sampled = random.choice(grid_indices)
+        if grid_ind_sampled in grid_indices_selected:
+            print('Grid index {} sampled is already in the grid indices selected: \n{}'.format(
+            grid_ind_sampled, grid_indices_selected))
+            pass
+        j_ind = grid_ind_sampled // nx
+        i_ind = grid_ind_sampled - j_ind*nx
+        #print('Grid point # {} : grid_ind = {}, i = {}, j = {}'.format(
+            #len(grid_indices_selected), grid_ind_sampled, i_ind, j_ind))
+
+        FM_time_index, AtmData_time_indices, df_at_gp = create_df_at_gp (dfm_file_data, i_ind, j_ind, max_history_to_consider, history_interval, frames_in_file)
+        #print('DataFrame at grid point: \n {}'.format(df_at_gp))
+        if (not df_at_gp.isna().values.any()):
+            df_for_single_file = df_for_single_file.append(df_at_gp).reset_index(drop = True)
+            grid_indices_selected.append(grid_ind_sampled)
+        #else:
+            #print('NaN found at the grid point...ignoring this grid point')
+        #print('-----------------------------------------------------------------------')
+
+    #print('=========================================================================')
+    return df_for_single_file
 
 # []
 '''
@@ -96,6 +114,9 @@ def create_df_at_gp (dfm_file_data, i_ind, j_ind, max_history_to_consider, histo
     AtmData_time_indices = np.arange(FM_time_index, FM_time_index-max_history_to_consider, -history_interval)
     AtmData_time_indices = list(np.sort(AtmData_time_indices)[:-1])
     
+    #print('FM_time_index: {}'.format(FM_time_index))
+    #print('AtmData_time_indices: \n{}'.format(AtmData_time_indices))
+    
     data_at_gp = dfm_file_data.isel(south_north = j_ind).isel(west_east = i_ind)
     
     df_at_gp['lat'] = np.array(data_at_gp['latitude']).flatten()
@@ -106,7 +127,6 @@ def create_df_at_gp (dfm_file_data, i_ind, j_ind, max_history_to_consider, histo
     
     for hist_data_ind in AtmData_time_indices:
         #hist_data_ind = AtmData_indices[0]
-
         U10_data = np.array(data_at_gp['eastward_10m_wind'].isel(
                             time=hist_data_ind)).flatten()
         V10_data = np.array(data_at_gp['northward_10m_wind'].isel(
