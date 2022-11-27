@@ -100,7 +100,7 @@ df_for_all_files.head(10)
 
 
 data_set_name = 'extracted_data_%02d'%(data_set_count)
-extracted_data_file_name = '{}_files_{}pc_grid_points_{}pc_max_history_{}_hist_interval_{}'.format(
+extracted_data_file_name = '{}_files_{}pc_grid_points_{}pc_max_history_{}_hist_interval_{}.pkl'.format(
                             data_set_name, # name of data set
                             percent_files_to_use, # f1 = what percent of available files to use
                             percent_grid_points_to_use, # f2 = what percent of grid points to use
