@@ -24,10 +24,10 @@ import random
 # In[2]:
 
 
-from helper_functions import generate_seed, init_random_generator
-from helper_functions import get_data_file_names, downsample_data_files
-from helper_functions import downsample_grid_indices
-from helper_functions import create_df_at_gp
+from helper_extract_wrf import generate_seed, init_random_generator
+from helper_extract_wrf import get_data_file_names, downsample_data_files
+from helper_extract_wrf import downsample_grid_indices
+from helper_extract_wrf import create_df_at_gp
 
 
 # # Variables to be used for preparing training data
