@@ -40,7 +40,7 @@ FM_levels = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 
 # FM_hr (1 or 10)
 FM_hr = 10
-label_type = 'binary'# 'binary' # 'MC'
+label_type = 'MC'# 'binary' # 'MC'
 
 # # Load the extracted WRF data
 # In[ ]:
@@ -156,20 +156,20 @@ pickle.dump(clf, open(svm_model_file, 'wb'))
 # In[ ]:
 clf = pickle.load(open('models_trained/svm_N1205_T080_C1', 'rb'))
 t1 = time()
-labels_svm_pred = clf.predict(features_train)
+labels_pred = clf.predict(features_train)
 print ("Prediction Time:", round(time()-t1, 3), "s")
 
-accuracy = accuracy_score(labels_svm_pred, labels_train)
+accuracy = accuracy_score(labels_pred, labels_train)
 
 if (label_type == 'binary'):
-    conf_mat = confusion_matrix(labels_train, labels_svm_pred, labels = [0, 1])
+    conf_mat = confusion_matrix(labels_train, labels_pred, labels = [0, 1])
     print('Classification Report: \n')
-    print(classification_report(labels_train, labels_svm_pred, labels=[0, 1]))
-    average_precision = average_precision_score(labels_train, labels_svm_pred)
+    print(classification_report(labels_train, labels_pred, labels=[0, 1]))
+    average_precision = average_precision_score(labels_train, labels_pred)
     print('Average precision-recall score: {0:0.2f}'.format(
           average_precision))
 elif (label_type == 'MC'):
-    conf_mat = confusion_matrix(labels_train, labels_svm_pred, labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    conf_mat = confusion_matrix(labels_train, labels_pred, labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 else:
     print('label_type: {} is unrecognized'.format(label_type))
 
@@ -185,20 +185,20 @@ print('Confusion Matrix: \n{}'.format(conf_mat))
 ### use the trained classifier to predict labels for the test features using SVM predict
 clf = pickle.load(open('models_trained/svm_N1205_T080_C1', 'rb'))
 t1 = time()
-labels_svm_pred = clf.predict(features_test)
+labels_pred = clf.predict(features_test)
 print ("Prediction Time:", round(time()-t1, 3), "s")
 
-accuracy = accuracy_score(labels_svm_pred, labels_test)
+accuracy = accuracy_score(labels_pred, labels_test)
 
 if (label_type == 'binary'):
-    conf_mat = confusion_matrix(labels_test, labels_svm_pred, labels = [0, 1])
+    conf_mat = confusion_matrix(labels_test, labels_pred, labels = [0, 1])
     print('Classification Report: \n')
-    print(classification_report(labels_test, labels_svm_pred, labels=[0, 1]))
-    average_precision = average_precision_score(labels_test, labels_svm_pred)
+    print(classification_report(labels_test, labels_pred, labels=[0, 1]))
+    average_precision = average_precision_score(labels_test, labels_pred)
     print('Average precision-recall score: {0:0.2f}'.format(
           average_precision))
 elif (label_type == 'MC'):
-    conf_mat = confusion_matrix(labels_test, labels_svm_pred, labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    conf_mat = confusion_matrix(labels_test, labels_pred, labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 else:
     print('label_type: {} is unrecognized'.format(label_type))
 
