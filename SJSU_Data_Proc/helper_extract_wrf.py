@@ -67,7 +67,7 @@ def downsample_data_files (data_files_list, percent_files_to_use):
 '''
 Downsample the grid indices to use from all the grid points where data are available
 '''
-def downsample_grid_indices (dfm_file_data, percent_grid_points_to_use, max_history_to_consider, history_interval, frames_in_file):
+def downsample_grid_indices (data_file_name, dfm_file_data, percent_grid_points_to_use, max_history_to_consider, history_interval, frames_in_file):
     df_for_single_file = pd.DataFrame()
 
     ny, nx = dfm_file_data.dims['south_north'], dfm_file_data.dims['west_east']
@@ -75,23 +75,23 @@ def downsample_grid_indices (dfm_file_data, percent_grid_points_to_use, max_hist
     #print('Dimensions: {} X {}, Number of grid points: {}'.format(nx, ny, n_grid_points))
     grid_indices = list(range(n_grid_points))
     downsample_grid_point_count = round(percent_grid_points_to_use*n_grid_points/100.0)
-    #print('Selecting {} grid points (approx {} % of a total of {} grid points)\n'.format(
-        #downsample_grid_point_count, percent_grid_points_to_use, n_grid_points))
+    print('Selecting {} grid points (approx {} % of a total of {} grid points)\n'.format(
+        downsample_grid_point_count, percent_grid_points_to_use, n_grid_points))
     #print('-----------------------------------------------------------------------')
     
     grid_indices_selected = []
     while (len(grid_indices_selected) < downsample_grid_point_count):
         grid_ind_sampled = random.choice(grid_indices)
         if grid_ind_sampled in grid_indices_selected:
-            print('Grid index {} sampled is already in the grid indices selected: \n{}'.format(
-            grid_ind_sampled, grid_indices_selected))
+            #print('Grid index {} sampled is already in the grid indices selected: \n{}'.format(
+            #grid_ind_sampled, grid_indices_selected))
             pass
         j_ind = grid_ind_sampled // nx
         i_ind = grid_ind_sampled - j_ind*nx
         #print('Grid point # {} : grid_ind = {}, i = {}, j = {}'.format(
             #len(grid_indices_selected), grid_ind_sampled, i_ind, j_ind))
 
-        FM_time_index, AtmData_time_indices, df_at_gp = create_df_at_gp (dfm_file_data, i_ind, j_ind, max_history_to_consider, history_interval, frames_in_file)
+        FM_time_index, AtmData_time_indices, df_at_gp = create_df_at_gp (data_file_name, dfm_file_data, i_ind, j_ind, max_history_to_consider, history_interval, frames_in_file)
         #print('DataFrame at grid point: \n {}'.format(df_at_gp))
         if (not df_at_gp.isna().values.any()):
             df_for_single_file = df_for_single_file.append(df_at_gp).reset_index(drop = True)
@@ -107,7 +107,7 @@ def downsample_grid_indices (dfm_file_data, percent_grid_points_to_use, max_hist
 '''
 Create DataFrame at a grid point
 '''
-def create_df_at_gp (dfm_file_data, i_ind, j_ind, max_history_to_consider, history_interval, frames_in_file):
+def create_df_at_gp (data_file_name, dfm_file_data, i_ind, j_ind, max_history_to_consider, history_interval, frames_in_file):
     df_at_gp = pd.DataFrame()
     FM_time_index_range = list(range(max_history_to_consider, frames_in_file ))
     FM_time_index = random.choice(FM_time_index_range)
@@ -119,12 +119,29 @@ def create_df_at_gp (dfm_file_data, i_ind, j_ind, max_history_to_consider, histo
     
     data_at_gp = dfm_file_data.isel(south_north = j_ind).isel(west_east = i_ind)
     
+    # Identity Fields
+    df_at_gp['WRF_Nelson_File'] = [data_file_name]
     df_at_gp['lat'] = np.array(data_at_gp['latitude']).flatten()
     df_at_gp['lon'] = np.array(data_at_gp['longitude']).flatten()
+    '''
+    df_at_gp['YYYY'] = np.array(data_at_gp['YYYY'].isel(time=FM_time_index)).flatten()
+    df_at_gp['MM'] = np.array(data_at_gp['MM'].isel(time=FM_time_index)).flatten()
+    df_at_gp['DD'] = np.array(data_at_gp['DD'].isel(time=FM_time_index)).flatten()
+    df_at_gp['HH'] = np.array(data_at_gp['HH'].isel(time=FM_time_index)).flatten()
+    '''
+    FM_ref_time = '%d:%02d:%02d:%02d'%(np.array(data_at_gp['YYYY'].isel(time=FM_time_index)).flatten()[0],
+                                       np.array(data_at_gp['MM'].isel(time=FM_time_index)).flatten()[0],
+                                       np.array(data_at_gp['DD'].isel(time=FM_time_index)).flatten()[0],
+                                       np.array(data_at_gp['HH'].isel(time=FM_time_index)).flatten()[0])
+    df_at_gp['Ref_Time_for_FM'] = [FM_ref_time]
     
-    df_at_gp['FM_10hr'] = np.array(data_at_gp['mean_wtd_moisture_10hr'].isel(time=FM_time_index)).flatten()
+    # Label Fields
     df_at_gp['FM_1hr']  = np.array(data_at_gp['mean_wtd_moisture_1hr'].isel(time=FM_time_index)).flatten()
+    df_at_gp['FM_10hr'] = np.array(data_at_gp['mean_wtd_moisture_10hr'].isel(time=FM_time_index)).flatten()
+    df_at_gp['FM_100hr'] = np.array(data_at_gp['mean_wtd_moisture_100hr'].isel(time=FM_time_index)).flatten()
+    df_at_gp['FM_1000hr'] = np.array(data_at_gp['mean_wtd_moisture_1000hr'].isel(time=FM_time_index)).flatten()
     
+    # Historical Atm Data
     for hist_data_ind in AtmData_time_indices:
         #hist_data_ind = AtmData_indices[0]
         U10_data = np.array(data_at_gp['eastward_10m_wind'].isel(
