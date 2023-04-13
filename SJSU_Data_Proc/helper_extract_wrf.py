@@ -33,18 +33,6 @@ def init_random_generator (seed):
 '''
 Get the master list of files containing the historical atmospheric data
 '''
-'''
-def get_data_file_names(data_files_dir):
-    print('\nGetting the names of data files at the dir : \n {}'.format(data_files_dir))
-    file_list = []
-    for file in os.listdir(data_files_dir):
-        if file.startswith('wrfout') and file.endswith('.nc'):
-            file_list.append(file)
-    file_list.sort()
-    print('Found {} files'.format(len(file_list)))
-    print('=========================================================================')
-    return file_list
-'''
 def get_data_file_names(data_files_dir):
     print('\nGetting the names of the data files at the dir : \n {} \n'.format(data_files_dir))
     years_list = os.listdir(data_files_dir)
@@ -64,10 +52,13 @@ def get_data_file_names(data_files_dir):
     print('\nFound a total of {} files \n'.format(len(file_list)))
     print('=========================================================================')
     return file_list
+
 # []
 '''
 Downsample the file indices/lists to use from the master list of files containing
 the historical atmospheric data
+Get the random reference time where Fuel Moisture is to be read and relative to which 
+historical data is to be collected
 '''
 def downsample_data_files (data_files_list, percent_files_to_use):
     #random.setstate(random_state)
@@ -77,7 +68,7 @@ def downsample_data_files (data_files_list, percent_files_to_use):
     downsample_files_count = round(percent_files_to_use*total_files/100.0)
     sampled_file_indices = random.sample(file_indices, k = downsample_files_count)
     sampled_data_files = list(np.array(data_files_list)[sampled_file_indices])
-    print('Selected {} data files'.format(len(sampled_data_files)))
+    print('Selected {} data files out of {}'.format(len(sampled_data_files), len(data_files_list)))
     print('Indices of the randomly selected files: \n {}'.format(sampled_file_indices))
     print('Names of the randomly selected files: \n {}'.format(sampled_data_files))
     print('=========================================================================')
