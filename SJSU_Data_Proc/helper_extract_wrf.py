@@ -33,6 +33,7 @@ def init_random_generator (seed):
 '''
 Get the master list of files containing the historical atmospheric data
 '''
+'''
 def get_data_file_names(data_files_dir):
     print('\nGetting the names of data files at the dir : \n {}'.format(data_files_dir))
     file_list = []
@@ -43,7 +44,26 @@ def get_data_file_names(data_files_dir):
     print('Found {} files'.format(len(file_list)))
     print('=========================================================================')
     return file_list
+'''
+def get_data_file_names(data_files_dir):
+    print('\nGetting the names of the data files at the dir : \n {} \n'.format(data_files_dir))
+    years_list = os.listdir(data_files_dir)
+    print('years_list: {} \n'.format(years_list))
+    
+    file_list = []
+    for year in years_list:
+        print('Getting the names of the data files for the year : {}'.format(year))
+        file_list_for_year = []
+        for file in os.listdir(path.join(data_files_dir, year)):
+            if file.startswith('wrf') and file.endswith('.nc'):
+                file_list_for_year.append(file)
+        print('... Found {} files for this year'.format(len(file_list_for_year)))
+        file_list.extend(file_list_for_year)
 
+    file_list.sort()
+    print('\nFound a total of {} files \n'.format(len(file_list)))
+    print('=========================================================================')
+    return file_list
 # []
 '''
 Downsample the file indices/lists to use from the master list of files containing
