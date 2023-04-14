@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 import pickle
-#from matplotlib import pyplot as plt
-#plt.style.use('seaborn-white')
+from matplotlib import pyplot as plt
+plt.style.use('seaborn-white')
 from datetime import date, datetime, timedelta
 import time
 import random
@@ -69,10 +69,72 @@ def downsample_data_files (data_files_list, percent_files_to_use):
     sampled_file_indices = random.sample(file_indices, k = downsample_files_count)
     sampled_data_files = list(np.array(data_files_list)[sampled_file_indices])
     print('Selected {} data files out of {}'.format(len(sampled_data_files), len(data_files_list)))
-    print('Indices of the randomly selected files: \n {}'.format(sampled_file_indices))
-    print('Names of the randomly selected files: \n {}'.format(sampled_data_files))
+    #print('Indices of the randomly selected files: \n {}'.format(sampled_file_indices))
+    #print('Names of the randomly selected files: \n {}'.format(sampled_data_files))
     print('=========================================================================')
     return sampled_file_indices, sampled_data_files
+
+# []
+'''
+Get timestamps and datetime for the downsampled data files
+'''
+def get_datetime_for_data_files (sampled_data_files):
+    print('\nGetting time stamps and datetime of the downsampled data files...')
+    sampled_time_stamps = []
+    sampled_datetime = []
+    for filename in sampled_data_files:
+        data_filename_split = filename.split('_')
+        date = data_filename_split[1]
+        hour = data_filename_split[2].split('.')[0]
+        date_hour = date + '_' + hour
+        sampled_time_stamps.append(date_hour)
+        sampled_datetime.append(datetime.fromisoformat(date_hour))
+    print('=========================================================================')
+    return sampled_time_stamps, sampled_datetime
+
+# []
+'''
+Create DataFrame using sampled file indices, filenames, timestamps, and datetime
+'''
+def create_df_sampled_time (sampled_file_indices, sampled_data_files, sampled_time_stamps, sampled_datetime):
+    print('\nCreating DataFrame using sampled file indices, filenames, timestamps, and datetime...')
+    df_sampled_time = pd.DataFrame()
+    df_sampled_time['indices'] = sampled_file_indices
+    df_sampled_time['sampled_data_files'] = sampled_data_files
+    df_sampled_time['sampled_time_stamps'] = sampled_time_stamps
+    df_sampled_time['sampled_datetime'] = sampled_datetime
+    print('=========================================================================')
+    return df_sampled_time
+
+# []
+'''
+Plot the sampled datetime
+'''
+def plot_sampled_datetime (df_sampled_time, extracted_data_loc, xlim = None, ylim = None):       
+    plt.figure()
+    
+    sampled_datetime = df_sampled_time['sampled_datetime']
+    plt.scatter(range(len(sampled_datetime)), sampled_datetime)
+    plt.xlabel('Indices of sampled files [-]')
+    plt.ylabel('Datetime [-]')
+    if xlim:
+        plt.xlim([xlim[0],xlim[1]])
+    if ylim:
+        plt.ylim([ylim[0],ylim[1]])
+    plt.tick_params(axis='x', labelsize=14)
+    plt.tick_params(axis='y', labelsize=14)
+    plt.title('Datetime of the {} sampled data files'.format(len(sampled_datetime)), fontsize=14)
+
+    if xlim or ylim:
+        filename = 'Sampled_Datetime_Bounded.png'
+    else:
+        filename = 'Sampled_Datetime_Unbounded.png'
+    
+    filedir = extracted_data_loc
+    os.system('mkdir -p %s'%filedir)
+    plt.show()
+    plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
+    #plt.close()
 
 # []
 '''
