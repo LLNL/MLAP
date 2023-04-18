@@ -60,8 +60,8 @@ the historical atmospheric data
 Get the random reference time where Fuel Moisture is to be read and relative to which 
 historical data is to be collected
 '''
-def downsample_data_files (data_files_list, percent_files_to_use):
-    #random.setstate(random_state)
+def downsample_data_files (data_files_list, percent_files_to_use, random_state):
+    random.setstate(random_state)
     print('\nRandomly selecting approx {} % of the data files'.format(percent_files_to_use))
     file_indices = list(range(len(data_files_list)))
     total_files = len(file_indices)
@@ -73,6 +73,21 @@ def downsample_data_files (data_files_list, percent_files_to_use):
     #print('Names of the randomly selected files: \n {}'.format(sampled_data_files))
     print('=========================================================================')
     return sampled_file_indices, sampled_data_files
+
+# []
+'''
+Get the history file indices corresponding to the sampled reference time indices
+'''
+def get_history_file_indices (sampled_file_indices, max_history_to_consider, history_interval):
+    history_file_indices = []
+    for fuel_moisture_time_index in sampled_file_indices:
+        atm_data_time_indices = np.arange(fuel_moisture_time_index, \
+                                         fuel_moisture_time_index - max_history_to_consider - 1,\
+                                         - history_interval)
+        atm_data_time_indices = list(np.sort(atm_data_time_indices)[:-1])
+        history_file_indices.append(atm_data_time_indices)
+        
+    return history_file_indices
 
 # []
 '''
@@ -96,13 +111,14 @@ def get_datetime_for_data_files (sampled_data_files):
 '''
 Create DataFrame using sampled file indices, filenames, timestamps, and datetime
 '''
-def create_df_sampled_time (sampled_file_indices, sampled_data_files, sampled_time_stamps, sampled_datetime):
+def create_df_sampled_time (sampled_file_indices, sampled_data_files, sampled_time_stamps, sampled_datetime, history_file_indices):
     print('\nCreating DataFrame using sampled file indices, filenames, timestamps, and datetime...')
     df_sampled_time = pd.DataFrame()
-    df_sampled_time['indices'] = sampled_file_indices
+    df_sampled_time['ref_time_indices'] = sampled_file_indices
     df_sampled_time['sampled_data_files'] = sampled_data_files
     df_sampled_time['sampled_time_stamps'] = sampled_time_stamps
     df_sampled_time['sampled_datetime'] = sampled_datetime
+    df_sampled_time['history_time_indices'] = history_file_indices
     print('=========================================================================')
     return df_sampled_time
 
