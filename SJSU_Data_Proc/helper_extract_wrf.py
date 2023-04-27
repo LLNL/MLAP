@@ -131,15 +131,15 @@ def plot_sampled_datetime (df_sampled_time, extracted_data_loc, xlim = None, yli
     
     sampled_datetime = df_sampled_time['sampled_datetime']
     plt.scatter(range(len(sampled_datetime)), sampled_datetime)
-    plt.xlabel('Indices of sampled files [-]')
-    plt.ylabel('Datetime [-]')
+    plt.xlabel('Indices of refernce time [-]', fontsize=20)
+    plt.ylabel('Datetime [-]', fontsize=20)
     if xlim:
         plt.xlim([xlim[0],xlim[1]])
     if ylim:
         plt.ylim([ylim[0],ylim[1]])
-    plt.tick_params(axis='x', labelsize=14)
-    plt.tick_params(axis='y', labelsize=14)
-    plt.title('Datetime of the {} sampled data files'.format(len(sampled_datetime)), fontsize=14)
+    plt.tick_params(axis='x', labelsize=20)
+    plt.tick_params(axis='y', labelsize=20)
+    plt.title('Datetime of the {} sampled reference time'.format(len(sampled_datetime)), fontsize=20)
 
     if xlim or ylim:
         filename = 'Sampled_Datetime_Bounded.png'
