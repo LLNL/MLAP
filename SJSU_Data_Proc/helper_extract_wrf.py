@@ -60,15 +60,17 @@ the historical atmospheric data
 Get the random reference time where Fuel Moisture is to be read and relative to which 
 historical data is to be collected
 '''
-def downsample_data_files (data_files_list, percent_files_to_use, random_state):
+def downsample_data_files (data_files_list, percent_files_to_use, max_history_to_consider, random_state):
     random.setstate(random_state)
     print('\nRandomly selecting approx {} % of the data files'.format(percent_files_to_use))
-    file_indices = list(range(len(data_files_list)))
-    total_files = len(file_indices)
+    file_indices = set(range(len(data_files_list)))
+    invalid_ind = set(range(max_history_to_consider))
+    valid_indices = list(file_indices - invalid_ind)
+    total_files = len(valid_indices)
     downsample_files_count = round(percent_files_to_use*total_files/100.0)
-    sampled_file_indices = random.sample(file_indices, k = downsample_files_count)
+    sampled_file_indices = random.sample(valid_indices, k = downsample_files_count)
     sampled_data_files = list(np.array(data_files_list)[sampled_file_indices])
-    print('Selected {} data files out of {}'.format(len(sampled_data_files), len(data_files_list)))
+    print('Selected {} data files out of {} total and {} usable considering historical data'.format(len(sampled_data_files), len(data_files_list), len(valid_indices)))
     #print('Indices of the randomly selected files: \n {}'.format(sampled_file_indices))
     #print('Names of the randomly selected files: \n {}'.format(sampled_data_files))
     print('=========================================================================')
