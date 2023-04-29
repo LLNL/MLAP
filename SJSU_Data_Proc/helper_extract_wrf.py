@@ -154,6 +154,36 @@ def plot_sampled_datetime (df_sampled_time, extracted_data_loc, xlim = None, yli
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
     #plt.close()
 
+#[]
+'''
+Get grid indices
+'''
+def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_data_files):
+    random_ind_of_downsampled_files = random.choice(range(len(sampled_file_indices)))
+    
+    file_ind_to_read = sampled_file_indices[random_ind_of_downsampled_files]
+    data_file_to_read = sampled_data_files[random_ind_of_downsampled_files]
+    year = data_file_to_read.split('_')[1].split('-')[0]
+    dfm_file_data = xr.open_dataset(path.join(data_files_location, year, data_file_to_read))
+    
+    ny, nx = dfm_file_data.dims['south_north'], dfm_file_data.dims['west_east']
+    grid_indices = np.zeros((ny, nx), int)
+    for j in range(ny):
+        for i in range(nx):
+           grid_indices[j][i] = nx*j + i
+    grid_indices_flattened = grid_indices.flatten()
+    
+    return data_file_to_read, grid_indices, grid_indices_flattened
+    
+#[]
+'''
+Read a single data file
+'''
+def read_single_data_file ():
+    data_at_time = {}
+    
+    return data_at_time
+    
 # []
 '''
 Downsample the grid indices to use from all the grid points where data are available
