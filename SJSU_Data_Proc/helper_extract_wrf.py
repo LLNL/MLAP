@@ -81,6 +81,7 @@ def downsample_data_files (data_files_list, percent_files_to_use, max_history_to
 Get the history file indices corresponding to the sampled reference time indices
 '''
 def get_history_file_indices (sampled_file_indices, max_history_to_consider, history_interval):
+    print('\nDetermining history file indices corresponding to sampled file/time indices...')
     history_file_indices = []
     for fuel_moisture_time_index in sampled_file_indices:
         atm_data_time_indices = np.arange(fuel_moisture_time_index, \
@@ -88,7 +89,7 @@ def get_history_file_indices (sampled_file_indices, max_history_to_consider, his
                                          - history_interval)
         atm_data_time_indices = list(np.sort(atm_data_time_indices)[:-1])
         history_file_indices.append(atm_data_time_indices)
-        
+    print('=========================================================================')    
     return history_file_indices
 
 # []
@@ -130,7 +131,7 @@ Plot the sampled datetime
 '''
 def plot_sampled_datetime (df_sampled_time, extracted_data_loc, xlim = None, ylim = None):       
     plt.figure()
-    
+    print('\nPlotting sampled datetime from the available data...')
     sampled_datetime = df_sampled_time['sampled_datetime']
     plt.scatter(range(len(sampled_datetime)), sampled_datetime)
     plt.xlabel('Indices of refernce time [-]', fontsize=20)
@@ -152,16 +153,18 @@ def plot_sampled_datetime (df_sampled_time, extracted_data_loc, xlim = None, yli
     os.system('mkdir -p %s'%filedir)
     plt.show()
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
-    #plt.close()
+    plt.close()
+    print('=========================================================================')
 
 #[]
 '''
 Get grid indices
 '''
 def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_data_files):
+    print('\nGetting all the grid indices from a randomly selcted file...')
     random_ind_of_downsampled_files = random.choice(range(len(sampled_file_indices)))
     
-    file_ind_to_read = sampled_file_indices[random_ind_of_downsampled_files]
+    #file_ind_to_read = sampled_file_indices[random_ind_of_downsampled_files]
     data_file_to_read = sampled_data_files[random_ind_of_downsampled_files]
     year = data_file_to_read.split('_')[1].split('-')[0]
     dfm_file_data = xr.open_dataset(path.join(data_files_location, year, data_file_to_read))
@@ -173,16 +176,39 @@ def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_dat
            grid_indices[j][i] = nx*j + i
     grid_indices_flattened = grid_indices.flatten()
     
+    print('The selected file is: {}'.format(data_file_to_read))
+    print('=========================================================================')
     return data_file_to_read, grid_indices, grid_indices_flattened
     
 #[]
 '''
 Read a single data file
 '''
-def read_single_data_file ():
-    data_at_time = {}
+def read_single_data_file (data_files_location, data_file_to_read, timestamp_to_read):
+    print('\nReading data contained in the randomly selcted file: {}...'.format(data_file_to_read))
+    data_at_timestamp = {}
     
-    return data_at_time
+    year = data_file_to_read.split('_')[1].split('-')[0]
+    dfm_file_data = xr.open_dataset(path.join(data_files_location, year, data_file_to_read))
+    
+    data_at_timestamp['TimeStamp' ] = timestamp_to_read
+    data_at_timestamp['ny'        ] = dfm_file_data.dims['south_north']
+    data_at_timestamp['nx'        ] = dfm_file_data.dims['west_east']
+    data_at_timestamp['HGT'       ] = np.array(dfm_file_data['HGT'])
+    data_at_timestamp['T2'        ] = np.array(dfm_file_data['T2'])
+    data_at_timestamp['Q2'        ] = np.array(dfm_file_data['Q2'])
+    data_at_timestamp['RH'        ] = np.array(dfm_file_data['RH'])
+    data_at_timestamp['PRECIP'    ] = np.array(dfm_file_data['PRECIP'])
+    data_at_timestamp['PSFC'      ] = np.array(dfm_file_data['PSFC'])
+    data_at_timestamp['U10'       ] = np.array(dfm_file_data['U10'])
+    data_at_timestamp['V10'       ] = np.array(dfm_file_data['V10'])
+    data_at_timestamp['SWDOWN'    ] = np.array(dfm_file_data['SWDOWN'])
+    data_at_timestamp['FMC_1hr'   ] = np.array(dfm_file_data['FMC_GC'])[:, :, 0]
+    data_at_timestamp['FMC_10hr'  ] = np.array(dfm_file_data['FMC_GC'])[:, :, 1]
+    data_at_timestamp['FMC_100hr' ] = np.array(dfm_file_data['FMC_GC'])[:, :, 2]
+    data_at_timestamp['FMC_1000hr'] = np.array(dfm_file_data['FMC_GC'])[:, :, 3]
+    print('=========================================================================')
+    return data_at_timestamp
     
 # []
 '''
