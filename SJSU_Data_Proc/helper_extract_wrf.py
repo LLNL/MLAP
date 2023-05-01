@@ -242,6 +242,35 @@ def plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_l
     plt.close()
     print('=========================================================================')
 
+    
+#[]
+'''
+Plot PDF of Data at a TimeStamp
+'''
+def plot_pdf_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc):
+    num_bins = 30
+    fig, axlist = plt.subplots(3, 4, figsize=(12, 8))
+    for var_ind, ax in enumerate(axlist.ravel()):
+        qoi = qoi_to_plot[var_ind]
+        hist, bin_edges = np.histogram(data_at_timestamp[qoi], bins = num_bins, density = True)
+        bin_centers = bin_edges[:-1] + 0.5*np.diff(bin_edges)
+        
+        #ax.bar(bin_centers, hist, color = 'lime')
+        ax.plot(bin_centers, hist, color = 'b', label = qoi)
+        ax.set_xticks(np.linspace(bin_centers.min(), bin_centers.max(), 4))
+        ax.tick_params(axis='x', labelsize=10)
+        ax.legend()
+        #ax.set_title('{}'.format(qoi),fontsize=10)
+
+    
+    filename = 'pdfs_{}.png'.format(data_at_timestamp['TimeStamp'])
+    filedir = extracted_data_loc
+    os.system('mkdir -p %s'%filedir)
+    plt.show()
+    plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
+    plt.close()
+    print('=========================================================================')
+    
 # []
 '''
 Downsample the grid indices to use from all the grid points where data are available
