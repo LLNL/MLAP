@@ -209,7 +209,39 @@ def read_single_data_file (data_files_location, data_file_to_read, timestamp_to_
     data_at_timestamp['FMC_1000hr'] = np.array(dfm_file_data['FMC_GC'])[:, :, 3]
     print('=========================================================================')
     return data_at_timestamp
+ 
+#[]
+'''
+Plot Contours of Data at a TimeStamp
+'''
+def plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc):
+    cmap_name = 'rainbow'
+    cont_levels = 20
+    fig, axlist = plt.subplots(3, 4, figsize=(12, 8))
+    for var_ind, ax in enumerate(axlist.ravel()):
+        qoi = qoi_to_plot[var_ind]
+        x_ind, y_ind = np.meshgrid(range(data_at_timestamp['nx']), range(data_at_timestamp['ny']))
+        cont = ax.contourf(x_ind, y_ind, data_at_timestamp[qoi], levels = cont_levels, cmap=cmap_name, extend='both')
+        #clb = plt.colorbar(cont)
+        #clb.ax.tick_params(labelsize=14)
+        #plt.xlabel('x-loc [Grid-Index]', fontsize=14)
+        #plt.ylabel('y-loc [Grid-Index]', fontsize=14)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        #plt.tick_params(axis='x', labelsize=14)
+        #plt.tick_params(axis='y', labelsize=14)
+        ax.set_title('{}'.format(qoi),fontsize=10)
+        #ax.show()
+        #plt.close()
     
+    filename = 'contours_{}.png'.format(data_at_timestamp['TimeStamp'])
+    filedir = extracted_data_loc
+    os.system('mkdir -p %s'%filedir)
+    plt.show()
+    plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
+    plt.close()
+    print('=========================================================================')
+
 # []
 '''
 Downsample the grid indices to use from all the grid points where data are available
