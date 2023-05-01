@@ -212,6 +212,22 @@ def read_single_data_file (data_files_location, data_file_to_read, timestamp_to_
  
 #[]
 '''
+process elevation from data read from a single file
+'''
+def process_elevation_at_timestamp (data_at_timestamp):
+    print('\nProcessing elevation data into pos, neg, and zero...')
+    HGT = data_at_timestamp['HGT']
+    
+    HGT_UPD = np.ones((data_at_timestamp['ny'], data_at_timestamp['nx']), int)
+    HGT_UPD[np.where(HGT == 0)] = 0
+    HGT_UPD[np.where(HGT < 0)] = -1
+                     
+    data_at_timestamp['HGT_UPD'] = HGT_UPD
+    print('=========================================================================')
+    return data_at_timestamp
+    
+#[]
+'''
 Plot Contours of Data at a TimeStamp
 '''
 def plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc):
