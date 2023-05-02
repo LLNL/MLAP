@@ -291,7 +291,7 @@ def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_dat
            grid_indices_all[j][i] = nx*j + i
            grid_indices_valid[j][i] = nx*j + i 
 
-    grid_indices_valid[np.where(HGT_UPD == 0)] = -1000
+    grid_indices_valid[np.where(HGT_UPD == 0)] = -1
     #grid_indices_valid[np.where(HGT_UPD == -1)] = -1000
 
     grid_indices_all_flat = grid_indices_all.flatten()
@@ -300,26 +300,57 @@ def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_dat
     return data_file_to_read, grid_indices_all, grid_indices_valid, grid_indices_all_flat, grid_indices_valid_flat
 
 
+# []
+'''
+Reconstruct valid grid indices
+'''
+def reconstruct_valid_grid_indices (grid_indices_valid_flat, data_at_timestamp):
+    print('\nReconstructing valid grid indices...')
+    nx = data_at_timestamp['nx']
+    ny = data_at_timestamp['ny']
+    grid_indices_valid_reconst = np.ones((ny, nx), int)*(-1)
+    grid_indices_valid_bool = np.zeros((ny, nx), int)
+    
+    for valid_ind in grid_indices_valid_flat:
+        j_ind = valid_ind // nx
+        i_ind = valid_ind - j_ind*nx
+
+        grid_indices_valid_reconst[j_ind][i_ind] = valid_ind
+        grid_indices_valid_bool[j_ind][i_ind] = 1
+    print('=========================================================================')    
+    return grid_indices_valid_reconst, grid_indices_valid_bool 
+
 #[]
 '''
 Plot Contours of indices at a timestamp
 '''
-def plot_contours_of_indices (data_at_timestamp, grid_indices_all, grid_indices_valid):
+def plot_contours_of_indices (data_at_timestamp, grid_indices_all, grid_indices_valid, grid_indices_valid_bool, grid_indices_valid_reconst):
     cmap_name = 'rainbow'
     cont_levels = 20
-    fig, ax = plt.subplots(1, 2)
+    fig, ax = plt.subplots(2, 2, figsize=(12, 8))
 
     x_ind, y_ind = np.meshgrid(range(data_at_timestamp['nx']), range(data_at_timestamp['ny']))
 
-    cont = ax[0].contourf(x_ind, y_ind, grid_indices_all, levels = cont_levels, cmap=cmap_name, extend='both')
-    ax[0].set_title('All Indices')
-    ax[0].set_xticks([])
-    ax[0].set_yticks([])
+    cont = ax[0][0].contourf(x_ind, y_ind, grid_indices_all, levels = cont_levels, cmap=cmap_name, extend='both')
+    ax[0][0].set_title('All Indices')
+    ax[0][0].set_xticks([])
+    ax[0][0].set_yticks([])
 
-    cont = ax[1].contourf(x_ind, y_ind, grid_indices_valid, levels = cont_levels, cmap=cmap_name, extend='both')
-    ax[1].set_title('Valid Indices')
-    ax[1].set_xticks([])
-    ax[1].set_yticks([])
+    cont = ax[0][1].contourf(x_ind, y_ind, grid_indices_valid, levels = cont_levels, cmap=cmap_name, extend='both')
+    ax[0][1].set_title('Valid Indices')
+    ax[0][1].set_xticks([])
+    ax[0][1].set_yticks([])
+
+    cont = ax[1][0].contourf(x_ind, y_ind, grid_indices_valid_bool, levels = cont_levels, cmap=cmap_name, extend='both')
+    ax[1][0].set_title('Reconst Indices Bool')
+    ax[1][0].set_xticks([])
+    ax[1][0].set_yticks([])
+
+    cont = ax[1][1].contourf(x_ind, y_ind, grid_indices_valid_reconst, levels = cont_levels, cmap=cmap_name, extend='both')
+    ax[1][1].set_title('Reconst Indices')
+    ax[1][1].set_xticks([])
+    ax[1][1].set_yticks([])
+
     print('=========================================================================')
 
 # []
