@@ -155,30 +155,6 @@ def plot_sampled_datetime (df_sampled_time, extracted_data_loc, xlim = None, yli
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
     plt.close()
     print('=========================================================================')
-
-#[]
-'''
-Get grid indices
-'''
-def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_data_files):
-    print('\nGetting all the grid indices from a randomly selcted file...')
-    random_ind_of_downsampled_files = random.choice(range(len(sampled_file_indices)))
-    
-    #file_ind_to_read = sampled_file_indices[random_ind_of_downsampled_files]
-    data_file_to_read = sampled_data_files[random_ind_of_downsampled_files]
-    year = data_file_to_read.split('_')[1].split('-')[0]
-    dfm_file_data = xr.open_dataset(path.join(data_files_location, year, data_file_to_read))
-    
-    ny, nx = dfm_file_data.dims['south_north'], dfm_file_data.dims['west_east']
-    grid_indices = np.zeros((ny, nx), int)
-    for j in range(ny):
-        for i in range(nx):
-           grid_indices[j][i] = nx*j + i
-    grid_indices_flattened = grid_indices.flatten()
-    
-    print('The selected file is: {}'.format(data_file_to_read))
-    print('=========================================================================')
-    return data_file_to_read, grid_indices, grid_indices_flattened
     
 #[]
 '''
@@ -258,7 +234,6 @@ def plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_l
     plt.close()
     print('=========================================================================')
 
-    
 #[]
 '''
 Plot PDF of Data at a TimeStamp
@@ -278,7 +253,6 @@ def plot_pdf_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc):
         ax.legend()
         #ax.set_title('{}'.format(qoi),fontsize=10)
 
-    
     filename = 'pdfs_{}.png'.format(data_at_timestamp['TimeStamp'])
     filedir = extracted_data_loc
     os.system('mkdir -p %s'%filedir)
@@ -286,7 +260,68 @@ def plot_pdf_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc):
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
     plt.close()
     print('=========================================================================')
-    
+
+# []
+'''
+Get grid indices
+'''
+def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_data_files, sampled_time_stamps):
+    print('\nGetting all the grid indices from a randomly selcted file...')
+    random_ind_of_downsampled_files = random.choice(range(len(sampled_file_indices)))
+
+    #file_ind_to_read = sampled_file_indices[random_ind_of_downsampled_files]
+    data_file_to_read = sampled_data_files[random_ind_of_downsampled_files]
+    timestamp_to_read = sampled_time_stamps[random_ind_of_downsampled_files]
+    print('The selected file is: {}'.format(data_file_to_read))
+
+    # Read the data at timestamp and process elevation
+    data_at_timestamp = read_single_data_file (data_files_location, data_file_to_read, timestamp_to_read)
+    data_at_timestamp = process_elevation_at_timestamp (data_at_timestamp)
+
+    # Extract relevant info from data at timestamp
+    ny, nx = data_at_timestamp['ny'], data_at_timestamp['nx']
+    HGT_UPD = data_at_timestamp['HGT_UPD']
+
+    # Initialize grid indices
+    grid_indices_all = np.zeros((ny, nx), int)
+    grid_indices_valid = np.zeros((ny, nx), int)
+
+    for j in range(ny):
+        for i in range(nx):
+           grid_indices_all[j][i] = nx*j + i
+           grid_indices_valid[j][i] = nx*j + i 
+
+    grid_indices_valid[np.where(HGT_UPD == 0)] = -1000
+    #grid_indices_valid[np.where(HGT_UPD == -1)] = -1000
+
+    grid_indices_all_flat = grid_indices_all.flatten()
+    grid_indices_valid_flat = grid_indices_valid[np.where(grid_indices_valid >= 0)].flatten()
+    print('=========================================================================')
+    return data_file_to_read, grid_indices_all, grid_indices_valid, grid_indices_all_flat, grid_indices_valid_flat
+
+
+#[]
+'''
+Plot Contours of indices at a timestamp
+'''
+def plot_contours_of_indices (data_at_timestamp, grid_indices_all, grid_indices_valid):
+    cmap_name = 'rainbow'
+    cont_levels = 20
+    fig, ax = plt.subplots(1, 2)
+
+    x_ind, y_ind = np.meshgrid(range(data_at_timestamp['nx']), range(data_at_timestamp['ny']))
+
+    cont = ax[0].contourf(x_ind, y_ind, grid_indices_all, levels = cont_levels, cmap=cmap_name, extend='both')
+    ax[0].set_title('All Indices')
+    ax[0].set_xticks([])
+    ax[0].set_yticks([])
+
+    cont = ax[1].contourf(x_ind, y_ind, grid_indices_valid, levels = cont_levels, cmap=cmap_name, extend='both')
+    ax[1].set_title('Valid Indices')
+    ax[1].set_xticks([])
+    ax[1].set_yticks([])
+    print('=========================================================================')
+
 # []
 '''
 Downsample the grid indices to use from all the grid points where data are available
