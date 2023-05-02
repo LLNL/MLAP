@@ -134,7 +134,7 @@ def plot_sampled_datetime (df_sampled_time, extracted_data_loc, xlim = None, yli
     print('\nPlotting sampled datetime from the available data...')
     sampled_datetime = df_sampled_time['sampled_datetime']
     plt.scatter(range(len(sampled_datetime)), sampled_datetime)
-    plt.xlabel('Indices of refernce time [-]', fontsize=20)
+    plt.xlabel('Indices of reference time [-]', fontsize=20)
     plt.ylabel('Datetime [-]', fontsize=20)
     if xlim:
         plt.xlim([xlim[0],xlim[1]])
@@ -351,6 +351,53 @@ def plot_contours_of_indices (data_at_timestamp, grid_indices_all, grid_indices_
     ax[1][1].set_xticks([])
     ax[1][1].set_yticks([])
 
+    print('=========================================================================')
+
+
+# []
+'''
+Sample grid indices for each ref time
+'''
+def sample_grid_indices (sampled_file_indices, percent_grid_points_to_use, grid_indices_valid_flat):
+    downsample_grid_point_count = round(percent_grid_points_to_use*len(grid_indices_valid_flat)/100.0)
+    print('Selecting {} grid points (approx {} % of a total of {} considerable/valid grid points)\n'.format(
+            downsample_grid_point_count, percent_grid_points_to_use, len(grid_indices_valid_flat)))
+    
+    grid_indices_selected = []
+    for sampled_file_count in range(len(sampled_file_indices)):
+        sampled_grid_indices = random.sample(set(grid_indices_valid_flat), k = downsample_grid_point_count)
+        grid_indices_selected.append(sampled_grid_indices)
+    
+    print('=========================================================================')
+    return np.array(grid_indices_selected)
+
+# []
+'''
+Plot sample grid indices for each ref time
+'''
+def plot_sampled_grid_points (grid_indices_selected, extracted_data_loc):
+    cmap_name = 'rainbow'
+    cont_levels = 20
+    grid_count, time_count = grid_indices_selected.shape[1], grid_indices_selected.shape[0]
+    
+    grid_ind, time_ind = np.meshgrid(range(grid_count), range(time_count))
+
+    plt.figure()
+    cont = plt.contourf(grid_ind, time_ind, grid_indices_selected, levels = cont_levels, cmap=cmap_name, extend='both')
+    clb = plt.colorbar(cont)
+    clb.ax.tick_params(labelsize=14)
+    plt.xlabel('Grid-Index [-]', fontsize=14)
+    plt.ylabel('Sampled Ref Time Count [-]', fontsize=14)
+    plt.tick_params(axis='x', labelsize=14)
+    plt.tick_params(axis='y', labelsize=14)
+    plt.title('Sampled grid index for each random ref time',fontsize=14)
+
+    filename = 'Sampled_Grid_Indices.png'
+    filedir = extracted_data_loc
+    os.system('mkdir -p %s'%filedir)
+    plt.show()
+    plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
+    plt.close()
     print('=========================================================================')
 
 # []
