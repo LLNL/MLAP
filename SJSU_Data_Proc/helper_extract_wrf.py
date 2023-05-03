@@ -153,7 +153,7 @@ def plot_sampled_datetime (df_sampled_time, extracted_data_loc, xlim = None, yli
     os.system('mkdir -p %s'%filedir)
     plt.show()
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
-    plt.close()
+    #plt.close()
     print('=========================================================================')
     
 #[]
@@ -231,7 +231,7 @@ def plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_l
     os.system('mkdir -p %s'%filedir)
     plt.show()
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
-    plt.close()
+    #plt.close()
     print('=========================================================================')
 
 #[]
@@ -258,7 +258,7 @@ def plot_pdf_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc):
     os.system('mkdir -p %s'%filedir)
     plt.show()
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
-    plt.close()
+    #plt.close()
     print('=========================================================================')
 
 # []
@@ -308,17 +308,21 @@ def reconstruct_valid_grid_indices (grid_indices_valid_flat, data_at_timestamp):
     print('\nReconstructing valid grid indices...')
     nx = data_at_timestamp['nx']
     ny = data_at_timestamp['ny']
+    
     grid_indices_valid_reconst = np.ones((ny, nx), int)*(-1)
     grid_indices_valid_bool = np.zeros((ny, nx), int)
+    valid_grid_ind_to_coord = {}
     
     for valid_ind in grid_indices_valid_flat:
         j_ind = valid_ind // nx
         i_ind = valid_ind - j_ind*nx
 
+        valid_grid_ind_to_coord[valid_ind] = (j_ind, i_ind)
         grid_indices_valid_reconst[j_ind][i_ind] = valid_ind
         grid_indices_valid_bool[j_ind][i_ind] = 1
+        
     print('=========================================================================')    
-    return grid_indices_valid_reconst, grid_indices_valid_bool 
+    return grid_indices_valid_reconst, grid_indices_valid_bool, valid_grid_ind_to_coord
 
 #[]
 '''
@@ -342,12 +346,12 @@ def plot_contours_of_indices (data_at_timestamp, grid_indices_all, grid_indices_
     ax[0][1].set_yticks([])
 
     cont = ax[1][0].contourf(x_ind, y_ind, grid_indices_valid_bool, levels = cont_levels, cmap=cmap_name, extend='both')
-    ax[1][0].set_title('Reconst Indices Bool')
+    ax[1][0].set_title('Reconstructed Indices (Boolean)')
     ax[1][0].set_xticks([])
     ax[1][0].set_yticks([])
 
     cont = ax[1][1].contourf(x_ind, y_ind, grid_indices_valid_reconst, levels = cont_levels, cmap=cmap_name, extend='both')
-    ax[1][1].set_title('Reconst Indices')
+    ax[1][1].set_title('Reconstructed Valid Indices')
     ax[1][1].set_xticks([])
     ax[1][1].set_yticks([])
 
@@ -358,22 +362,35 @@ def plot_contours_of_indices (data_at_timestamp, grid_indices_all, grid_indices_
 '''
 Sample grid indices for each ref time
 '''
-def sample_grid_indices (sampled_file_indices, percent_grid_points_to_use, grid_indices_valid_flat):
+def sample_grid_indices (sampled_file_indices, percent_grid_points_to_use, grid_indices_valid_flat, valid_grid_ind_to_coord):
     downsample_grid_point_count = round(percent_grid_points_to_use*len(grid_indices_valid_flat)/100.0)
     print('Selecting {} grid points (approx {} % of a total of {} considerable/valid grid points)\n'.format(
             downsample_grid_point_count, percent_grid_points_to_use, len(grid_indices_valid_flat)))
     
     grid_indices_selected = []
+    j_indices_selected = []
+    i_indices_selected = []
+    
     for sampled_file_count in range(len(sampled_file_indices)):
         sampled_grid_indices = random.sample(set(grid_indices_valid_flat), k = downsample_grid_point_count)
+        
+        j_indices_current_time = []
+        i_indices_current_time = []
+        
+        for sampled_grid_ind in sampled_grid_indices:
+            j_indices_current_time.append(valid_grid_ind_to_coord[sampled_grid_ind][0])
+            i_indices_current_time.append(valid_grid_ind_to_coord[sampled_grid_ind][1])
+        
         grid_indices_selected.append(sampled_grid_indices)
-    
+        j_indices_selected.append(j_indices_current_time)
+        i_indices_selected.append(i_indices_current_time)
+        
     print('=========================================================================')
-    return np.array(grid_indices_selected)
+    return np.array(grid_indices_selected), np.array(j_indices_selected), np.array(i_indices_selected)
 
 # []
 '''
-Plot sample grid indices for each ref time
+Plot sampled grid indices for each ref time
 '''
 def plot_sampled_grid_points (grid_indices_selected, extracted_data_loc):
     cmap_name = 'rainbow'
@@ -397,9 +414,35 @@ def plot_sampled_grid_points (grid_indices_selected, extracted_data_loc):
     os.system('mkdir -p %s'%filedir)
     plt.show()
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
-    plt.close()
+    #plt.close()
     print('=========================================================================')
 
+# []
+'''
+Plot sampled grid indices for each ref time in 3D
+'''
+def plot_sampled_grid_points_3D (j_indices_selected, i_indices_selected, extracted_data_loc):
+    fig = plt.figure(figsize = (8,8))
+    ax = plt.axes(projection='3d')
+    for ref_time_count in range(j_indices_selected.shape[0]):
+        #sampled_datetime_current = sampled_datetime[ref_time_count]
+        #print('Sampled DateTime: {}'.format(sampled_datetime_current))
+        j_indices_at_current_time = j_indices_selected[ref_time_count]
+        i_indices_at_current_time = i_indices_selected[ref_time_count]
+        time_indices_at_current_time = np.ones_like(j_indices_at_current_time)*ref_time_count
+
+        ax.scatter3D(i_indices_at_current_time,j_indices_at_current_time, 
+                     time_indices_at_current_time)
+        ax.set_xlabel('x-indices')
+        ax.set_ylabel('y-indices')
+        ax.set_zlabel('Sampled Ref Time Count [-]')
+        #ax.set_title('Sampled grid points at each of the sampled datetimes')
+        '''
+        print(time_indices_at_current_time)
+        print(j_indices_at_current_time)
+        print(i_indices_at_current_time)
+        '''
+    
 # []
 '''
 Downsample the grid indices to use from all the grid points where data are available
