@@ -202,65 +202,6 @@ def process_elevation_at_timestamp (data_at_timestamp):
     print('=========================================================================')
     return data_at_timestamp
     
-#[]
-'''
-Plot Contours of Data at a TimeStamp
-'''
-def plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc):
-    cmap_name = 'rainbow'
-    cont_levels = 20
-    fig, axlist = plt.subplots(3, 4, figsize=(12, 8))
-    for var_ind, ax in enumerate(axlist.ravel()):
-        qoi = qoi_to_plot[var_ind]
-        x_ind, y_ind = np.meshgrid(range(data_at_timestamp['nx']), range(data_at_timestamp['ny']))
-        cont = ax.contourf(x_ind, y_ind, data_at_timestamp[qoi], levels = cont_levels, cmap=cmap_name, extend='both')
-        #clb = plt.colorbar(cont)
-        #clb.ax.tick_params(labelsize=14)
-        #plt.xlabel('x-loc [Grid-Index]', fontsize=14)
-        #plt.ylabel('y-loc [Grid-Index]', fontsize=14)
-        ax.set_xticks([])
-        ax.set_yticks([])
-        #plt.tick_params(axis='x', labelsize=14)
-        #plt.tick_params(axis='y', labelsize=14)
-        ax.set_title('{}'.format(qoi),fontsize=10)
-        #ax.show()
-        #plt.close()
-    
-    filename = 'contours_{}.png'.format(data_at_timestamp['TimeStamp'])
-    filedir = extracted_data_loc
-    os.system('mkdir -p %s'%filedir)
-    plt.show()
-    plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
-    #plt.close()
-    print('=========================================================================')
-
-#[]
-'''
-Plot PDF of Data at a TimeStamp
-'''
-def plot_pdf_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc):
-    num_bins = 30
-    fig, axlist = plt.subplots(3, 4, figsize=(12, 8))
-    for var_ind, ax in enumerate(axlist.ravel()):
-        qoi = qoi_to_plot[var_ind]
-        hist, bin_edges = np.histogram(data_at_timestamp[qoi], bins = num_bins, density = True)
-        bin_centers = bin_edges[:-1] + 0.5*np.diff(bin_edges)
-        
-        #ax.bar(bin_centers, hist, color = 'lime')
-        ax.plot(bin_centers, hist, color = 'b', label = qoi)
-        ax.set_xticks(np.linspace(bin_centers.min(), bin_centers.max(), 4))
-        ax.tick_params(axis='x', labelsize=10)
-        ax.legend()
-        #ax.set_title('{}'.format(qoi),fontsize=10)
-
-    filename = 'pdfs_{}.png'.format(data_at_timestamp['TimeStamp'])
-    filedir = extracted_data_loc
-    os.system('mkdir -p %s'%filedir)
-    plt.show()
-    plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
-    #plt.close()
-    print('=========================================================================')
-
 # []
 '''
 Get grid indices
@@ -329,7 +270,7 @@ def reconstruct_valid_grid_indices (grid_indices_valid_flat, data_at_timestamp):
 Plot Contours of indices at a timestamp
 '''
 def plot_contours_of_indices (data_at_timestamp, grid_indices_all, grid_indices_valid, grid_indices_valid_bool, grid_indices_valid_reconst):
-    cmap_name = 'rainbow'
+    cmap_name = 'hot'
     cont_levels = 20
     fig, ax = plt.subplots(2, 2, figsize=(12, 8))
 
@@ -358,6 +299,104 @@ def plot_contours_of_indices (data_at_timestamp, grid_indices_all, grid_indices_
     print('=========================================================================')
 
 
+#[]
+'''
+Plot Contours of Data at a TimeStamp
+'''
+def plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc, grid_indices_valid, masked = True):
+    cmap_name = 'hot'
+    cont_levels = 20
+    fig, axlist = plt.subplots(3, 4, figsize=(12, 8))
+    for var_ind, ax in enumerate(axlist.ravel()):
+        qoi = qoi_to_plot[var_ind]
+        data_to_plot = data_at_timestamp[qoi] #Unmasked
+        if masked:
+            mask = np.zeros_like(grid_indices_valid, dtype=bool)
+            mask[np.where(grid_indices_valid < 0)] = True
+            data_to_plot = np.ma.array(data_to_plot, mask=mask)
+        
+        x_ind, y_ind = np.meshgrid(range(data_at_timestamp['nx']), range(data_at_timestamp['ny']))
+        cont = ax.contourf(x_ind, y_ind, data_to_plot, levels = cont_levels, cmap=cmap_name, extend='both')
+        #clb = plt.colorbar(cont)
+        #clb.ax.tick_params(labelsize=14)
+        #plt.xlabel('x-loc [Grid-Index]', fontsize=14)
+        #plt.ylabel('y-loc [Grid-Index]', fontsize=14)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        #plt.tick_params(axis='x', labelsize=14)
+        #plt.tick_params(axis='y', labelsize=14)
+        ax.set_title('{}'.format(qoi),fontsize=10)
+        #ax.show()
+        #plt.close()
+    
+    filename = 'contours_{}.png'.format(data_at_timestamp['TimeStamp'])
+    filedir = extracted_data_loc
+    os.system('mkdir -p %s'%filedir)
+    plt.show()
+    plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
+    #plt.close()
+    print('=========================================================================')
+
+    
+#[]
+'''
+Plot Contours of Data at a TimeStamp
+'''
+def plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_plot, extracted_data_loc, grid_indices_valid, masked = True, qoi_cont_range = None ):
+    cmap_name = 'hot'
+    if qoi_cont_range:
+        cont_levels = np.linspace(qoi_cont_range[0], qoi_cont_range[1], 31)
+    else:
+        cont_levels = 31
+        
+    for qoi in qoi_to_plot:
+        data_to_plot = data_at_timestamp[qoi] #Unmasked
+        if masked:
+            mask = np.zeros_like(grid_indices_valid, dtype=bool)
+            mask[np.where(grid_indices_valid < 0)] = True
+            data_to_plot = np.ma.array(data_to_plot, mask=mask)
+            
+        plt.figure(figsize=(9, 6))
+        x_ind, y_ind = np.meshgrid(range(data_at_timestamp['nx']), range(data_at_timestamp['ny']))
+        cont = plt.contourf(x_ind, y_ind, data_to_plot, levels = cont_levels, cmap=cmap_name, extend='both')
+        clb = plt.colorbar(cont)
+        clb.ax.tick_params(labelsize=14)
+        plt.xlabel('x-loc [Grid-Index]', fontsize=16)
+        plt.ylabel('y-loc [Grid-Index]', fontsize=16)
+        #ax.set_xticks([])
+        #ax.set_yticks([])
+        plt.tick_params(axis='x', labelsize=16)
+        plt.tick_params(axis='y', labelsize=16)
+        plt.title('{} at {}'.format(qoi, timestamp_to_read),fontsize=16)
+        plt.show()      
+        
+#[]
+'''
+Plot PDF of Data at a TimeStamp
+'''
+def plot_pdf_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc):
+    num_bins = 30
+    fig, axlist = plt.subplots(3, 4, figsize=(12, 8))
+    for var_ind, ax in enumerate(axlist.ravel()):
+        qoi = qoi_to_plot[var_ind]
+        hist, bin_edges = np.histogram(data_at_timestamp[qoi], bins = num_bins, density = True)
+        bin_centers = bin_edges[:-1] + 0.5*np.diff(bin_edges)
+        
+        #ax.bar(bin_centers, hist, color = 'lime')
+        ax.plot(bin_centers, hist, color = 'b', label = qoi)
+        ax.set_xticks(np.linspace(bin_centers.min(), bin_centers.max(), 4))
+        ax.tick_params(axis='x', labelsize=10)
+        ax.legend()
+        #ax.set_title('{}'.format(qoi),fontsize=10)
+
+    filename = 'pdfs_{}.png'.format(data_at_timestamp['TimeStamp'])
+    filedir = extracted_data_loc
+    os.system('mkdir -p %s'%filedir)
+    plt.show()
+    plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
+    #plt.close()
+    print('=========================================================================')
+    
 # []
 '''
 Sample grid indices for each ref time
@@ -393,7 +432,7 @@ def sample_grid_indices (sampled_file_indices, percent_grid_points_to_use, grid_
 Plot sampled grid indices for each ref time
 '''
 def plot_sampled_grid_points (grid_indices_selected, extracted_data_loc):
-    cmap_name = 'rainbow'
+    cmap_name = 'hot'
     cont_levels = 20
     grid_count, time_count = grid_indices_selected.shape[1], grid_indices_selected.shape[0]
     
