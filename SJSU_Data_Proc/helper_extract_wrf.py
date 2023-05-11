@@ -238,7 +238,7 @@ def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_dat
     grid_indices_all_flat = grid_indices_all.flatten()
     grid_indices_valid_flat = grid_indices_valid[np.where(grid_indices_valid >= 0)].flatten()
     print('=========================================================================')
-    return data_file_to_read, grid_indices_all, grid_indices_valid, grid_indices_all_flat, grid_indices_valid_flat
+    return grid_indices_all, grid_indices_valid, grid_indices_all_flat, grid_indices_valid_flat
 
 
 # []
@@ -342,12 +342,12 @@ def plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_l
 '''
 Plot Contours of Data at a TimeStamp
 '''
-def plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_plot, extracted_data_loc, grid_indices_valid, masked = True, qoi_cont_range = None ):
+def plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_plot, extracted_data_loc, grid_indices_valid, cont_levels_count, masked = True, qoi_cont_range = None):
     cmap_name = 'hot'
     if qoi_cont_range:
-        cont_levels = np.linspace(qoi_cont_range[0], qoi_cont_range[1], 31)
+        cont_levels = np.linspace(qoi_cont_range[0], qoi_cont_range[1], cont_levels_count)
     else:
-        cont_levels = 31
+        cont_levels = cont_levels_count
         
     for qoi in qoi_to_plot:
         data_to_plot = data_at_timestamp[qoi] #Unmasked
@@ -355,7 +355,7 @@ def plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_pl
             mask = np.zeros_like(grid_indices_valid, dtype=bool)
             mask[np.where(grid_indices_valid < 0)] = True
             data_to_plot = np.ma.array(data_to_plot, mask=mask)
-            
+        
         plt.figure(figsize=(9, 6))
         x_ind, y_ind = np.meshgrid(range(data_at_timestamp['nx']), range(data_at_timestamp['ny']))
         cont = plt.contourf(x_ind, y_ind, data_to_plot, levels = cont_levels, cmap=cmap_name, extend='both')
