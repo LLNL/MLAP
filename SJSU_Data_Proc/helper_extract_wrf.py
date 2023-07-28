@@ -40,12 +40,12 @@ def get_data_file_names(data_files_dir):
     
     file_list = []
     for year in years_list:
-        print('Getting the names of the data files for the year : {}'.format(year))
+        #print('Getting the names of the data files for the year : {}'.format(year))
         file_list_for_year = []
         for file in os.listdir(path.join(data_files_dir, year)):
             if file.startswith('wrf') and file.endswith('.nc'):
                 file_list_for_year.append(file)
-        print('... Found {} files for this year'.format(len(file_list_for_year)))
+        #print('... Found {} files for this year'.format(len(file_list_for_year)))
         file_list.extend(file_list_for_year)
 
     file_list.sort()
@@ -97,7 +97,7 @@ def get_history_file_indices (sampled_file_indices, max_history_to_consider, his
 Get timestamps and datetime for the downsampled data files
 '''
 def get_datetime_for_data_files (sampled_data_files):
-    print('\nGetting time stamps and datetime of the downsampled data files...')
+    #print('\nGetting time stamps and datetime of the downsampled data files...')
     sampled_time_stamps = []
     sampled_datetime = []
     for filename in sampled_data_files:
@@ -162,7 +162,7 @@ def plot_sampled_datetime (df_sampled_time, extracted_data_loc, xlim = None, yli
 Read a single data file
 '''
 def read_single_data_file (data_files_location, data_file_to_read, timestamp_to_read):
-    print('\nReading data contained in the randomly selcted file: {}...'.format(data_file_to_read))
+    #print('\nReading data contained in the selcted file: {}...'.format(data_file_to_read))
     data_at_timestamp = {}
     
     year = data_file_to_read.split('_')[1].split('-')[0]
@@ -184,7 +184,7 @@ def read_single_data_file (data_files_location, data_file_to_read, timestamp_to_
     data_at_timestamp['FMC_10hr'  ] = np.array(dfm_file_data['FMC_GC'])[:, :, 1]
     data_at_timestamp['FMC_100hr' ] = np.array(dfm_file_data['FMC_GC'])[:, :, 2]
     data_at_timestamp['FMC_1000hr'] = np.array(dfm_file_data['FMC_GC'])[:, :, 3]
-    print('=========================================================================')
+    #print('=========================================================================')
     return data_at_timestamp
  
 #[]
@@ -192,7 +192,7 @@ def read_single_data_file (data_files_location, data_file_to_read, timestamp_to_
 process elevation from data read from a single file
 '''
 def process_elevation_at_timestamp (data_at_timestamp):
-    print('\nProcessing elevation data into pos, neg, and zero...')
+    #print('\nProcessing elevation data into pos, neg, and zero...')
     HGT = data_at_timestamp['HGT']
     
     HGT_UPD = np.ones((data_at_timestamp['ny'], data_at_timestamp['nx']), int)
@@ -200,7 +200,7 @@ def process_elevation_at_timestamp (data_at_timestamp):
     HGT_UPD[np.where(HGT < 0)] = -1
                      
     data_at_timestamp['HGT_UPD'] = HGT_UPD
-    print('=========================================================================')
+    #print('=========================================================================')
     return data_at_timestamp
     
 # []
@@ -553,6 +553,80 @@ def create_time_grid_indices_map (sampled_file_indices, history_file_indices, gr
 
     return time_grid_indices_list_dict, time_grid_indices_list_count, time_grid_indices_set_dict, time_grid_indices_set_count
 
+
+# []
+'''
+Read data at all the possible time indices
+'''
+def read_data_all_possible_times (time_grid_indices_list_dict, data_files_list, \
+                                  data_files_location):
+    file_indices_data_dict = dict()
+    
+    file_indices_to_read = list(time_grid_indices_list_dict.keys())
+    data_files_to_read = list(np.array(data_files_list)[file_indices_to_read])
+    time_stamps_to_read, datetime_to_read = get_datetime_for_data_files (data_files_to_read)
+    print('Read a total of {} files ( ref time + history)'.format(len(file_indices_to_read)))
+          
+    for file_index_to_read_count in range(len(file_indices_to_read)):
+        file_index_to_read = file_indices_to_read [file_index_to_read_count]
+        data_file_to_read = data_files_to_read [file_index_to_read_count]
+        timestamp_to_read = time_stamps_to_read [file_index_to_read_count]
+        #print('data_file_to_read: {}, timestamp_to_read: {}'.format(data_file_to_read, timestamp_to_read))
+        data_at_timestamp = read_single_data_file (data_files_location, data_file_to_read, \
+                                                   timestamp_to_read)
+        data_at_timestamp = process_elevation_at_timestamp (data_at_timestamp)
+        file_indices_data_dict[file_index_to_read] = data_at_timestamp
+    
+    print('=========================================================================')
+    return file_indices_to_read, data_files_to_read, time_stamps_to_read, file_indices_data_dict
+
+# []
+'''
+Save data read at all the possible time indices
+'''
+def save_data_read_at_all_possible_times (file_indices_to_read, data_files_to_read, time_stamps_to_read,\
+                                          file_indices_data_dict, \
+                                          extracted_data_loc, collection_of_read_data_files):
+    
+    collection_of_read_data_filename = os.path.join(extracted_data_loc, collection_of_read_data_files)
+    if os.path.exists(collection_of_read_data_filename):
+        print('The picke file "{}" already exists at "{}"'.format(collection_of_read_data_files, \
+                                                                extracted_data_loc))
+    else:
+        data_to_save = {'file_indices_to_read': file_indices_to_read,
+                     'data_files_to_read': data_files_to_read,
+                     'time_stamps_to_read': time_stamps_to_read,
+                     'file_indices_data_dict': file_indices_data_dict}
+
+        collection_of_read_data_files_handle = open(collection_of_read_data_filename, 'wb')
+        pickle.dump(data_to_save, collection_of_read_data_files_handle)
+        collection_of_read_data_files_handle.close()
+
+        print('Wrote all the read data files in "{}" at "{}"'.format(collection_of_read_data_files, \
+                                                                    extracted_data_loc))
+    print('=========================================================================')
+
+# []
+'''
+Read data at all the possible time indices saved in a pickle file
+'''
+def read_data_from_pickle_all_possible_times (extracted_data_loc, collection_of_read_data_files):
+    collection_of_read_data = {}
+    collection_of_read_data_filename = os.path.join(extracted_data_loc, collection_of_read_data_files)
+    if os.path.exists(collection_of_read_data_filename):
+        print('Reading the picke file "{}" at "{}"'.format(collection_of_read_data_files, \
+                                                          extracted_data_loc))
+        collection_of_read_data_files_handle = open(collection_of_read_data_filename, 'rb')
+        collection_of_read_data = pickle.load(collection_of_read_data_files_handle)
+        collection_of_read_data_files_handle.close()
+    else:
+        exception_message = 'Pickle file "{}" NOT found at "{}"'.format(collection_of_read_data_files, \
+                                                                        extracted_data_loc)
+        raise Exception(exception_message)
+        
+    print('=========================================================================')
+    return collection_of_read_data
+    
 # []
 '''
 Downsample the grid indices to use from all the grid points where data are available
