@@ -151,8 +151,9 @@ def plot_sampled_datetime (df_sampled_time, extracted_data_loc, xlim = None, yli
     
     filedir = extracted_data_loc
     os.system('mkdir -p %s'%filedir)
-    plt.show()
+    
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
+    plt.show()
     #plt.close()
     print('=========================================================================')
     
@@ -269,7 +270,7 @@ def reconstruct_valid_grid_indices (grid_indices_valid_flat, data_at_timestamp):
 '''
 Plot Contours of indices at a timestamp
 '''
-def plot_contours_of_indices (data_at_timestamp, grid_indices_all, grid_indices_valid, grid_indices_valid_bool, grid_indices_valid_reconst):
+def plot_contours_of_indices (data_at_timestamp, grid_indices_all, grid_indices_valid, grid_indices_valid_bool, grid_indices_valid_reconst, extracted_data_loc):
     cmap_name = 'hot'
     cont_levels = 20
     fig, ax = plt.subplots(2, 2, figsize=(12, 8))
@@ -296,6 +297,15 @@ def plot_contours_of_indices (data_at_timestamp, grid_indices_all, grid_indices_
     ax[1][1].set_xticks([])
     ax[1][1].set_yticks([])
 
+    
+    # Save plots
+    filename = 'GridIndices.png'
+ 
+    filedir = extracted_data_loc
+    os.system('mkdir -p %s'%filedir)
+    
+    plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
+    plt.show()
     print('=========================================================================')
 
 
@@ -305,6 +315,7 @@ Plot Contours of Data at a TimeStamp
 '''
 def plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc, grid_indices_valid, masked = True):
     cmap_name = 'hot'
+    masked_string = 'UnMasked' 
     cont_levels = 20
     fig, axlist = plt.subplots(3, 4, figsize=(12, 8))
     for var_ind, ax in enumerate(axlist.ravel()):
@@ -314,6 +325,7 @@ def plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_l
             mask = np.zeros_like(grid_indices_valid, dtype=bool)
             mask[np.where(grid_indices_valid < 0)] = True
             data_to_plot = np.ma.array(data_to_plot, mask=mask)
+            masked_string = 'Masked'
         
         x_ind, y_ind = np.meshgrid(range(data_at_timestamp['nx']), range(data_at_timestamp['ny']))
         cont = ax.contourf(x_ind, y_ind, data_to_plot, levels = cont_levels, cmap=cmap_name, extend='both')
@@ -329,11 +341,12 @@ def plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_l
         #ax.show()
         #plt.close()
     
-    filename = 'contours_{}.png'.format(data_at_timestamp['TimeStamp'])
+    filename = 'Contours_{}_QoIs_{}.png'.format(masked_string, data_at_timestamp['TimeStamp'])
     filedir = extracted_data_loc
     os.system('mkdir -p %s'%filedir)
-    plt.show()
+ 
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
+    plt.show()
     #plt.close()
     print('=========================================================================')
 
@@ -344,6 +357,7 @@ Plot Contours of Data at a TimeStamp
 '''
 def plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_plot, extracted_data_loc, grid_indices_valid, cont_levels_count, masked = True, qoi_cont_range = None):
     cmap_name = 'hot'
+    masked_string = 'UnMasked' 
     if qoi_cont_range:
         cont_levels = np.linspace(qoi_cont_range[0], qoi_cont_range[1], cont_levels_count)
     else:
@@ -355,6 +369,7 @@ def plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_pl
             mask = np.zeros_like(grid_indices_valid, dtype=bool)
             mask[np.where(grid_indices_valid < 0)] = True
             data_to_plot = np.ma.array(data_to_plot, mask=mask)
+            masked_string = 'Masked'
         
         plt.figure(figsize=(9, 6))
         x_ind, y_ind = np.meshgrid(range(data_at_timestamp['nx']), range(data_at_timestamp['ny']))
@@ -368,7 +383,15 @@ def plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_pl
         plt.tick_params(axis='x', labelsize=16)
         plt.tick_params(axis='y', labelsize=16)
         plt.title('{} at {}'.format(qoi, timestamp_to_read),fontsize=16)
-        plt.show()      
+        
+        filename = 'Contours_{}_{}_{}.png'.format(masked_string, qoi, data_at_timestamp['TimeStamp'])
+        filedir = extracted_data_loc
+        os.system('mkdir -p %s'%filedir)
+
+        plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
+        plt.show()
+        #plt.close()
+        print('=========================================================================')
         
 #[]
 '''
@@ -389,11 +412,12 @@ def plot_pdf_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc):
         ax.legend()
         #ax.set_title('{}'.format(qoi),fontsize=10)
 
-    filename = 'pdfs_{}.png'.format(data_at_timestamp['TimeStamp'])
+    filename = 'PDFs_QoIs_{}.png'.format(data_at_timestamp['TimeStamp'])
     filedir = extracted_data_loc
     os.system('mkdir -p %s'%filedir)
-    plt.show()
+    
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
+    plt.show()
     #plt.close()
     print('=========================================================================')
     
@@ -406,26 +430,26 @@ def sample_grid_indices (sampled_file_indices, percent_grid_points_to_use, grid_
     print('Selecting {} grid points (approx {} % of a total of {} considerable/valid grid points)\n'.format(
             downsample_grid_point_count, percent_grid_points_to_use, len(grid_indices_valid_flat)))
     
-    grid_indices_selected = []
-    j_indices_selected = []
-    i_indices_selected = []
+    grid_indices_selected =np.zeros((len(sampled_file_indices), downsample_grid_point_count), int)
+    j_indices_selected = np.zeros_like(grid_indices_selected, int)
+    i_indices_selected = np.zeros_like(grid_indices_selected, int)
     
     for sampled_file_count in range(len(sampled_file_indices)):
-        sampled_grid_indices = random.sample(set(grid_indices_valid_flat), k = downsample_grid_point_count)
         
-        j_indices_current_time = []
-        i_indices_current_time = []
+        sampled_grid_indices = random.sample(set(grid_indices_valid_flat), \
+                                             k = downsample_grid_point_count)
         
-        for sampled_grid_ind in sampled_grid_indices:
-            j_indices_current_time.append(valid_grid_ind_to_coord[sampled_grid_ind][0])
-            i_indices_current_time.append(valid_grid_ind_to_coord[sampled_grid_ind][1])
-        
-        grid_indices_selected.append(sampled_grid_indices)
-        j_indices_selected.append(j_indices_current_time)
-        i_indices_selected.append(i_indices_current_time)
-        
+        for sampled_grid_point_count, sampled_grid_ind in enumerate(sampled_grid_indices):
+            grid_indices_selected[sampled_file_count][sampled_grid_point_count] = sampled_grid_ind
+            j_indices_selected[sampled_file_count][sampled_grid_point_count] = \
+                                                    valid_grid_ind_to_coord[sampled_grid_ind][0]
+            i_indices_selected[sampled_file_count][sampled_grid_point_count] = \
+                                                    valid_grid_ind_to_coord[sampled_grid_ind][1]
+    #End for
+    
     print('=========================================================================')
-    return np.array(grid_indices_selected), np.array(j_indices_selected), np.array(i_indices_selected)
+    return grid_indices_selected, j_indices_selected, i_indices_selected
+
 
 # []
 '''
@@ -434,15 +458,15 @@ Plot sampled grid indices for each ref time
 def plot_sampled_grid_points (grid_indices_selected, extracted_data_loc):
     cmap_name = 'hot'
     cont_levels = 20
-    grid_count, time_count = grid_indices_selected.shape[1], grid_indices_selected.shape[0]
     
+    grid_count, time_count = grid_indices_selected.shape[1], grid_indices_selected.shape[0]
     grid_ind, time_ind = np.meshgrid(range(grid_count), range(time_count))
 
     plt.figure()
     cont = plt.contourf(grid_ind, time_ind, grid_indices_selected, levels = cont_levels, cmap=cmap_name, extend='both')
     clb = plt.colorbar(cont)
     clb.ax.tick_params(labelsize=14)
-    plt.xlabel('Grid-Index [-]', fontsize=14)
+    plt.xlabel('Sampled Random Grid Point Count [-]', fontsize=14)
     plt.ylabel('Sampled Ref Time Count [-]', fontsize=14)
     plt.tick_params(axis='x', labelsize=14)
     plt.tick_params(axis='y', labelsize=14)
@@ -451,8 +475,9 @@ def plot_sampled_grid_points (grid_indices_selected, extracted_data_loc):
     filename = 'Sampled_Grid_Indices.png'
     filedir = extracted_data_loc
     os.system('mkdir -p %s'%filedir)
-    plt.show()
+    
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
+    plt.show()
     #plt.close()
     print('=========================================================================')
 
@@ -460,8 +485,8 @@ def plot_sampled_grid_points (grid_indices_selected, extracted_data_loc):
 '''
 Plot sampled grid indices for each ref time in 3D
 '''
-def plot_sampled_grid_points_3D (j_indices_selected, i_indices_selected, extracted_data_loc):
-    fig = plt.figure(figsize = (8,8))
+def plot_sampled_grid_points_3D (j_indices_selected, i_indices_selected, extracted_data_loc, fig_size):
+    fig = plt.figure(figsize = fig_size)
     ax = plt.axes(projection='3d')
     for ref_time_count in range(j_indices_selected.shape[0]):
         #sampled_datetime_current = sampled_datetime[ref_time_count]
@@ -472,15 +497,19 @@ def plot_sampled_grid_points_3D (j_indices_selected, i_indices_selected, extract
 
         ax.scatter3D(i_indices_at_current_time,j_indices_at_current_time, 
                      time_indices_at_current_time)
-        ax.set_xlabel('x-indices')
-        ax.set_ylabel('y-indices')
-        ax.set_zlabel('Sampled Ref Time Count [-]')
-        #ax.set_title('Sampled grid points at each of the sampled datetimes')
-        '''
-        print(time_indices_at_current_time)
-        print(j_indices_at_current_time)
-        print(i_indices_at_current_time)
-        '''
+   
+    ax.set_xlabel('x-indices', fontsize=14)
+    ax.set_ylabel('y-indices', fontsize=14)
+    ax.set_zlabel('Sampled Ref Time Count [-]', fontsize=14)
+
+    filename = 'Sampled_Grid_Indices_3D.png'
+    filedir = extracted_data_loc
+    os.system('mkdir -p %s'%filedir)
+
+    plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
+    plt.show()
+    #plt.close()
+    print('=========================================================================')
 
 # []
 '''
@@ -500,7 +529,8 @@ def create_time_grid_indices_map (sampled_file_indices, history_file_indices, gr
                 grid_indices_sampled_at_current_time
         else:
             time_grid_indices_list_dict[sampled_file_indices[sampled_time_count]]= \
-                np.hstack((time_grid_indices_list_dict[sampled_file_indices[sampled_time_count]], grid_indices_sampled_at_current_time))
+                np.hstack((time_grid_indices_list_dict[sampled_file_indices[sampled_time_count]], \
+                           grid_indices_sampled_at_current_time))
 
         for history_time_index in history_file_indices[sampled_time_count]:
             if history_time_index not in time_grid_indices_list_dict.keys():
@@ -508,7 +538,8 @@ def create_time_grid_indices_map (sampled_file_indices, history_file_indices, gr
                     grid_indices_sampled_at_current_time
             else:
                 time_grid_indices_list_dict[history_time_index] =\
-                    np.hstack((time_grid_indices_list_dict[history_time_index], grid_indices_sampled_at_current_time))
+                    np.hstack((time_grid_indices_list_dict[history_time_index], \
+                               grid_indices_sampled_at_current_time))
         
     
     # Derive other indices
