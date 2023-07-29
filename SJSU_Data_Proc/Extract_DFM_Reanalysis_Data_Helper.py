@@ -53,6 +53,49 @@ def get_data_file_names(data_files_dir):
     print('=========================================================================')
     return file_list
 
+
+# []
+'''
+Get the indices in the data files list for the fire time stamps
+'''
+def get_fire_time_indices (fire_time_stamps, data_files_list):
+    fire_time_indices = {}
+    
+    for fire_name in fire_time_stamps.keys():
+        fire_time_indices_current = {}
+        for time_stamp_key in fire_time_stamps[fire_name].keys():
+            time_stamp = fire_time_stamps[fire_name][time_stamp_key]
+            data_file_name = 'wrf_{}.nc'.format(time_stamp)
+            data_file_index = data_files_list.index(data_file_name)
+            fire_time_indices_current[time_stamp_key] = data_file_index
+            
+        fire_time_indices[fire_name] = fire_time_indices_current
+        
+    print('=========================================================================')    
+    return fire_time_indices
+
+
+# []
+'''
+Remove the data around the fires of concern
+'''
+def remove_data_around_fire (fire_time_indices, data_files_list):    
+    fire_indices_to_delete = []
+    for fire_name in fire_time_indices.keys():
+        fire_start_ind = fire_time_indices[fire_name]['Start']
+        fire_end_ind = fire_time_indices[fire_name]['End']
+        fire_indices_to_delete.extend(range(fire_start_ind, fire_end_ind + 1))
+
+    print('Removing {} data files around fires, out of total {}. [{} %]'.format(\
+                                 len(fire_indices_to_delete), len(data_files_list),\
+                                 100.0*float(len(fire_indices_to_delete))/len(data_files_list)))
+    
+    data_files_list = list (np.delete(np.array(data_files_list), fire_indices_to_delete))
+    print('{} data files remaining after removing data around fires'.format(len(data_files_list)))
+    print('=========================================================================')    
+    return data_files_list
+
+
 # []
 '''
 Downsample the file indices/lists to use from the master list of files containing
