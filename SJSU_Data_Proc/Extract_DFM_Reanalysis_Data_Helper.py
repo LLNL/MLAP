@@ -564,15 +564,16 @@ def create_time_grid_indices_map (sampled_file_indices, history_file_indices, gr
     time_grid_indices_set_dict = {}
     time_grid_indices_set_count = {}
     
-    for sampled_time_count in range(len(sampled_file_indices)):
+    for sampled_time_count, sampled_time_ind in enumerate(sampled_file_indices):
+        
         grid_indices_sampled_at_current_time = grid_indices_selected[sampled_time_count]
 
-        if sampled_file_indices[sampled_time_count] not in time_grid_indices_list_dict.keys():
-            time_grid_indices_list_dict[sampled_file_indices[sampled_time_count]] = \
+        if sampled_time_ind not in time_grid_indices_list_dict.keys():
+            time_grid_indices_list_dict[sampled_time_ind] = \
                 grid_indices_sampled_at_current_time
         else:
-            time_grid_indices_list_dict[sampled_file_indices[sampled_time_count]]= \
-                np.hstack((time_grid_indices_list_dict[sampled_file_indices[sampled_time_count]], \
+            time_grid_indices_list_dict[sampled_time_ind]= \
+                np.hstack((time_grid_indices_list_dict[sampled_time_ind], \
                            grid_indices_sampled_at_current_time))
 
         for history_time_index in history_file_indices[sampled_time_count]:
