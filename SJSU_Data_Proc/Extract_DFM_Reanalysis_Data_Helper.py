@@ -644,7 +644,7 @@ def save_data_read_at_all_possible_times (file_indices_to_read, data_files_to_re
     collection_of_read_data_filename = os.path.join(extracted_data_loc, collection_of_read_data_files)
     if os.path.exists(collection_of_read_data_filename):
         print('The picke file "{}" already exists at "{}"'.format(collection_of_read_data_files, \
-                                                                extracted_data_loc))
+                                                                extracted_data_loc))                                                   
     else:
         data_to_save = {'file_indices_to_read': file_indices_to_read,
                      'data_files_to_read': data_files_to_read,
@@ -679,7 +679,115 @@ def read_data_from_pickle_all_possible_times (extracted_data_loc, collection_of_
         
     print('=========================================================================')
     return collection_of_read_data
+ 
+
+# []
+'''
+Create DataFrame of FM and Historical Data. Also Extract Time and Grid Info.
+'''
+def create_dataframe_FM_atm_data (data_at_times, \
+                                  sampled_file_indices, history_file_indices, \
+                                  sampled_time_stamps, history_interval, \
+                                  grid_indices_selected, \
+                                  j_indices_selected, i_indices_selected):
     
+    ## Define the Sizes to Contain Sampled Data
+    num_sampled_times  = grid_indices_selected.shape[0]
+    num_sampled_points = grid_indices_selected.shape[1]
+    num_data_points    = num_sampled_times*num_sampled_points
+    num_hist_indices   = len(history_file_indices[0])
+
+    FM_time_ind  = np.zeros((num_data_points, 1), int)
+    FM_ts        = np.zeros((num_data_points, 1), '<U13') #list()
+    his_time_ind = np.zeros((num_data_points, num_hist_indices), int)
+
+    grid_ind     = np.zeros((num_data_points, 1), int)
+    j_ind        = np.zeros((num_data_points, 1), int)
+    i_ind        = np.zeros((num_data_points, 1), int)
+
+    FM_10hr      = np.zeros((num_data_points, 1), float)
+    FM_100hr     = np.zeros((num_data_points, 1), float)
+
+    HGT          = np.zeros((num_data_points, 1), float)
+
+    U10_hist     = np.zeros((num_data_points, num_hist_indices), float)
+    V10_hist     = np.zeros((num_data_points, num_hist_indices), float)
+    T2_hist      = np.zeros((num_data_points, num_hist_indices), float)
+    RH_hist      = np.zeros((num_data_points, num_hist_indices), float)
+    PRECIP_hist  = np.zeros((num_data_points, num_hist_indices), float)
+    SWDOWN_hist  = np.zeros((num_data_points, num_hist_indices), float)
+    
+    ## Fill in The Data Arrays
+    for sampled_time_count, sampled_time_ind in enumerate(sampled_file_indices):
+        hist_indices = np.array(history_file_indices[sampled_time_count])
+
+        for sampled_grid_point_count in range(num_sampled_points):
+            data_point_count = sampled_time_count*num_sampled_points + sampled_grid_point_count
+
+            # Grid Identifier
+            grid_index = grid_indices_selected[sampled_time_count][sampled_grid_point_count]
+            j_loc      = j_indices_selected[   sampled_time_count][sampled_grid_point_count]
+            i_loc      = i_indices_selected[   sampled_time_count][sampled_grid_point_count]
+            #print(sampled_time_count, sampled_grid_point_count, data_point_count)
+
+            # Time Indices
+            FM_time_ind [ data_point_count] = sampled_time_ind
+            FM_ts [       data_point_count] = sampled_time_stamps [sampled_time_count]
+            his_time_ind [data_point_count] = hist_indices
+
+            # Grid Indices
+            grid_ind [    data_point_count] = grid_index
+            j_ind [       data_point_count] = j_loc
+            i_ind [       data_point_count] = i_loc
+
+            # FM for Labels
+            FM_10hr [ data_point_count] = data_at_times[sampled_time_ind]['FMC_10hr' ][j_loc][i_loc]
+            FM_100hr [data_point_count] = data_at_times[sampled_time_ind]['FMC_100hr'][j_loc][i_loc]
+
+            # Height for Features
+            HGT [data_point_count] = data_at_times[sampled_time_ind]['HGT'][j_loc][i_loc]
+
+            # History Data for Features
+            for hist_ind_count, hist_ind in enumerate(hist_indices):
+                U10_hist[data_point_count][hist_ind_count] = data_at_times[hist_ind]['U10'][j_loc][i_loc]
+                V10_hist[data_point_count][hist_ind_count] = data_at_times[hist_ind]['V10'][j_loc][i_loc]
+                T2_hist[data_point_count][hist_ind_count] = data_at_times[hist_ind]['T2'][j_loc][i_loc]
+                RH_hist[data_point_count][hist_ind_count] = data_at_times[hist_ind]['RH'][j_loc][i_loc]
+                PRECIP_hist[data_point_count][hist_ind_count] = data_at_times[hist_ind]['PRECIP'][j_loc][i_loc]
+                SWDOWN_hist[data_point_count][hist_ind_count] = data_at_times[hist_ind]['SWDOWN'][j_loc][i_loc]
+    
+    ## Create DataFrame
+    df = pd.DataFrame()
+    df['FM_time_ind'] = FM_time_ind.flatten()
+    df['FM_ts'] = FM_ts
+    df['his_time_ind'] = list(his_time_ind)
+
+    df['grid_ind'] = grid_ind
+    df['j_ind'] = j_ind
+    df['i_ind'] = i_ind
+
+    df['FM_10hr'] = FM_10hr
+    df['FM_100hr'] = FM_100hr
+
+    df['HGT'] = HGT
+
+    for hist_ind_count in range(num_hist_indices):
+        df['U10[-{}hr]'.format((num_hist_indices-hist_ind_count)*history_interval)] =\
+                                        U10_hist[:,hist_ind_count]
+        df['V10[-{}hr]'.format((num_hist_indices-hist_ind_count)*history_interval)]=\
+                                        V10_hist[:,hist_ind_count]
+        df['T2[-{}hr]'.format((num_hist_indices-hist_ind_count)*history_interval)] =\
+                                        T2_hist[:,hist_ind_count]
+        df['RH[-{}hr]'.format((num_hist_indices-hist_ind_count)*history_interval)] =\
+                                        RH_hist[:,hist_ind_count]
+        df['PREC[-{}hr]'.format((num_hist_indices-hist_ind_count)*history_interval)] =\
+                                        PRECIP_hist[:,hist_ind_count]
+        df['SWDOWN[-{}hr]'.format((num_hist_indices-hist_ind_count)*history_interval)] =\
+                                        SWDOWN_hist[:,hist_ind_count]
+    
+    print('=========================================================================')
+    return df
+
 # []
 '''
 Downsample the grid indices to use from all the grid points where data are available
