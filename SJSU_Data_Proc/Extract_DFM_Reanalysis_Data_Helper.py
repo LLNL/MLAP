@@ -108,6 +108,15 @@ def downsample_data_files (data_files_list, percent_files_to_use, max_history_to
     print('\nRandomly selecting approx {} % of the data files'.format(percent_files_to_use))
     file_indices = set(range(len(data_files_list)))
     invalid_ind = set(range(max_history_to_consider))
+    '''
+    TODO:
+    The way first "max_history_to_consider" number of indices after start are invalid, 
+    "max_history_to_consider" number of indices right after each fire should also be invlalid.
+    The reason is that after we remove fire data, the indices shrink. So, if the index 
+    corresponding to timestamp right after fire is selected, the history data would be from
+    ~ 2 weeks before it rather than until "max_history_to_consider".
+    NEED to the list of invalid indices.
+    '''
     valid_indices = list(file_indices - invalid_ind)
     total_files = len(valid_indices)
     downsample_files_count = round(percent_files_to_use*total_files/100.0)
