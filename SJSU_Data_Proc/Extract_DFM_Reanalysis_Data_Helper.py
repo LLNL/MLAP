@@ -95,6 +95,36 @@ def remove_data_around_fire (fire_time_indices, data_files_list):
     print('=========================================================================')    
     return data_files_list
 
+# []
+'''
+Read Fire data
+'''
+def read_fire_data (fire_time_indices, max_history_to_consider, history_interval, \
+                    data_files_list_all, data_files_location):
+    
+    fire_data = dict()
+    
+    for fire_name in fire_time_indices.keys():
+        fire_time_indices[fire_name]['Hist'] = get_history_file_indices (\
+            [fire_time_indices[fire_name]['Ref']], max_history_to_consider, history_interval)[0]
+
+        fire_time_indices[fire_name]['ToRead'] = [fire_time_indices[fire_name]['Ref']]
+        fire_time_indices[fire_name]['ToRead'].extend(fire_time_indices[fire_name]['Hist'])
+        
+    for fire_name in fire_time_indices.keys():
+        fire_data_files_to_read, fire_time_stamps_to_read, fire_file_indices_data_dict = \
+                    read_data_all_possible_times (fire_time_indices[fire_name]['ToRead'], \
+                                                  data_files_list_all, \
+                                                  data_files_location)
+
+        fire_data[fire_name] = {
+            'fire_data_files_to_read': fire_data_files_to_read,
+            'fire_time_stamps_to_read': fire_time_stamps_to_read,
+            'fire_file_indices_data_dict': fire_file_indices_data_dict
+        }
+    print('=========================================================================')    
+    return fire_time_indices, fire_data
+
 
 # []
 '''
@@ -133,7 +163,7 @@ def downsample_data_files (data_files_list, percent_files_to_use, max_history_to
 Get the history file indices corresponding to the sampled reference time indices
 '''
 def get_history_file_indices (sampled_file_indices, max_history_to_consider, history_interval):
-    print('\nDetermining history file indices corresponding to sampled file/time indices...')
+    #print('\nDetermining history file indices corresponding to given file/time indices...')
     history_file_indices = []
     for fuel_moisture_time_index in sampled_file_indices:
         atm_data_time_indices = np.arange(fuel_moisture_time_index, \
@@ -611,11 +641,11 @@ def create_time_grid_indices_map (sampled_file_indices, history_file_indices, gr
 '''
 Read data at all the possible time indices
 '''
-def read_data_all_possible_times (time_grid_indices_list_dict, data_files_list, \
+def read_data_all_possible_times (file_indices_to_read, data_files_list, \
                                   data_files_location):
     file_indices_data_dict = dict()
     
-    file_indices_to_read = list(time_grid_indices_list_dict.keys())
+    #file_indices_to_read = list(time_grid_indices_list_dict.keys())
     data_files_to_read = list(np.array(data_files_list)[file_indices_to_read])
     time_stamps_to_read, datetime_to_read = get_datetime_for_data_files (data_files_to_read)
     print('Read a total of {} files ( ref time + history)'.format(len(file_indices_to_read)))
@@ -631,7 +661,7 @@ def read_data_all_possible_times (time_grid_indices_list_dict, data_files_list, 
         file_indices_data_dict[file_index_to_read] = data_at_timestamp
     
     print('=========================================================================')
-    return file_indices_to_read, data_files_to_read, time_stamps_to_read, file_indices_data_dict
+    return data_files_to_read, time_stamps_to_read, file_indices_data_dict
 
 # []
 '''
