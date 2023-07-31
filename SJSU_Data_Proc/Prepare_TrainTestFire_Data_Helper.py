@@ -52,6 +52,21 @@ def get_keys_from_extracted_data (df_extracted):
 
 # []
 '''
+Define Binary and MC FM labels
+'''
+def define_binary_and_MC_FM_labels (keys_FM):
+    keys_FM_Binary = []
+    keys_FM_MC     = []
+    for FM_key in keys_FM:
+        FM_key_binary = FM_key + '_bin'
+        FM_key_MC     = FM_key + '_MC'
+        keys_FM_Binary.append(FM_key_binary)
+        keys_FM_MC.append(FM_key_MC)
+    
+    return keys_FM_Binary, keys_FM_MC
+        
+# []
+'''
 Compute UMag from U and V
 '''
 def compute_wind_mag (df_extracted, keys_U10, keys_V10, keys_UMag10):
@@ -69,3 +84,96 @@ def drop_wind_components (df_extracted, keys_U10, keys_V10):
     df_extracted = df_extracted.drop(keys_U10 + keys_V10, axis = 'columns')
     return df_extracted
 
+
+# []
+'''
+Compute binary FM labels
+'''
+def compute_binary_FM_labels(df, keys_FM, keys_FM_Binary, FM_binary_threshold):
+    for FM_key, FM_key_binary in zip(keys_FM, keys_FM_Binary):
+        # If FM > threshold_FM_fire_risk, then no risk, i.e., 0. Otherwise fire risk or 1
+        df[FM_key_binary] = np.where(df[FM_key] > FM_binary_threshold , 0, 1)
+    
+    return df
+
+# []
+'''
+Compute MC FM labels
+'''
+def compute_MC_FM_labels(df, keys_FM, keys_FM_MC, FM_levels):
+    for FM_key, FM_key_MC in zip(keys_FM, keys_FM_MC):
+        conditions = []
+        labels = []
+        for num_levels in range(len(FM_levels)-1):
+            conditions.append((df[FM_key] > FM_levels[num_levels]) &\
+                              (df[FM_key] <= FM_levels[num_levels+1]))
+            labels.append(num_levels)
+            #labels.append('FM%02d'%(num_levels))
+
+        df[FM_key_MC] = np.select(conditions, labels, default=labels[0])
+
+    return df
+
+# []
+'''
+Plot Binary FM labels
+'''
+def plot_binary_FM_labels (df, columns_to_plot, prepared_data_set_name, prepared_data_loc):
+    plt.figure()
+    for col_label in columns_to_plot:
+        plt.hist(df[col_label], bins = 20, density=False, label = col_label)
+    plt.legend()
+    plt.xlabel('Fuel Moisture (Absolute and Binary)', fontsize = 14)
+    plt.ylabel('Frequency', fontsize = 14)
+
+    filename = '{}_{}.png'.format(prepared_data_set_name, columns_to_plot[0])
+    filedir = prepared_data_loc
+    os.system('mkdir -p %s'%filedir)
+
+    plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
+    #plt.show()
+    plt.close()
+    
+    
+# []
+'''
+Plot MC FM labels
+'''
+def plot_MC_FM_labels (df, col_label, prepared_data_set_name, prepared_data_loc):
+    plt.figure()
+    plt.hist(df[col_label], bins = 20, density=False, label = col_label)
+    plt.legend()
+    plt.xlabel('Fuel Moisture (MC)', fontsize = 14)
+    plt.ylabel('Frequency', fontsize = 14)
+
+    filename = '{}_{}.png'.format(prepared_data_set_name, col_label)
+    filedir = prepared_data_loc
+    os.system('mkdir -p %s'%filedir)
+
+    plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
+    #plt.show()
+    plt.close()
+    
+    
+# []
+'''
+Split data into groups of keys
+'''
+def split_data_into_groups (df, fire_data_prep, keys_identity, keys_labels, keys_features):
+    data_tt_prep = dict()
+    data_tt_prep['all'] = df
+    data_tt_prep['identity'] = df[keys_identity]
+    data_tt_prep['labels'] = df[keys_labels]
+    data_tt_prep['features'] = df[keys_features]
+    
+    data_fire_prep = dict()
+    for fire_name in fire_data_prep.keys():
+        data_this_fire = dict()
+        data_this_fire['all'] = fire_data_prep[fire_name]
+        data_this_fire['identity'] = fire_data_prep[fire_name][keys_identity]
+        data_this_fire['labels'] = fire_data_prep[fire_name][keys_labels]
+        data_this_fire['features'] = fire_data_prep[fire_name][keys_features]
+
+        data_fire_prep[fire_name] = data_this_fire
+    
+    return data_tt_prep, data_fire_prep
