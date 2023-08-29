@@ -236,7 +236,7 @@ def plot_sampled_datetime (df_sampled_time, extracted_data_loc, xlim = None, yli
     
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
     #plt.show()
-    plt.close()
+    #plt.close()
     print('=========================================================================')
     
 #[]
@@ -388,7 +388,7 @@ def plot_contours_of_indices (data_at_timestamp, grid_indices_all, grid_indices_
     
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
     #plt.show()
-    plt.close()
+    #plt.close()
     print('=========================================================================')
 
 
@@ -422,7 +422,7 @@ def plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_l
         #plt.tick_params(axis='y', labelsize=14)
         ax.set_title('{}'.format(qoi),fontsize=10)
         #ax.show()
-        plt.close()
+        #plt.close()
     
     filename = 'Contours_{}_QoIs_{}.png'.format(masked_string, data_at_timestamp['TimeStamp'])
     filedir = extracted_data_loc
@@ -430,7 +430,7 @@ def plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_l
  
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
     #plt.show()
-    plt.close()
+    #plt.close()
     print('=========================================================================')
 
     
@@ -473,7 +473,7 @@ def plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_pl
 
         plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
         #plt.show()
-        plt.close()
+        #plt.close()
         print('=========================================================================')
         
 #[]
@@ -501,7 +501,7 @@ def plot_pdf_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc):
     
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
     #plt.show()
-    plt.close()
+    #plt.close()
     print('=========================================================================')
     
 # []
@@ -561,7 +561,7 @@ def plot_sampled_grid_points (grid_indices_selected, extracted_data_loc):
     
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
     #plt.show()
-    plt.close()
+    #plt.close()
     print('=========================================================================')
 
 # []
@@ -591,7 +591,7 @@ def plot_sampled_grid_points_3D (j_indices_selected, i_indices_selected, extract
 
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
     #plt.show()
-    plt.close()
+    #plt.close()
     print('=========================================================================')
 
 # []
