@@ -289,7 +289,8 @@ def process_elevation_at_timestamp (data_at_timestamp):
 '''
 Get grid indices
 '''
-def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_data_files, sampled_time_stamps):
+def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_data_files, sampled_time_stamps, j_nevada, i_nevada, j_anchor, i_anchor, remove_nevada = True):
+    
     print('\nGetting all the grid indices from a randomly selcted file...')
     random_ind_of_downsampled_files = random.choice(range(len(sampled_file_indices)))
 
@@ -318,6 +319,15 @@ def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_dat
     grid_indices_valid[np.where(HGT_UPD == 0)] = -1
     #grid_indices_valid[np.where(HGT_UPD == -1)] = -1000
 
+    # Remove points for Nevada
+    if remove_nevada:
+        for j in range(ny):
+            for i in range(nx):
+                if (j - j_nevada)*(i_anchor -   (nx-1)) < (j_anchor - j_nevada)*(i -   (nx-1)) and \
+                   (j - j_anchor)*(i_nevada - i_anchor) < ((ny -1)  - j_anchor)*(i - i_anchor):
+                   grid_indices_valid[j][i] = -1
+    
+    # Flatten the indices
     grid_indices_all_flat = grid_indices_all.flatten()
     grid_indices_valid_flat = grid_indices_valid[np.where(grid_indices_valid >= 0)].flatten()
     print('=========================================================================')
