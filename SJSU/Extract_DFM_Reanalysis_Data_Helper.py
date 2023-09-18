@@ -289,7 +289,7 @@ def process_elevation_at_timestamp (data_at_timestamp):
 '''
 Get grid indices
 '''
-def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_data_files, sampled_time_stamps, j_nevada, i_nevada, j_anchor, i_anchor, remove_nevada = True):
+def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_data_files, sampled_time_stamps, x_clip, y_clip, j_nevada, i_nevada, j_anchor, i_anchor, remove_nevada = True):
     
     print('\nGetting all the grid indices from a randomly selcted file...')
     random_ind_of_downsampled_files = random.choice(range(len(sampled_file_indices)))
@@ -326,6 +326,14 @@ def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_dat
                 if (j - j_nevada)*(i_anchor -   (nx-1)) < (j_anchor - j_nevada)*(i -   (nx-1)) and \
                    (j - j_anchor)*(i_nevada - i_anchor) < ((ny -1)  - j_anchor)*(i - i_anchor):
                    grid_indices_valid[j][i] = -1
+    
+    # Remove clipped points
+    if x_clip is not None:
+        grid_indices_valid[:, :x_clip[0]] = -1
+        grid_indices_valid[:, x_clip[1]:] = -1
+    if y_clip is not None:
+        grid_indices_valid[:y_clip[0], :] = -1
+        grid_indices_valid[y_clip[1]:, :] = -1
     
     # Flatten the indices
     grid_indices_all_flat = grid_indices_all.flatten()
