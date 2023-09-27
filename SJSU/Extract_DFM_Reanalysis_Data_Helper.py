@@ -660,6 +660,7 @@ def create_time_grid_indices_map (sampled_file_indices, history_file_indices, gr
 '''
 Read data at all the possible time indices
 '''
+'''
 def read_data_all_possible_times (file_indices_to_read, data_files_list, \
                                   data_files_location):
     file_indices_data_dict = dict()
@@ -681,10 +682,12 @@ def read_data_all_possible_times (file_indices_to_read, data_files_list, \
     
     print('=========================================================================')
     return data_files_to_read, time_stamps_to_read, file_indices_data_dict
+'''
 
 # []
 '''
 Save data read at all the possible time indices
+'''
 '''
 def save_data_read_at_all_possible_times (file_indices_to_read, data_files_to_read, time_stamps_to_read,\
                                           file_indices_data_dict, \
@@ -707,10 +710,12 @@ def save_data_read_at_all_possible_times (file_indices_to_read, data_files_to_re
         print('Wrote all the read data files in "{}" at "{}"'.format(collection_of_read_data_files, \
                                                                     extracted_data_loc))
     print('=========================================================================')
+'''
 
 # []
 '''
 Read data at all the possible time indices saved in a pickle file
+'''
 '''
 def read_data_from_pickle_all_possible_times (extracted_data_loc, collection_of_read_data_files):
     collection_of_read_data = {}
@@ -728,11 +733,12 @@ def read_data_from_pickle_all_possible_times (extracted_data_loc, collection_of_
         
     print('=========================================================================')
     return collection_of_read_data
- 
+''' 
 
 # []
 '''
 Create DataFrame of FM and Historical Data. Also Extract Time and Grid Info.
+'''
 '''
 def create_dataframe_FM_atm_data (data_at_times, \
                                   sampled_file_indices, history_file_indices, \
@@ -836,7 +842,7 @@ def create_dataframe_FM_atm_data (data_at_times, \
     
     print('=========================================================================')
     return df
-
+'''
 
 
 # []
