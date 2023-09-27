@@ -1,0 +1,47 @@
+{
+	"paths": 	     {
+				"data_files_location": "/p/vast1/climres/DFM_reanalysis",
+				"extracted_data_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_Extracted"
+			     },
+				     
+	"data_set_defn":     { 
+				"data_set_count": 0,
+				"percent_files_to_use": 0.00817755098, 
+				"percent_grid_points_to_use": 0.0063656565, 
+				"max_history_to_consider": 8, 
+				"history_interval": 2
+			     }, 
+			    	 
+	"nevada_data":	     {
+				"remove_nevada":true,
+				"j_nevada": 80,
+				"i_nevada": 250,
+				"j_anchor": 310,
+				"i_anchor": 250
+			     },
+					 
+	"fire_flags":        {
+				"remove_fire_data_from_train_test": false,
+				"extract_fire_data": true
+			     },
+	"data_in_a_file":    {
+				"prescribe_file_flag": true,
+				"data_file_to_read": "wrf_2018-11-07_16.nc"
+			     },
+        "qoi_to_plot":	     {
+				"contours":["HGT", "HGT_UPD", "U10", "V10", "FMC_1hr", "FMC_10hr", "FMC_100hr", "T2", "RH", "PRECIP", "PSFC", "SWDOWN"],
+				"pdfs":["HGT", "Q2", "U10", "V10", "FMC_1hr", "FMC_10hr", "FMC_100hr", "T2", "RH", "PRECIP", "PSFC", "SWDOWN"],
+				"contours_with_cb":["FMC_1hr", "FMC_10hr", "FMC_100hr"],
+				"cont_levels_count":31
+			     },
+					 
+	"fire_time_stamps":  {
+				"Woosley": {"Ref": "2018-11-08_22", "Start": "2018-11-01_00", "End": "2018-11-15_00"},
+				"Creek":   {"Ref": "2020-09-04_00", "Start": "2020-08-28_00", "End": "2020-09-11_00"}
+			     },
+ 		 
+	"clip_data_train_test":         {
+				"x_clip": [100, 301],
+				"y_clip": [100, 301]
+			     }
+}
