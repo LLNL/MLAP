@@ -963,6 +963,7 @@ def create_dataframe_FM_atm_data_fire (fire_name, fire_time_indices, data_at_tim
 '''
 Downsample the grid indices to use from all the grid points where data are available
 '''
+'''
 def downsample_grid_indices (data_file_name, dfm_file_data, percent_grid_points_to_use, max_history_to_consider, history_interval, frames_in_file):
     df_for_single_file = pd.DataFrame()
 
@@ -998,10 +999,12 @@ def downsample_grid_indices (data_file_name, dfm_file_data, percent_grid_points_
 
     #print('=========================================================================')
     return df_for_single_file
+'''
 
 # []
 '''
 Create DataFrame at a grid point
+'''
 '''
 def create_df_at_gp (data_file_name, dfm_file_data, i_ind, j_ind, max_history_to_consider, history_interval, frames_in_file):
     df_at_gp = pd.DataFrame()
@@ -1061,3 +1064,4 @@ def create_df_at_gp (data_file_name, dfm_file_data, i_ind, j_ind, max_history_to
         df_at_gp['SDSF[%s]'%str(hist_data_ind - FM_time_index)] = SDSF_data
 
     return FM_time_index, AtmData_time_indices, df_at_gp
+'''
