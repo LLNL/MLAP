@@ -99,6 +99,7 @@ def remove_data_around_fire (fire_time_indices, data_files_list):
 '''
 Read Fire data
 '''
+'''
 def read_fire_data (fire_time_indices, max_history_to_consider, history_interval, \
                     data_files_list_all, data_files_location):
     
@@ -124,7 +125,7 @@ def read_fire_data (fire_time_indices, max_history_to_consider, history_interval
         }
     print('=========================================================================')    
     return fire_time_indices, fire_data
-
+'''
 
 # []
 '''
@@ -849,6 +850,7 @@ def create_dataframe_FM_atm_data (data_at_times, \
 '''
 Create DataFrame of FM and Historical Data For a Fire of Interest. Also Extract Time and Grid Info.
 '''
+'''
 def create_dataframe_FM_atm_data_fire (fire_name, fire_time_indices, data_at_times, \
                                        history_interval, \
                                        grid_indices_valid_flat, valid_grid_ind_to_coord):
@@ -955,7 +957,7 @@ def create_dataframe_FM_atm_data_fire (fire_name, fire_time_indices, data_at_tim
     
     print('=========================================================================')
     return df
-
+'''
 
 # []
 '''
