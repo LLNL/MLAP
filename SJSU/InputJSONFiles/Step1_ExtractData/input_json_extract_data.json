@@ -32,7 +32,8 @@
 				"contours":["HGT", "HGT_UPD", "U10", "V10", "FMC_1hr", "FMC_10hr", "FMC_100hr", "T2", "RH", "PRECIP", "PSFC", "SWDOWN"],
 				"pdfs":["HGT", "Q2", "U10", "V10", "FMC_1hr", "FMC_10hr", "FMC_100hr", "T2", "RH", "PRECIP", "PSFC", "SWDOWN"],
 				"contours_with_cb":["FMC_1hr", "FMC_10hr", "FMC_100hr"],
-				"cont_levels_count":31
+				"cont_levels_count":31,
+				"qoi_cont_range": [0, 0.3]
 			     },
 					 
 	"fire_time_stamps":  {
@@ -41,7 +42,8 @@
 			     },
  		 
 	"clip_data_train_test":         {
-				"x_clip": [100, 301],
-				"y_clip": [100, 301]
+				"x_clip": null,
+				"y_clip": null
+
 			     }
 }

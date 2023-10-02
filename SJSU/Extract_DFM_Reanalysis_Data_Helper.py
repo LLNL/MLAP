@@ -457,7 +457,7 @@ def plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_l
 '''
 Plot Contours of Data at a TimeStamp
 '''
-def plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_plot, extracted_data_loc, grid_indices_valid, cont_levels_count, masked = True, qoi_cont_range = None):
+def plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_plot, extracted_data_loc, grid_indices_valid, cont_levels_count, qoi_cont_range, masked = True):
     cmap_name = 'hot'
     masked_string = 'UnMasked' 
     if qoi_cont_range:

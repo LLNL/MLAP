@@ -3,7 +3,7 @@
 
 # ## Conver this notebook to executable python script using:
 
-# In[ ]:
+# In[1]:
 
 
 #jupyter nbconvert --to python Extract_DFM_Reanalysis_Data.ipynb
@@ -13,7 +13,7 @@
 
 # ## Standard Packages
 
-# In[1]:
+# In[2]:
 
 
 import os
@@ -36,7 +36,7 @@ from timeit import default_timer as timer
 
 # ## User-Defined Functions
 
-# In[2]:
+# In[3]:
 
 
 from Extract_DFM_Reanalysis_Data_Helper import *
@@ -44,7 +44,7 @@ from Extract_DFM_Reanalysis_Data_Helper import *
 
 # # Global Start Time and Memory
 
-# In[3]:
+# In[4]:
 
 
 global_start_time = timer()
@@ -56,7 +56,7 @@ global_initial_memory = process.memory_info().rss
 
 # ### Input file name when using jupyter notebook
 
-# In[4]:
+# In[5]:
 
 
 input_json_file = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_Extracted/InputJsonFiles/input_json_extract_data_000.json'
@@ -64,7 +64,7 @@ input_json_file = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_
 
 # ### Input file name when using python script on command line
 
-# In[5]:
+# In[6]:
 
 
 #input_json_file = sys.argv[1]
@@ -72,20 +72,20 @@ input_json_file = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_
 
 # ### Load the Input JSON File
 
-# In[75]:
+# In[7]:
 
 
 print('Loading input from JSON file: \n {}'.format(input_json_file))
 
 
-# In[6]:
+# In[8]:
 
 
 with open(input_json_file) as input_json_file_handle:
     input_json_data = json.load(input_json_file_handle)
 
 
-# In[7]:
+# In[9]:
 
 
 #input_json_data
@@ -95,7 +95,7 @@ with open(input_json_file) as input_json_file_handle:
 
 # ## DataSet Defintion
 
-# In[8]:
+# In[10]:
 
 
 # The current data set params
@@ -112,7 +112,7 @@ history_interval        = data_set_defn['history_interval']
 
 # ### Nevada Data
 
-# In[9]:
+# In[11]:
 
 
 nevada_data = input_json_data['nevada_data']
@@ -123,7 +123,7 @@ j_anchor, i_anchor = nevada_data['j_anchor'], nevada_data['i_anchor']
 
 # ### Remove/Extract Fire Data
 
-# In[10]:
+# In[12]:
 
 
 fire_flags = input_json_data['fire_flags']
@@ -131,19 +131,19 @@ remove_fire_data_from_train_test = fire_flags['remove_fire_data_from_train_test'
 extract_fire_data = fire_flags['extract_fire_data']
 
 
-# ### Clip Data
+# ### Clip Data for Train/Test
 
-# In[11]:
+# In[13]:
 
 
-clip_data = input_json_data['clip_data']
-x_clip = clip_data['x_clip']
-y_clip = clip_data['y_clip']
+clip_data_train_test = input_json_data['clip_data_train_test']
+x_clip_train_test = clip_data_train_test['x_clip']
+y_clip_train_test = clip_data_train_test['y_clip']
 
 
 # ## Paths and File Names
 
-# In[12]:
+# In[14]:
 
 
 paths = input_json_data['paths']
@@ -151,7 +151,7 @@ paths = input_json_data['paths']
 
 # #### Global
 
-# In[13]:
+# In[15]:
 
 
 # WRF data set location and the extracted data set location
@@ -161,7 +161,7 @@ extracted_data_base_loc = paths['extracted_data_base_loc']
 
 # #### DataSet Specific (Train and Test)
 
-# In[14]:
+# In[16]:
 
 
 data_set_name = 'data_train_test_extracted_%03d'%(data_set_count)
@@ -177,7 +177,7 @@ tab_data_file_name = '{}_tab_data.csv'.format(data_set_name)
 
 # #### DataSet Specific (Fire)
 
-# In[15]:
+# In[17]:
 
 
 fire_data_set_name = 'data_fire_extracted_%03d'%(data_set_count)
@@ -190,7 +190,7 @@ fire_data_file_name = '{}.pkl'.format(fire_data_set_name)
 
 # ## Relevant Fire TimeStamps
 
-# In[16]:
+# In[18]:
 
 
 fire_time_stamps = input_json_data['fire_time_stamps']
@@ -198,7 +198,7 @@ fire_time_stamps = input_json_data['fire_time_stamps']
 
 # # Generate seed for the random number generator
 
-# In[17]:
+# In[19]:
 
 
 seed = generate_seed()
@@ -207,7 +207,7 @@ random_state = init_random_generator(seed)
 
 # # File Names
 
-# In[18]:
+# In[20]:
 
 
 module_start_time = timer()
@@ -225,7 +225,7 @@ print('Module "get_data_file_names" computing time: {:.3f} s'.format(module_end_
 
 # ## Get Indices for Fire Time Stamps
 
-# In[19]:
+# In[21]:
 
 
 if remove_fire_data_from_train_test or extract_fire_data:
@@ -241,7 +241,7 @@ if remove_fire_data_from_train_test or extract_fire_data:
 
 # ## Remove the Files with Indices for Fire Time Stamps
 
-# In[20]:
+# In[22]:
 
 
 if remove_fire_data_from_train_test:
@@ -255,7 +255,7 @@ if remove_fire_data_from_train_test:
     print('Module "remove_data_around_fire" computing time: {:.3f} s'.format(module_end_time - module_start_time))
 
 
-# In[21]:
+# In[23]:
 
 
 #len(data_files_list)
@@ -263,7 +263,7 @@ if remove_fire_data_from_train_test:
 
 # # Deal with just first 100 files to check for correctness of script. Be sure to undo this
 
-# In[22]:
+# In[24]:
 
 
 #data_files_list = data_files_list[0:30]
@@ -271,12 +271,12 @@ if remove_fire_data_from_train_test:
 
 # # Downsample Files
 
-# In[23]:
+# In[25]:
 
 
 module_start_time = timer()
 module_initial_memory = process.memory_info().rss
-sampled_file_indices, sampled_data_files = downsample_data_files (data_files_list, percent_files_to_use, max_history_to_consider, random_state)
+sampled_file_indices, sampled_data_files = downsample_data_files (                                        data_files_list, percent_files_to_use,                                         max_history_to_consider, random_state)
 module_final_memory = process.memory_info().rss
 module_end_time = timer()
 module_memory_consumed = module_final_memory - module_initial_memory
@@ -286,12 +286,12 @@ print('Module "downsample_data_files" computing time: {:.3f} s'.format(module_en
 
 # # Get History File Indices
 
-# In[24]:
+# In[26]:
 
 
 module_start_time = timer()
 module_initial_memory = process.memory_info().rss
-history_file_indices = get_history_file_indices (sampled_file_indices, max_history_to_consider, history_interval)
+history_file_indices = get_history_file_indices (sampled_file_indices,                                                  max_history_to_consider, history_interval)
 module_final_memory = process.memory_info().rss
 module_end_time = timer()
 module_memory_consumed = module_final_memory - module_initial_memory
@@ -301,7 +301,7 @@ print('Module "get_history_file_indices" computing time: {:.3f} s'.format(module
 
 # # Create timestamps and datetime of downsampled data files
 
-# In[25]:
+# In[27]:
 
 
 module_start_time = timer()
@@ -316,12 +316,12 @@ print('Module "get_datetime_for_data_files" computing time: {:.3f} s'.format(mod
 
 # # Create DataFrame using sampled file indices, filenames, timestamps, and datetime
 
-# In[26]:
+# In[28]:
 
 
 module_start_time = timer()
 module_initial_memory = process.memory_info().rss
-df_sampled_time = create_df_sampled_time (sampled_file_indices, sampled_data_files, sampled_time_stamps, sampled_datetime, history_file_indices)
+df_sampled_time = create_df_sampled_time (sampled_file_indices, sampled_data_files,                                           sampled_time_stamps, sampled_datetime,                                           history_file_indices)
 module_final_memory = process.memory_info().rss
 module_end_time = timer()
 module_memory_consumed = module_final_memory - module_initial_memory
@@ -329,13 +329,13 @@ print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*10
 print('Module "create_df_sampled_time" computing time: {:.3f} s'.format(module_end_time - module_start_time))
 
 
-# In[27]:
+# In[29]:
 
 
 #df_sampled_time[df_sampled_time['ref_time_indices'] < max_history_to_consider+10]
 
 
-# In[28]:
+# In[30]:
 
 
 df_sampled_time.head(30)
@@ -343,7 +343,7 @@ df_sampled_time.head(30)
 
 # # Plot Sampled Datetime
 
-# In[29]:
+# In[31]:
 
 
 module_start_time = timer()
@@ -360,12 +360,13 @@ print('Module "plot_sampled_datetime" computing time: {:.3f} s'.format(module_en
 
 # ## Read the Data in a Specified or Randomly Selected File
 
-# In[30]:
+# In[32]:
 
 
-prescribe_file = True
+data_in_a_file = input_json_data['data_in_a_file']
+prescribe_file = data_in_a_file['prescribe_file_flag']
 if prescribe_file:
-    data_file_to_read = 'wrf_2018-11-07_16.nc'
+    data_file_to_read = data_in_a_file['data_file_to_read']
     timestamp_to_read = data_file_to_read.split('_')[1] + '_' +                         data_file_to_read.split('_')[2].split('.')[0]
 else:
     random_ind_of_downsampled_files = random.choice(range(len(sampled_file_indices)))
@@ -374,18 +375,18 @@ else:
     timestamp_to_read = sampled_time_stamps[random_ind_of_downsampled_files]
 
 
-# In[31]:
+# In[33]:
 
 
 data_file_to_read, timestamp_to_read
 
 
-# In[32]:
+# In[34]:
 
 
 module_start_time = timer()
 module_initial_memory = process.memory_info().rss
-data_at_timestamp = read_single_data_file (data_files_location, data_file_to_read, timestamp_to_read)
+data_at_timestamp = read_single_data_file (data_files_location, data_file_to_read,                                            timestamp_to_read)
 module_final_memory = process.memory_info().rss
 module_end_time = timer()
 module_memory_consumed = module_final_memory - module_initial_memory
@@ -395,7 +396,7 @@ print('Module "read_single_data_file" computing time: {:.3f} s'.format(module_en
 
 # ## Processing Elevation Data into Pos, Neg, and Zero
 
-# In[33]:
+# In[35]:
 
 
 module_start_time = timer()
@@ -412,12 +413,12 @@ print('Module "process_elevation_at_timestamp" computing time: {:.3f} s'.format(
 
 # ## Get Grid Indices
 
-# In[34]:
+# In[36]:
 
 
 module_start_time = timer()
 module_initial_memory = process.memory_info().rss
-grid_indices_all, grid_indices_valid, grid_indices_all_flat, grid_indices_valid_flat =                         get_grid_indices_all (data_files_location, sampled_file_indices,                                               sampled_data_files, sampled_time_stamps,                                               x_clip, y_clip,                                               j_nevada, i_nevada, j_anchor, i_anchor, remove_nevada)
+grid_indices_all, grid_indices_valid, grid_indices_all_flat, grid_indices_valid_flat =                         get_grid_indices_all (data_files_location, sampled_file_indices,                                               sampled_data_files, sampled_time_stamps,                                               x_clip_train_test, y_clip_train_test,                                               j_nevada, i_nevada, j_anchor, i_anchor,                                               remove_nevada)
 
 module_final_memory = process.memory_info().rss
 module_end_time = timer()
@@ -428,7 +429,7 @@ print('Module "get_grid_indices_all" computing time: {:.3f} s'.format(module_end
 
 # ## Reconstruct Grid Indices
 
-# In[35]:
+# In[37]:
 
 
 module_start_time = timer()
@@ -443,7 +444,7 @@ print('Module "reconstruct_valid_grid_indices" computing time: {:.3f} s'.format(
 
 # ## Plot Grid Indices
 
-# In[36]:
+# In[38]:
 
 
 module_start_time = timer()
@@ -456,7 +457,7 @@ print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*10
 print('Module "plot_contours_of_indices" computing time: {:.3f} s'.format(module_end_time - module_start_time))
 
 
-# In[37]:
+# In[39]:
 
 
 #len(grid_indices_valid_flat)
@@ -466,20 +467,20 @@ print('Module "plot_contours_of_indices" computing time: {:.3f} s'.format(module
 
 # ## Plot the Contours of QoIs for the Data Just Read Above
 
-# In[38]:
+# In[40]:
 
 
-qoi_to_plot = ['HGT', 'HGT_UPD', 'U10', 'V10', 'FMC_1hr', 'FMC_10hr', 'FMC_100hr', 'T2', 'RH', 'PRECIP', 'PSFC', 'SWDOWN']
+qoi_to_plot = input_json_data['qoi_to_plot']['contours']
 
 
 # ### Unmasked Data
 
-# In[39]:
+# In[41]:
 
 
 module_start_time = timer()
 module_initial_memory = process.memory_info().rss
-plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc, grid_indices_valid, masked = False)
+plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc,                             grid_indices_valid, masked = False)
 module_final_memory = process.memory_info().rss
 module_end_time = timer()
 module_memory_consumed = module_final_memory - module_initial_memory
@@ -489,12 +490,12 @@ print('Module "plot_contours_at_timestamp" computing time: {:.3f} s'.format(modu
 
 # ### Masked Data
 
-# In[40]:
+# In[42]:
 
 
 module_start_time = timer()
 module_initial_memory = process.memory_info().rss
-plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc, grid_indices_valid, masked = True)
+plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc,                             grid_indices_valid, masked = True)
 module_final_memory = process.memory_info().rss
 module_end_time = timer()
 module_memory_consumed = module_final_memory - module_initial_memory
@@ -504,13 +505,13 @@ print('Module "plot_contours_at_timestamp" computing time: {:.3f} s'.format(modu
 
 # ## Plot the PDFs of QoIs for the Data Just Read Above
 
-# In[41]:
+# In[43]:
 
 
-qoi_to_plot = ['HGT', 'Q2', 'U10', 'V10', 'FMC_1hr', 'FMC_10hr', 'FMC_100hr', 'T2', 'RH', 'PRECIP', 'PSFC', 'SWDOWN']
+qoi_to_plot = input_json_data['qoi_to_plot']['pdfs']
 
 
-# In[42]:
+# In[44]:
 
 
 module_start_time = timer()
@@ -525,19 +526,20 @@ print('Module "plot_pdf_at_timestamp" computing time: {:.3f} s'.format(module_en
 
 # ## Plot the Contours of QoIs With Colorbars
 
-# In[43]:
+# In[45]:
 
 
-qoi_to_plot = qoi_to_plot = ['FMC_1hr', 'FMC_10hr', 'FMC_100hr']
-cont_levels_count = 31
+qoi_to_plot = input_json_data['qoi_to_plot']['contours_with_cb']
+cont_levels_count = input_json_data['qoi_to_plot']['cont_levels_count']
+qoi_cont_range = input_json_data['qoi_to_plot']['qoi_cont_range']
 
 
-# In[44]:
+# In[46]:
 
 
 module_start_time = timer()
 module_initial_memory = process.memory_info().rss
-plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_plot, extracted_data_loc, grid_indices_valid, cont_levels_count, masked = True, qoi_cont_range = [0, 0.3])
+plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_plot,                              extracted_data_loc, grid_indices_valid,                              cont_levels_count, qoi_cont_range, masked = True)
 #plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_plot, extracted_data_loc, grid_indices_valid, cont_levels_count, masked = True)
 module_final_memory = process.memory_info().rss
 module_end_time = timer()
@@ -550,7 +552,7 @@ print('Module "plot_contours_at_timestamp2" computing time: {:.3f} s'.format(mod
 
 # ## Sample Grid Indices
 
-# In[45]:
+# In[47]:
 
 
 module_start_time = timer()
@@ -565,7 +567,7 @@ print('Module "sample_grid_indices" computing time: {:.3f} s'.format(module_end_
 
 # ## Plot Sampled Grid Indices
 
-# In[46]:
+# In[48]:
 
 
 module_start_time = timer()
@@ -580,12 +582,12 @@ print('Module "plot_sampled_grid_points" computing time: {:.3f} s'.format(module
 
 # ## Plot Sampled Grid Indices in 3D
 
-# In[47]:
+# In[49]:
 
 
 module_start_time = timer()
 module_initial_memory = process.memory_info().rss
-plot_sampled_grid_points_3D (j_indices_selected, i_indices_selected, extracted_data_loc, (6, 6))
+plot_sampled_grid_points_3D (j_indices_selected, i_indices_selected,                              extracted_data_loc, (6, 6)) #fig_size hard-coded
 module_final_memory = process.memory_info().rss
 module_end_time = timer()
 module_memory_consumed = module_final_memory - module_initial_memory
@@ -595,12 +597,12 @@ print('Module "plot_sampled_grid_points_3D" computing time: {:.3f} s'.format(mod
 
 # # Create a Dict of Time Indices and Grid Indices
 
-# In[48]:
+# In[50]:
 
 
 module_start_time = timer()
 module_initial_memory = process.memory_info().rss
-time_grid_indices_list_dict, time_grid_indices_list_count, time_grid_indices_set_dict, time_grid_indices_set_count =     create_time_grid_indices_map (sampled_file_indices, history_file_indices, grid_indices_selected)
+time_grid_indices_list_dict, time_grid_indices_list_count, time_grid_indices_set_dict, time_grid_indices_set_count =     create_time_grid_indices_map (sampled_file_indices, history_file_indices,                                   grid_indices_selected)
 module_final_memory = process.memory_info().rss
 module_end_time = timer()
 module_memory_consumed = module_final_memory - module_initial_memory
@@ -608,19 +610,19 @@ print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*10
 print('Module "create_time_grid_indices_map" computing time: {:.3f} s'.format(module_end_time - module_start_time))
 
 
-# In[49]:
+# In[51]:
 
 
 #len(time_grid_indices_list_dict.keys())
 
 
-# In[50]:
+# In[52]:
 
 
 #len(time_grid_indices_set_dict.keys())
 
 
-# In[51]:
+# In[53]:
 
 
 #time_grid_indices_list_dict
@@ -633,42 +635,51 @@ print('Module "create_time_grid_indices_map" computing time: {:.3f} s'.format(mo
 
 # ## Read Data at All Times
 
-# In[52]:
+# In[54]:
 
 
+'''
 module_start_time = timer()
 module_initial_memory = process.memory_info().rss
 
 file_indices_to_read = list(time_grid_indices_list_dict.keys())
-data_files_to_read, time_stamps_to_read, file_indices_data_dict =                 read_data_all_possible_times (file_indices_to_read, data_files_list,                                              data_files_location)
+data_files_to_read, time_stamps_to_read, file_indices_data_dict = \
+                read_data_all_possible_times (file_indices_to_read, data_files_list, \
+                                             data_files_location)
 
 module_final_memory = process.memory_info().rss
 module_end_time = timer()
 module_memory_consumed = module_final_memory - module_initial_memory
 print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
 print('Module "read_data_all_possible_times" computing time: {:.3f} s'.format(module_end_time - module_start_time))
+'''
 
 
 # ## Save Data In a Pickle File
 
-# In[53]:
+# In[55]:
 
 
+'''
 module_start_time = timer()
 module_initial_memory = process.memory_info().rss
-save_data_read_at_all_possible_times (file_indices_to_read, data_files_to_read,                                       time_stamps_to_read, file_indices_data_dict,                                       extracted_data_loc, collection_of_read_data_files)
+save_data_read_at_all_possible_times (file_indices_to_read, data_files_to_read, \
+                                      time_stamps_to_read, file_indices_data_dict, \
+                                      extracted_data_loc, collection_of_read_data_files)
 module_final_memory = process.memory_info().rss
 module_end_time = timer()
 module_memory_consumed = module_final_memory - module_initial_memory
 print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
 print('Module "save_data_read_at_all_possible_times" computing time: {:.3f} s'.format(module_end_time - module_start_time))
+'''
 
 
 # ## Delete Data No Longer Needed To Free Memory
 
-# In[54]:
+# In[56]:
 
 
+'''
 global_final_memory = process.memory_info().rss
 global_memory_consumed = global_final_memory - global_initial_memory
 print('Total memory consumed so far: {:.3f} MB'.format(global_memory_consumed/(1024*1024)))
@@ -679,49 +690,31 @@ del file_indices_data_dict
 global_final_memory = process.memory_info().rss
 global_memory_consumed = global_final_memory - global_initial_memory
 print('Total memory consumed so far: {:.3f} MB'.format(global_memory_consumed/(1024*1024)))
+'''
 
 
 # ## Read Data at All Possible Times Saved in a Pickle File
 
-# In[55]:
+# In[57]:
 
 
+'''
 module_start_time = timer()
 module_initial_memory = process.memory_info().rss
-collection_of_read_data = read_data_from_pickle_all_possible_times (extracted_data_loc,                                                               collection_of_read_data_files)
+collection_of_read_data = read_data_from_pickle_all_possible_times (extracted_data_loc, \
+                                                              collection_of_read_data_files)
 module_final_memory = process.memory_info().rss
 module_end_time = timer()
 module_memory_consumed = module_final_memory - module_initial_memory
 print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
 print('Module "read_data_from_pickle_all_possible_times" computing time: {:.3f} s'.format(module_end_time - module_start_time))
-
-
-# In[56]:
-
-
-#collection_of_read_data['file_indices_data_dict'].keys()
-
-
-# ## Plot Data in a Few Files
-
-# In[57]:
-
-
-qoi_to_plot = ['HGT', 'HGT_UPD', 'U10', 'V10', 'FMC_1hr', 'FMC_10hr', 'FMC_100hr', 'T2', 'RH', 'PRECIP', 'PSFC', 'SWDOWN']
+'''
 
 
 # In[58]:
 
 
-'''
-num_files = 1
-file_indices_data_dict = collection_of_read_data['file_indices_data_dict']
-file_indices_to_read = list(file_indices_data_dict.keys())
-for file_index_to_read in file_indices_to_read[0:num_files]:
-    data_at_timestamp = file_indices_data_dict[file_index_to_read]
-    plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc, \
-                                grid_indices_valid, masked = True)
-'''
+#collection_of_read_data['file_indices_data_dict'].keys()
 
 
 # # Extract and Save Data at The Sampled Time and Grid Points
@@ -731,21 +724,29 @@ for file_index_to_read in file_indices_to_read[0:num_files]:
 # In[59]:
 
 
+'''
 data_at_times = collection_of_read_data['file_indices_data_dict']
 #data_at_times.keys()
+'''
 
 
 # In[60]:
 
 
+'''
 module_start_time = timer()
 module_initial_memory = process.memory_info().rss
-df = create_dataframe_FM_atm_data (data_at_times,                                    sampled_file_indices, history_file_indices,                                    sampled_time_stamps, history_interval,                                    grid_indices_selected,                                    j_indices_selected, i_indices_selected)
+df = create_dataframe_FM_atm_data (data_at_times, \
+                                   sampled_file_indices, history_file_indices, \
+                                   sampled_time_stamps, history_interval, \
+                                   grid_indices_selected, \
+                                   j_indices_selected, i_indices_selected)
 module_final_memory = process.memory_info().rss
 module_end_time = timer()
 module_memory_consumed = module_final_memory - module_initial_memory
 print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
 print('Module "create_dataframe_FM_atm_data" computing time: {:.3f} s'.format(module_end_time - module_start_time))
+'''
 
 
 # In[61]:
@@ -759,7 +760,9 @@ print('Module "create_dataframe_FM_atm_data" computing time: {:.3f} s'.format(mo
 # In[62]:
 
 
+'''
 df.to_pickle(os.path.join(extracted_data_loc, extracted_data_file_name))
+'''
 
 
 # ## Load and Test The Extracted Data Saved in Pickle File
@@ -767,8 +770,10 @@ df.to_pickle(os.path.join(extracted_data_loc, extracted_data_file_name))
 # In[63]:
 
 
+'''
 df_from_pickle = pd.read_pickle(os.path.join(extracted_data_loc, extracted_data_file_name))
 df_from_pickle.head(5)
+'''
 
 
 # # Save Other Relevant Info in A CSV File
@@ -776,6 +781,7 @@ df_from_pickle.head(5)
 # In[64]:
 
 
+'''
 data_for_csv = { 'max_history_to_consider':    [max_history_to_consider],
                  'history_interval':           [history_interval],
                  'num_hist_indices':           [len(history_file_indices[0])],
@@ -793,12 +799,15 @@ data_for_csv = { 'max_history_to_consider':    [max_history_to_consider],
 }
 tabulated_data = pd.DataFrame(data_for_csv)
 tabulated_data.to_csv(os.path.join(extracted_data_loc, tab_data_file_name), index = False)
+'''
 
 
 # In[65]:
 
 
+'''
 tabulated_data
+'''
 
 
 # # Extract Fire Data
@@ -808,17 +817,21 @@ tabulated_data
 # In[66]:
 
 
+'''
 if extract_fire_data:
     module_start_time = timer()
     module_initial_memory = process.memory_info().rss
 
-    fire_time_indices, fire_data = read_fire_data (                                fire_time_indices, max_history_to_consider, history_interval,                                 data_files_list_all, data_files_location)
+    fire_time_indices, fire_data = read_fire_data (\
+                                fire_time_indices, max_history_to_consider, history_interval, \
+                                data_files_list_all, data_files_location)
 
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
     module_memory_consumed = module_final_memory - module_initial_memory
     print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
     print('Module "read_fire_data" computing time: {:.3f} s'.format(module_end_time - module_start_time))
+'''
 
 
 # ## Create DataFrame for Fire Data
@@ -826,6 +839,7 @@ if extract_fire_data:
 # In[67]:
 
 
+'''
 if extract_fire_data:
     module_start_time = timer()
     module_initial_memory = process.memory_info().rss
@@ -833,7 +847,9 @@ if extract_fire_data:
 
     for fire_name in fire_time_indices.keys():
         data_at_times = fire_data[fire_name]['fire_file_indices_data_dict']
-        df_fire = create_dataframe_FM_atm_data_fire (fire_name, fire_time_indices, data_at_times,                                                      history_interval,                                                      grid_indices_valid_flat, valid_grid_ind_to_coord)
+        df_fire = create_dataframe_FM_atm_data_fire (fire_name, fire_time_indices, data_at_times, \
+                                                     history_interval, \
+                                                     grid_indices_valid_flat, valid_grid_ind_to_coord)
         fire_data_extracted[fire_name] = df_fire
 
     module_final_memory = process.memory_info().rss
@@ -841,6 +857,7 @@ if extract_fire_data:
     module_memory_consumed = module_final_memory - module_initial_memory
     print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
     print('Module "create_dataframe_FM_atm_data_fire" computing time: {:.3f} s'.format(module_end_time - module_start_time))
+'''
 
 
 # ## Save DataFrame for Fire Data
@@ -848,11 +865,13 @@ if extract_fire_data:
 # In[68]:
 
 
+'''
 if extract_fire_data:
     fire_data_file_handle = open(os.path.join(fire_data_loc, fire_data_file_name), 'wb')
     pickle.dump(fire_data_extracted, fire_data_file_handle)
     fire_data_file_handle.close()
     print('Wrote fire data in "{}" at "{}"'.format(fire_data_file_name, fire_data_loc))
+'''
 
 
 # ## Load and Test The Extracted Fire Data Saved in Pickle File
@@ -860,18 +879,22 @@ if extract_fire_data:
 # In[69]:
 
 
+'''
 if extract_fire_data:
     fire_data_file_handle = open(os.path.join(fire_data_loc, fire_data_file_name), 'rb')
     fire_data_pickled = pickle.load(fire_data_file_handle)
     fire_data_file_handle.close()
     print('Read fire data from "{}" at "{}"'.format(fire_data_file_name, fire_data_loc))
+'''
 
 
 # In[70]:
 
 
+'''
 if extract_fire_data:
     fire_data_pickled['Woosley'].head(5)
+'''
 
 
 # ## Delete Fire Data No Longer Needed
@@ -879,8 +902,10 @@ if extract_fire_data:
 # In[71]:
 
 
+'''
 if extract_fire_data:
     del fire_data, data_at_times, fire_data_extracted
+'''
 
 
 # # Global End Time and Memory
