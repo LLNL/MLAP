@@ -615,44 +615,37 @@ def plot_sampled_grid_points_3D (j_indices_selected, i_indices_selected, extract
 
 # []
 '''
-Create a maps of time indices and grid indices at that time where we need data
+Create a map of time indices and grid indices at that time where we need data
 '''
 def create_time_grid_indices_map (sampled_file_indices, history_file_indices, grid_indices_selected):
-    time_grid_indices_list_dict = {}
-    time_grid_indices_list_count = {}
-    time_grid_indices_set_dict = {}
-    time_grid_indices_set_count = {}
+    time_grid_indices_list_dict = dict()
+    time_grid_indices_list_count = dict()
+    time_grid_indices_set_dict = dict()
+    time_grid_indices_set_count = dict()
     
     for sampled_time_count, sampled_time_ind in enumerate(sampled_file_indices):
-        
+
         grid_indices_sampled_at_current_time = grid_indices_selected[sampled_time_count]
 
-        if sampled_time_ind not in time_grid_indices_list_dict.keys():
-            time_grid_indices_list_dict[sampled_time_ind] = \
-                grid_indices_sampled_at_current_time
-        else:
-            time_grid_indices_list_dict[sampled_time_ind]= \
-                np.hstack((time_grid_indices_list_dict[sampled_time_ind], \
+        time_grid_indices_list_dict[sampled_time_ind] = \
+                np.hstack((time_grid_indices_list_dict.get(sampled_time_ind, \
+                                                           np.empty((0,), dtype = int)), \
                            grid_indices_sampled_at_current_time))
 
         for history_time_index in history_file_indices[sampled_time_count]:
-            if history_time_index not in time_grid_indices_list_dict.keys():
-                time_grid_indices_list_dict[history_time_index] = \
-                    grid_indices_sampled_at_current_time
-            else:
                 time_grid_indices_list_dict[history_time_index] =\
-                    np.hstack((time_grid_indices_list_dict[history_time_index], \
+                    np.hstack((time_grid_indices_list_dict.get(history_time_index,\
+                                                               np.empty((0,), dtype = int)), \
                                grid_indices_sampled_at_current_time))
-        
-    
+
     # Derive other indices
-    for sampled_time_index in time_grid_indices_list_dict.keys():
-        time_grid_indices_list_count[sampled_time_index] = \
-            len(time_grid_indices_list_dict[sampled_time_index])
-        time_grid_indices_set_dict[sampled_time_index] = \
-            set(time_grid_indices_list_dict[sampled_time_index])
-        time_grid_indices_set_count[sampled_time_index] = \
-            len(time_grid_indices_set_dict[sampled_time_index])
+    for chosen_time_index in time_grid_indices_list_dict.keys():
+        time_grid_indices_list_count[chosen_time_index] = \
+            len(time_grid_indices_list_dict[chosen_time_index])
+        time_grid_indices_set_dict[chosen_time_index] = \
+            set(time_grid_indices_list_dict[chosen_time_index])
+        time_grid_indices_set_count[chosen_time_index] = \
+            len(time_grid_indices_set_dict[chosen_time_index])
 
     return time_grid_indices_list_dict, time_grid_indices_list_count, time_grid_indices_set_dict, time_grid_indices_set_count
 

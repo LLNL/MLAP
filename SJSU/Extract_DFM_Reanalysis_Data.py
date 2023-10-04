@@ -261,7 +261,7 @@ if remove_fire_data_from_train_test:
 #len(data_files_list)
 
 
-# # Deal with just first 100 files to check for correctness of script. Be sure to undo this
+# # Deal with just first few files to check for correctness of script. Be sure to undo this
 
 # In[24]:
 
@@ -614,12 +614,14 @@ print('Module "create_time_grid_indices_map" computing time: {:.3f} s'.format(mo
 
 
 #len(time_grid_indices_list_dict.keys())
+#len(time_grid_indices_set_dict.keys())
 
 
 # In[52]:
 
 
-#len(time_grid_indices_set_dict.keys())
+#sampled_file_indices
+#grid_indices_selected
 
 
 # In[53]:
@@ -630,6 +632,8 @@ print('Module "create_time_grid_indices_map" computing time: {:.3f} s'.format(mo
 #time_grid_indices_set_dict
 #time_grid_indices_set_count
 
+
+# # Read Data at Sampled Time and Grid
 
 # # Read Files At All Possible Time Indices (Ref + History)
 
