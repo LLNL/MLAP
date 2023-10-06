@@ -38,13 +38,13 @@
 				"qoi_cont_range": [0, 0.3]
 			     },
 	"plot_options":      {
-				"plot_sampled_datetime": true,
-				"plot_contours_of_indices": true,
-				"plot_contours_of_qoi": true,
-				"plot_pdfs_of_qoi": true,
-				"plot_fm_contours_with_cb": true,
-				"plot_sampled_grid_indices_2d": true,
-				"plot_sampled_grid_indices_3d": true
+				"plot_sampled_datetime": false,
+				"plot_contours_of_indices": false,
+				"plot_contours_of_qoi": false,
+				"plot_pdfs_of_qoi": false,
+				"plot_fm_contours_with_cb": false,
+				"plot_sampled_grid_indices_2d": false,
+				"plot_sampled_grid_indices_3d": false
 			     },
 	"fire_time_stamps":  {
 				"Woosley": {"Ref": "2018-11-08_22", "Start": "2018-11-01_00", "End": "2018-11-15_00"},
