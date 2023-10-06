@@ -346,14 +346,15 @@ df_sampled_time.head(30)
 # In[31]:
 
 
-module_start_time = timer()
-module_initial_memory = process.memory_info().rss
-plot_sampled_datetime (df_sampled_time, extracted_data_loc)
-module_final_memory = process.memory_info().rss
-module_end_time = timer()
-module_memory_consumed = module_final_memory - module_initial_memory
-print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
-print('Module "plot_sampled_datetime" computing time: {:.3f} s'.format(module_end_time - module_start_time))
+if input_json_data['plot_options']['plot_sampled_datetime']:
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    plot_sampled_datetime (df_sampled_time, extracted_data_loc)
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module "plot_sampled_datetime" computing time: {:.3f} s'.format(module_end_time - module_start_time))
 
 
 # # Read Quantities in a Selected Data File
@@ -447,14 +448,15 @@ print('Module "reconstruct_valid_grid_indices" computing time: {:.3f} s'.format(
 # In[38]:
 
 
-module_start_time = timer()
-module_initial_memory = process.memory_info().rss
-plot_contours_of_indices (data_at_timestamp, grid_indices_all, grid_indices_valid,                           grid_indices_valid_bool, grid_indices_valid_reconst,                           extracted_data_loc)
-module_final_memory = process.memory_info().rss
-module_end_time = timer()
-module_memory_consumed = module_final_memory - module_initial_memory
-print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
-print('Module "plot_contours_of_indices" computing time: {:.3f} s'.format(module_end_time - module_start_time))
+if input_json_data['plot_options']['plot_contours_of_indices']:
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    plot_contours_of_indices (data_at_timestamp, grid_indices_all, grid_indices_valid,                               grid_indices_valid_bool, grid_indices_valid_reconst,                               extracted_data_loc)
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module "plot_contours_of_indices" computing time: {:.3f} s'.format(module_end_time - module_start_time))
 
 
 # In[39]:
@@ -467,92 +469,88 @@ print('Module "plot_contours_of_indices" computing time: {:.3f} s'.format(module
 
 # ## Plot the Contours of QoIs for the Data Just Read Above
 
+# ### Unmasked Data
+
 # In[40]:
 
 
-qoi_to_plot = input_json_data['qoi_to_plot']['contours']
-
-
-# ### Unmasked Data
-
-# In[41]:
-
-
-module_start_time = timer()
-module_initial_memory = process.memory_info().rss
-plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc,                             grid_indices_valid, masked = False)
-module_final_memory = process.memory_info().rss
-module_end_time = timer()
-module_memory_consumed = module_final_memory - module_initial_memory
-print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
-print('Module "plot_contours_at_timestamp" computing time: {:.3f} s'.format(module_end_time - module_start_time))
+if input_json_data['plot_options']['plot_contours_of_qoi']:
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    qoi_to_plot = input_json_data['qoi_to_plot']['contours']
+    plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc,                                 grid_indices_valid, masked = False)
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module "plot_contours_at_timestamp" computing time: {:.3f} s'.format(module_end_time - module_start_time))
 
 
 # ### Masked Data
 
-# In[42]:
+# In[41]:
 
 
-module_start_time = timer()
-module_initial_memory = process.memory_info().rss
-plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc,                             grid_indices_valid, masked = True)
-module_final_memory = process.memory_info().rss
-module_end_time = timer()
-module_memory_consumed = module_final_memory - module_initial_memory
-print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
-print('Module "plot_contours_at_timestamp" computing time: {:.3f} s'.format(module_end_time - module_start_time))
+if input_json_data['plot_options']['plot_contours_of_qoi']:
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    qoi_to_plot = input_json_data['qoi_to_plot']['contours']
+    plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc,                                 grid_indices_valid, masked = True)
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module "plot_contours_at_timestamp" computing time: {:.3f} s'.format(module_end_time - module_start_time))
 
 
 # ## Plot the PDFs of QoIs for the Data Just Read Above
 
+# In[42]:
+
+
+if input_json_data['plot_options']['plot_pdfs_of_qoi']:
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    qoi_to_plot = input_json_data['qoi_to_plot']['pdfs']
+    plot_pdf_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc)
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module "plot_pdf_at_timestamp" computing time: {:.3f} s'.format(module_end_time - module_start_time))
+
+
+# ## Plot the Contours of QoIs With Colorbars
+
 # In[43]:
 
 
-qoi_to_plot = input_json_data['qoi_to_plot']['pdfs']
+if input_json_data['plot_options']['plot_fm_contours_with_cb']:
+    qoi_to_plot = input_json_data['qoi_to_plot']['contours_with_cb']
+    cont_levels_count = input_json_data['qoi_to_plot']['cont_levels_count']
+    qoi_cont_range = input_json_data['qoi_to_plot']['qoi_cont_range']
 
 
 # In[44]:
 
 
-module_start_time = timer()
-module_initial_memory = process.memory_info().rss
-plot_pdf_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc)
-module_final_memory = process.memory_info().rss
-module_end_time = timer()
-module_memory_consumed = module_final_memory - module_initial_memory
-print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
-print('Module "plot_pdf_at_timestamp" computing time: {:.3f} s'.format(module_end_time - module_start_time))
-
-
-# ## Plot the Contours of QoIs With Colorbars
-
-# In[45]:
-
-
-qoi_to_plot = input_json_data['qoi_to_plot']['contours_with_cb']
-cont_levels_count = input_json_data['qoi_to_plot']['cont_levels_count']
-qoi_cont_range = input_json_data['qoi_to_plot']['qoi_cont_range']
-
-
-# In[46]:
-
-
-module_start_time = timer()
-module_initial_memory = process.memory_info().rss
-plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_plot,                              extracted_data_loc, grid_indices_valid,                              cont_levels_count, qoi_cont_range, masked = True)
-#plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_plot, extracted_data_loc, grid_indices_valid, cont_levels_count, masked = True)
-module_final_memory = process.memory_info().rss
-module_end_time = timer()
-module_memory_consumed = module_final_memory - module_initial_memory
-print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
-print('Module "plot_contours_at_timestamp2" computing time: {:.3f} s'.format(module_end_time - module_start_time))
+if input_json_data['plot_options']['plot_fm_contours_with_cb']:
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_plot,                                  extracted_data_loc, grid_indices_valid,                                  cont_levels_count, qoi_cont_range, masked = True)
+    #plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_plot, extracted_data_loc, grid_indices_valid, cont_levels_count, masked = True)
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module "plot_contours_at_timestamp2" computing time: {:.3f} s'.format(module_end_time - module_start_time))
 
 
 # # Sample and Plot Grid Indices for Each Sampled Ref Time
 
 # ## Sample Grid Indices
 
-# In[47]:
+# In[45]:
 
 
 module_start_time = timer()
@@ -567,37 +565,39 @@ print('Module "sample_grid_indices" computing time: {:.3f} s'.format(module_end_
 
 # ## Plot Sampled Grid Indices
 
-# In[48]:
+# In[46]:
 
 
-module_start_time = timer()
-module_initial_memory = process.memory_info().rss
-plot_sampled_grid_points (grid_indices_selected, extracted_data_loc)
-module_final_memory = process.memory_info().rss
-module_end_time = timer()
-module_memory_consumed = module_final_memory - module_initial_memory
-print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
-print('Module "plot_sampled_grid_points" computing time: {:.3f} s'.format(module_end_time - module_start_time))
+if input_json_data['plot_options']['plot_sampled_grid_indices_2d']:
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    plot_sampled_grid_points (grid_indices_selected, extracted_data_loc)
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module "plot_sampled_grid_points" computing time: {:.3f} s'.format(module_end_time - module_start_time))
 
 
 # ## Plot Sampled Grid Indices in 3D
 
-# In[49]:
+# In[47]:
 
 
-module_start_time = timer()
-module_initial_memory = process.memory_info().rss
-plot_sampled_grid_points_3D (j_indices_selected, i_indices_selected,                              extracted_data_loc, (6, 6)) #fig_size hard-coded
-module_final_memory = process.memory_info().rss
-module_end_time = timer()
-module_memory_consumed = module_final_memory - module_initial_memory
-print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
-print('Module "plot_sampled_grid_points_3D" computing time: {:.3f} s'.format(module_end_time - module_start_time))
+if input_json_data['plot_options']['plot_sampled_grid_indices_3d']:
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    plot_sampled_grid_points_3D (j_indices_selected, i_indices_selected,                                  extracted_data_loc, (6, 6)) #fig_size hard-coded
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module "plot_sampled_grid_points_3D" computing time: {:.3f} s'.format(module_end_time - module_start_time))
 
 
 # # Create a Dict of Time Indices and Grid Indices
 
-# In[50]:
+# In[48]:
 
 
 module_start_time = timer()
@@ -610,21 +610,21 @@ print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*10
 print('Module "create_time_grid_indices_map" computing time: {:.3f} s'.format(module_end_time - module_start_time))
 
 
-# In[51]:
+# In[49]:
 
 
 #len(time_grid_indices_list_dict.keys())
 #len(time_grid_indices_set_dict.keys())
 
 
-# In[52]:
+# In[50]:
 
 
 #sampled_file_indices
 grid_indices_selected.shape
 
 
-# In[53]:
+# In[51]:
 
 
 #time_grid_indices_list_dict
@@ -635,7 +635,7 @@ grid_indices_selected.shape
 
 # # Read Data at Sampled Time and Grid Indices
 
-# In[54]:
+# In[52]:
 
 
 features_labels = input_json_data['features_labels']
@@ -644,7 +644,7 @@ labels_to_read = features_labels['labels_to_read']
 labels_ind_in_nc_file = features_labels['labels_ind_in_nc_file']
 
 
-# In[55]:
+# In[53]:
 
 
 module_start_time = timer()
@@ -659,7 +659,7 @@ print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*10
 print('Module "read_data_at_sampled_times_and_grids" computing time: {:.3f} s'.format(module_end_time - module_start_time))
 
 
-# In[56]:
+# In[54]:
 
 
 #data_at_sampled_times_and_grids
@@ -669,7 +669,7 @@ print('Module "read_data_at_sampled_times_and_grids" computing time: {:.3f} s'.f
 
 # ## Read Data at All Times
 
-# In[57]:
+# In[55]:
 
 
 '''
@@ -691,7 +691,7 @@ print('Module "read_data_all_possible_times" computing time: {:.3f} s'.format(mo
 
 # ## Save Data In a Pickle File
 
-# In[58]:
+# In[56]:
 
 
 '''
@@ -710,7 +710,7 @@ print('Module "save_data_read_at_all_possible_times" computing time: {:.3f} s'.f
 
 # ## Delete Data No Longer Needed To Free Memory
 
-# In[59]:
+# In[57]:
 
 
 '''
@@ -729,7 +729,7 @@ print('Total memory consumed so far: {:.3f} MB'.format(global_memory_consumed/(1
 
 # ## Read Data at All Possible Times Saved in a Pickle File
 
-# In[60]:
+# In[58]:
 
 
 '''
@@ -745,7 +745,7 @@ print('Module "read_data_from_pickle_all_possible_times" computing time: {:.3f} 
 '''
 
 
-# In[61]:
+# In[59]:
 
 
 #collection_of_read_data['file_indices_data_dict'].keys()
@@ -755,7 +755,7 @@ print('Module "read_data_from_pickle_all_possible_times" computing time: {:.3f} 
 
 # ## Extract Data at The Sampled Time and Grid Points
 
-# In[62]:
+# In[60]:
 
 
 '''
@@ -764,7 +764,7 @@ data_at_times = collection_of_read_data['file_indices_data_dict']
 '''
 
 
-# In[63]:
+# In[61]:
 
 
 '''
@@ -783,7 +783,7 @@ print('Module "create_dataframe_FM_atm_data" computing time: {:.3f} s'.format(mo
 '''
 
 
-# In[64]:
+# In[62]:
 
 
 #df.head(5)
@@ -791,7 +791,7 @@ print('Module "create_dataframe_FM_atm_data" computing time: {:.3f} s'.format(mo
 
 # ## Save The Data Extracted  at Sampled Time and Grid Points
 
-# In[65]:
+# In[63]:
 
 
 '''
@@ -801,7 +801,7 @@ df.to_pickle(os.path.join(extracted_data_loc, extracted_data_file_name))
 
 # ## Load and Test The Extracted Data Saved in Pickle File
 
-# In[66]:
+# In[64]:
 
 
 '''
@@ -812,7 +812,7 @@ df_from_pickle.head(5)
 
 # # Save Other Relevant Info in A CSV File
 
-# In[67]:
+# In[65]:
 
 
 '''
@@ -836,7 +836,7 @@ tabulated_data.to_csv(os.path.join(extracted_data_loc, tab_data_file_name), inde
 '''
 
 
-# In[68]:
+# In[66]:
 
 
 '''
@@ -848,7 +848,7 @@ tabulated_data
 
 # ## Read Fire Data
 
-# In[69]:
+# In[67]:
 
 
 '''
@@ -870,7 +870,7 @@ if extract_fire_data:
 
 # ## Create DataFrame for Fire Data
 
-# In[70]:
+# In[68]:
 
 
 '''
@@ -896,7 +896,7 @@ if extract_fire_data:
 
 # ## Save DataFrame for Fire Data
 
-# In[71]:
+# In[69]:
 
 
 '''
@@ -910,7 +910,7 @@ if extract_fire_data:
 
 # ## Load and Test The Extracted Fire Data Saved in Pickle File
 
-# In[72]:
+# In[70]:
 
 
 '''
@@ -922,7 +922,7 @@ if extract_fire_data:
 '''
 
 
-# In[73]:
+# In[71]:
 
 
 '''
@@ -933,7 +933,7 @@ if extract_fire_data:
 
 # ## Delete Fire Data No Longer Needed
 
-# In[74]:
+# In[72]:
 
 
 '''
@@ -944,7 +944,7 @@ if extract_fire_data:
 
 # # Global End Time and Memory
 
-# In[75]:
+# In[73]:
 
 
 global_final_memory = process.memory_info().rss

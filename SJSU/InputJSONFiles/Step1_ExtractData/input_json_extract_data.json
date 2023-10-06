@@ -2,8 +2,7 @@
 	"paths": 	     {
 				"data_files_location": "/p/vast1/climres/DFM_reanalysis",
 				"extracted_data_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_Extracted"
-			     },
-				     
+			     },	     
 	"data_set_defn":     { 
 				"data_set_count": 0,
 				"percent_files_to_use": 0.00817755098, 
@@ -11,7 +10,6 @@
 				"max_history_to_consider": 8, 
 				"history_interval": 2
 			     }, 
-			    	 
 	"nevada_data":	     {
 				"remove_nevada":true,
 				"j_nevada": 80,
@@ -24,7 +22,6 @@
 				"labels_to_read": ["FMC_10hr", "FMC_100hr"],
 				"labels_ind_in_nc_file": [1, 2]
 			     },
-					 
 	"fire_flags":        {
 				"remove_fire_data_from_train_test": false,
 				"extract_fire_data": true
@@ -40,15 +37,21 @@
 				"cont_levels_count":31,
 				"qoi_cont_range": [0, 0.3]
 			     },
-					 
+	"plot_options":      {
+				"plot_sampled_datetime": true,
+				"plot_contours_of_indices": true,
+				"plot_contours_of_qoi": true,
+				"plot_pdfs_of_qoi": true,
+				"plot_fm_contours_with_cb": true,
+				"plot_sampled_grid_indices_2d": true,
+				"plot_sampled_grid_indices_3d": true
+			     },
 	"fire_time_stamps":  {
 				"Woosley": {"Ref": "2018-11-08_22", "Start": "2018-11-01_00", "End": "2018-11-15_00"},
 				"Creek":   {"Ref": "2020-09-04_00", "Start": "2020-08-28_00", "End": "2020-09-11_00"}
 			     },
- 		 
 	"clip_data_train_test":{
 				"x_clip": null,
 				"y_clip": null
-
 			     }
 }
