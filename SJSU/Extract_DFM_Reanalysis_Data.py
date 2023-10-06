@@ -29,7 +29,6 @@ import pickle
 import json
 from matplotlib import pyplot as plt
 from mpl_toolkits import mplot3d
-plt.style.use('seaborn-white')
 from datetime import date, datetime, timedelta, time
 from timeit import default_timer as timer
 
@@ -50,6 +49,7 @@ from Extract_DFM_Reanalysis_Data_Helper import *
 global_start_time = timer()
 process = psutil.Process(os.getpid())
 global_initial_memory = process.memory_info().rss
+print('\nProcess in Main(): {}'.format(process))
 
 
 # # Read the Input JSON File
@@ -650,7 +650,7 @@ labels_ind_in_nc_file = features_labels['labels_ind_in_nc_file']
 module_start_time = timer()
 module_initial_memory = process.memory_info().rss
 
-data_at_sampled_times_and_grids =     read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file,                                          features_to_read, valid_grid_ind_to_coord,                                          time_grid_indices_set_dict,                                          data_files_location, data_files_list)
+data_at_sampled_times_and_grids =     read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file,                                          features_to_read, valid_grid_ind_to_coord,                                          time_grid_indices_set_dict,                                          data_files_location, data_files_list,                                          process)
 
 module_final_memory = process.memory_info().rss
 module_end_time = timer()
