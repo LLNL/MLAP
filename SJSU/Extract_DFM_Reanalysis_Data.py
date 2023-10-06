@@ -621,7 +621,7 @@ print('Module "create_time_grid_indices_map" computing time: {:.3f} s'.format(mo
 
 
 #sampled_file_indices
-#grid_indices_selected
+grid_indices_selected.shape
 
 
 # In[53]:
@@ -633,13 +633,42 @@ print('Module "create_time_grid_indices_map" computing time: {:.3f} s'.format(mo
 #time_grid_indices_set_count
 
 
-# # Read Data at Sampled Time and Grid
+# # Read Data at Sampled Time and Grid Indices
+
+# In[54]:
+
+
+labels_to_read = ["FMC_10hr", "FMC_100hr"]
+labels_ind_in_nc_file = [1, 2]
+features_to_read = ["U10", "V10", "T2", "RH", "PRECIP", "SWDOWN"]
+
+
+# In[55]:
+
+
+module_start_time = timer()
+module_initial_memory = process.memory_info().rss
+
+data_at_sampled_times_and_grids =     read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file,                                          features_to_read, valid_grid_ind_to_coord,                                          time_grid_indices_set_dict,                                          data_files_location, data_files_list)
+
+module_final_memory = process.memory_info().rss
+module_end_time = timer()
+module_memory_consumed = module_final_memory - module_initial_memory
+print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+print('Module "read_data_at_sampled_times_and_grids" computing time: {:.3f} s'.format(module_end_time - module_start_time))
+
+
+# In[56]:
+
+
+#data_at_sampled_times_and_grids
+
 
 # # Read Files At All Possible Time Indices (Ref + History)
 
 # ## Read Data at All Times
 
-# In[54]:
+# In[57]:
 
 
 '''
@@ -661,7 +690,7 @@ print('Module "read_data_all_possible_times" computing time: {:.3f} s'.format(mo
 
 # ## Save Data In a Pickle File
 
-# In[55]:
+# In[58]:
 
 
 '''
@@ -680,7 +709,7 @@ print('Module "save_data_read_at_all_possible_times" computing time: {:.3f} s'.f
 
 # ## Delete Data No Longer Needed To Free Memory
 
-# In[56]:
+# In[59]:
 
 
 '''
@@ -699,7 +728,7 @@ print('Total memory consumed so far: {:.3f} MB'.format(global_memory_consumed/(1
 
 # ## Read Data at All Possible Times Saved in a Pickle File
 
-# In[57]:
+# In[60]:
 
 
 '''
@@ -715,7 +744,7 @@ print('Module "read_data_from_pickle_all_possible_times" computing time: {:.3f} 
 '''
 
 
-# In[58]:
+# In[61]:
 
 
 #collection_of_read_data['file_indices_data_dict'].keys()
@@ -725,7 +754,7 @@ print('Module "read_data_from_pickle_all_possible_times" computing time: {:.3f} 
 
 # ## Extract Data at The Sampled Time and Grid Points
 
-# In[59]:
+# In[62]:
 
 
 '''
@@ -734,7 +763,7 @@ data_at_times = collection_of_read_data['file_indices_data_dict']
 '''
 
 
-# In[60]:
+# In[63]:
 
 
 '''
@@ -753,7 +782,7 @@ print('Module "create_dataframe_FM_atm_data" computing time: {:.3f} s'.format(mo
 '''
 
 
-# In[61]:
+# In[64]:
 
 
 #df.head(5)
@@ -761,7 +790,7 @@ print('Module "create_dataframe_FM_atm_data" computing time: {:.3f} s'.format(mo
 
 # ## Save The Data Extracted  at Sampled Time and Grid Points
 
-# In[62]:
+# In[65]:
 
 
 '''
@@ -771,7 +800,7 @@ df.to_pickle(os.path.join(extracted_data_loc, extracted_data_file_name))
 
 # ## Load and Test The Extracted Data Saved in Pickle File
 
-# In[63]:
+# In[66]:
 
 
 '''
@@ -782,7 +811,7 @@ df_from_pickle.head(5)
 
 # # Save Other Relevant Info in A CSV File
 
-# In[64]:
+# In[67]:
 
 
 '''
@@ -806,7 +835,7 @@ tabulated_data.to_csv(os.path.join(extracted_data_loc, tab_data_file_name), inde
 '''
 
 
-# In[65]:
+# In[68]:
 
 
 '''
@@ -818,7 +847,7 @@ tabulated_data
 
 # ## Read Fire Data
 
-# In[66]:
+# In[69]:
 
 
 '''
@@ -840,7 +869,7 @@ if extract_fire_data:
 
 # ## Create DataFrame for Fire Data
 
-# In[67]:
+# In[70]:
 
 
 '''
@@ -866,7 +895,7 @@ if extract_fire_data:
 
 # ## Save DataFrame for Fire Data
 
-# In[68]:
+# In[71]:
 
 
 '''
@@ -880,7 +909,7 @@ if extract_fire_data:
 
 # ## Load and Test The Extracted Fire Data Saved in Pickle File
 
-# In[69]:
+# In[72]:
 
 
 '''
@@ -892,7 +921,7 @@ if extract_fire_data:
 '''
 
 
-# In[70]:
+# In[73]:
 
 
 '''
@@ -903,7 +932,7 @@ if extract_fire_data:
 
 # ## Delete Fire Data No Longer Needed
 
-# In[71]:
+# In[74]:
 
 
 '''
@@ -914,7 +943,7 @@ if extract_fire_data:
 
 # # Global End Time and Memory
 
-# In[72]:
+# In[75]:
 
 
 global_final_memory = process.memory_info().rss

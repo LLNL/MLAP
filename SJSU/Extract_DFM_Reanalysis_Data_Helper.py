@@ -649,6 +649,59 @@ def create_time_grid_indices_map (sampled_file_indices, history_file_indices, gr
 
     return time_grid_indices_list_dict, time_grid_indices_list_count, time_grid_indices_set_dict, time_grid_indices_set_count
 
+# []
+'''
+Read data at a desired time index and grid index
+'''
+def read_data_at_time_grid (labels_to_read, labels_ind_in_nc_file, features_to_read, \
+                            time_ind_to_read, grid_ind_to_read, \
+                            valid_grid_ind_to_coord, dfm_file_data):
+    data_at_time_and_grid = dict()
+    
+    j_ind_to_read, i_ind_to_read = valid_grid_ind_to_coord[grid_ind_to_read]
+    
+    for feature in features_to_read:
+        data_at_time_and_grid[feature] = \
+                np.array(dfm_file_data[feature])[j_ind_to_read, i_ind_to_read]
+    
+    for label, label_ind in zip(labels_to_read, labels_ind_in_nc_file):
+        data_at_time_and_grid[label] = \
+                np.array(dfm_file_data['FMC_GC'])[j_ind_to_read, i_ind_to_read][label_ind]
+    
+    #'========================================================================='
+    return data_at_time_and_grid
+
+
+# []
+'''
+Read data at sampled time and grid indices
+'''
+def read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file, \
+                                         features_to_read, valid_grid_ind_to_coord, \
+                                         time_grid_indices_set_dict, \
+                                         data_files_location, data_files_list):
+    
+    data_at_sampled_times_and_grids = dict()
+    
+    for time_ind_to_read in time_grid_indices_set_dict.keys():
+        data_file_to_read = data_files_list[time_ind_to_read]
+        year = data_file_to_read.split('_')[1].split('-')[0]
+        dfm_file_data = xr.open_dataset(path.join(data_files_location, year, data_file_to_read))
+
+        grid_indices_to_read_at_current_time = time_grid_indices_set_dict[time_ind_to_read]
+        data_at_sampled_grids_at_current_time = dict()
+        
+        for grid_ind_to_read_at_current_time in grid_indices_to_read_at_current_time:
+            data_at_sampled_grids_at_current_time[grid_ind_to_read_at_current_time] = \
+            read_data_at_time_grid (labels_to_read, labels_ind_in_nc_file, features_to_read, \
+                               time_ind_to_read, grid_ind_to_read_at_current_time, \
+                               valid_grid_ind_to_coord, dfm_file_data)
+
+        data_at_sampled_times_and_grids[time_ind_to_read] = \
+                                                data_at_sampled_grids_at_current_time
+    
+    #'========================================================================='
+    return data_at_sampled_times_and_grids
 
 # []
 '''
