@@ -19,6 +19,11 @@
 				"j_anchor": 310,
 				"i_anchor": 250
 			     },
+	"features_labels":   {
+				"features_to_read": ["U10", "V10", "T2", "RH", "PRECIP", "SWDOWN"],
+				"labels_to_read": ["FMC_10hr", "FMC_100hr"],
+				"labels_ind_in_nc_file": [1, 2]
+			     },
 					 
 	"fire_flags":        {
 				"remove_fire_data_from_train_test": false,
@@ -41,7 +46,7 @@
 				"Creek":   {"Ref": "2020-09-04_00", "Start": "2020-08-28_00", "End": "2020-09-11_00"}
 			     },
  		 
-	"clip_data_train_test":         {
+	"clip_data_train_test":{
 				"x_clip": null,
 				"y_clip": null
 

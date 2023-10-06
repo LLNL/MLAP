@@ -638,9 +638,10 @@ grid_indices_selected.shape
 # In[54]:
 
 
-labels_to_read = ["FMC_10hr", "FMC_100hr"]
-labels_ind_in_nc_file = [1, 2]
-features_to_read = ["U10", "V10", "T2", "RH", "PRECIP", "SWDOWN"]
+features_labels = input_json_data['features_labels']
+features_to_read = features_labels['features_to_read']
+labels_to_read = features_labels['labels_to_read']
+labels_ind_in_nc_file = features_labels['labels_ind_in_nc_file']
 
 
 # In[55]:
