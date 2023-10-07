@@ -35,6 +35,13 @@ def init_random_generator (seed):
 Get the master list of files containing the historical atmospheric data
 '''
 def get_data_file_names(data_files_dir):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "get_data_file_names"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     print('\nGetting the names of the data files at the dir : \n {} \n'.format(data_files_dir))
     years_list = os.listdir(data_files_dir)
     print('years_list: {} \n'.format(years_list))
@@ -50,7 +57,15 @@ def get_data_file_names(data_files_dir):
         file_list.extend(file_list_for_year)
 
     file_list.sort()
+    
     print('\nFound a total of {} files \n'.format(len(file_list)))
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return file_list
 
@@ -60,6 +75,13 @@ def get_data_file_names(data_files_dir):
 Get the indices in the data files list for the fire time stamps
 '''
 def get_fire_time_indices (fire_time_stamps, data_files_list):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "get_fire_time_indices"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     fire_time_indices = {}
     
     for fire_name in fire_time_stamps.keys():
@@ -71,7 +93,13 @@ def get_fire_time_indices (fire_time_stamps, data_files_list):
             fire_time_indices_current[time_stamp_key] = data_file_index
             
         fire_time_indices[fire_name] = fire_time_indices_current
-        
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')    
     return fire_time_indices
 
@@ -80,7 +108,14 @@ def get_fire_time_indices (fire_time_stamps, data_files_list):
 '''
 Remove the data around the fires of concern
 '''
-def remove_data_around_fire (fire_time_indices, data_files_list):    
+def remove_data_around_fire (fire_time_indices, data_files_list):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "remove_data_around_fire"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     fire_indices_to_delete = []
     for fire_name in fire_time_indices.keys():
         fire_start_ind = fire_time_indices[fire_name]['Start']
@@ -92,6 +127,13 @@ def remove_data_around_fire (fire_time_indices, data_files_list):
                                  100.0*float(len(fire_indices_to_delete))/len(data_files_list)))
     
     data_files_list = list (np.delete(np.array(data_files_list), fire_indices_to_delete))
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('{} data files remaining after removing data around fires'.format(len(data_files_list)))
     print('=========================================================================')    
     return data_files_list
@@ -136,6 +178,13 @@ Get the random reference time where Fuel Moisture is to be read and relative to 
 historical data is to be collected
 '''
 def downsample_data_files (data_files_list, percent_files_to_use, max_history_to_consider, random_state):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "downsample_data_files"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     random.setstate(random_state)
     print('\nRandomly selecting approx {} % of the data files'.format(percent_files_to_use))
     file_indices = set(range(len(data_files_list)))
@@ -154,9 +203,17 @@ def downsample_data_files (data_files_list, percent_files_to_use, max_history_to
     downsample_files_count = round(percent_files_to_use*total_files/100.0)
     sampled_file_indices = random.sample(valid_indices, k = downsample_files_count)
     sampled_data_files = list(np.array(data_files_list)[sampled_file_indices])
+    
     print('Selected {} data files out of {} total and {} usable considering historical data'.format(len(sampled_data_files), len(data_files_list), len(valid_indices)))
     #print('Indices of the randomly selected files: \n {}'.format(sampled_file_indices))
     #print('Names of the randomly selected files: \n {}'.format(sampled_data_files))
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return sampled_file_indices, sampled_data_files
 
@@ -165,6 +222,13 @@ def downsample_data_files (data_files_list, percent_files_to_use, max_history_to
 Get the history file indices corresponding to the sampled reference time indices
 '''
 def get_history_file_indices (sampled_file_indices, max_history_to_consider, history_interval):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "get_history_file_indices"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     #print('\nDetermining history file indices corresponding to given file/time indices...')
     history_file_indices = []
     for fuel_moisture_time_index in sampled_file_indices:
@@ -173,6 +237,13 @@ def get_history_file_indices (sampled_file_indices, max_history_to_consider, his
                                          - history_interval)
         atm_data_time_indices = list(np.sort(atm_data_time_indices)[:-1])
         history_file_indices.append(atm_data_time_indices)
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')    
     return history_file_indices
 
@@ -181,7 +252,13 @@ def get_history_file_indices (sampled_file_indices, max_history_to_consider, his
 Get timestamps and datetime for the downsampled data files
 '''
 def get_datetime_for_data_files (sampled_data_files):
-    #print('\nGetting time stamps and datetime of the downsampled data files...')
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "get_datetime_for_data_files"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     sampled_time_stamps = []
     sampled_datetime = []
     for filename in sampled_data_files:
@@ -191,6 +268,13 @@ def get_datetime_for_data_files (sampled_data_files):
         date_hour = date + '_' + hour
         sampled_time_stamps.append(date_hour)
         sampled_datetime.append(datetime.fromisoformat(date_hour))
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return sampled_time_stamps, sampled_datetime
 
@@ -199,6 +283,13 @@ def get_datetime_for_data_files (sampled_data_files):
 Create DataFrame using sampled file indices, filenames, timestamps, and datetime
 '''
 def create_df_sampled_time (sampled_file_indices, sampled_data_files, sampled_time_stamps, sampled_datetime, history_file_indices):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "create_df_sampled_time"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     print('\nCreating DataFrame using sampled file indices, filenames, timestamps, and datetime...')
     df_sampled_time = pd.DataFrame()
     df_sampled_time['ref_time_indices'] = sampled_file_indices
@@ -206,6 +297,13 @@ def create_df_sampled_time (sampled_file_indices, sampled_data_files, sampled_ti
     df_sampled_time['sampled_time_stamps'] = sampled_time_stamps
     df_sampled_time['sampled_datetime'] = sampled_datetime
     df_sampled_time['history_time_indices'] = history_file_indices
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return df_sampled_time
 
@@ -213,7 +311,14 @@ def create_df_sampled_time (sampled_file_indices, sampled_data_files, sampled_ti
 '''
 Plot the sampled datetime
 '''
-def plot_sampled_datetime (df_sampled_time, extracted_data_loc, xlim = None, ylim = None):       
+def plot_sampled_datetime (df_sampled_time, extracted_data_loc, xlim = None, ylim = None):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "plot_sampled_datetime"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     plt.figure()
     print('\nPlotting sampled datetime from the available data...')
     sampled_datetime = df_sampled_time['sampled_datetime']
@@ -239,6 +344,13 @@ def plot_sampled_datetime (df_sampled_time, extracted_data_loc, xlim = None, yli
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
     #plt.show()
     #plt.close()
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     
 #[]
@@ -246,6 +358,13 @@ def plot_sampled_datetime (df_sampled_time, extracted_data_loc, xlim = None, yli
 Read a single data file
 '''
 def read_single_data_file (data_files_location, data_file_to_read, timestamp_to_read):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "read_single_data_file"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     #print('\nReading data contained in the selcted file: {}...'.format(data_file_to_read))
     data_at_timestamp = {}
     
@@ -268,7 +387,14 @@ def read_single_data_file (data_files_location, data_file_to_read, timestamp_to_
     data_at_timestamp['FMC_10hr'  ] = np.array(dfm_file_data['FMC_GC'])[:, :, 1]
     data_at_timestamp['FMC_100hr' ] = np.array(dfm_file_data['FMC_GC'])[:, :, 2]
     data_at_timestamp['FMC_1000hr'] = np.array(dfm_file_data['FMC_GC'])[:, :, 3]
-    #print('=========================================================================')
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
+    print('=========================================================================')
     return data_at_timestamp
  
 #[]
@@ -276,6 +402,13 @@ def read_single_data_file (data_files_location, data_file_to_read, timestamp_to_
 process elevation from data read from a single file
 '''
 def process_elevation_at_timestamp (data_at_timestamp):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "process_elevation_at_timestamp"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     #print('\nProcessing elevation data into pos, neg, and zero...')
     HGT = data_at_timestamp['HGT']
     
@@ -284,7 +417,14 @@ def process_elevation_at_timestamp (data_at_timestamp):
     HGT_UPD[np.where(HGT < 0)] = -1
                      
     data_at_timestamp['HGT_UPD'] = HGT_UPD
-    #print('=========================================================================')
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
+    print('=========================================================================')
     return data_at_timestamp
     
 # []
@@ -292,6 +432,12 @@ def process_elevation_at_timestamp (data_at_timestamp):
 Get grid indices
 '''
 def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_data_files, sampled_time_stamps, x_clip, y_clip, j_nevada, i_nevada, j_anchor, i_anchor, remove_nevada = True):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "get_grid_indices_all"')
+    print('\nProcess in the module(): {}'.format(process))
     
     print('\nGetting all the grid indices from a randomly selcted file...')
     random_ind_of_downsampled_files = random.choice(range(len(sampled_file_indices)))
@@ -340,6 +486,13 @@ def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_dat
     # Flatten the indices
     grid_indices_all_flat = grid_indices_all.flatten()
     grid_indices_valid_flat = grid_indices_valid[np.where(grid_indices_valid >= 0)].flatten()
+   
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return grid_indices_all, grid_indices_valid, grid_indices_all_flat, grid_indices_valid_flat
 
@@ -349,6 +502,13 @@ def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_dat
 Reconstruct valid grid indices
 '''
 def reconstruct_valid_grid_indices (grid_indices_valid_flat, data_at_timestamp):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "reconstruct_valid_grid_indices"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     print('\nReconstructing valid grid indices...')
     nx = data_at_timestamp['nx']
     ny = data_at_timestamp['ny']
@@ -365,6 +525,12 @@ def reconstruct_valid_grid_indices (grid_indices_valid_flat, data_at_timestamp):
         grid_indices_valid_reconst[j_ind][i_ind] = valid_ind
         grid_indices_valid_bool[j_ind][i_ind] = 1
         
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')    
     return grid_indices_valid_reconst, grid_indices_valid_bool, valid_grid_ind_to_coord
 
@@ -373,6 +539,13 @@ def reconstruct_valid_grid_indices (grid_indices_valid_flat, data_at_timestamp):
 Plot Contours of indices at a timestamp
 '''
 def plot_contours_of_indices (data_at_timestamp, grid_indices_all, grid_indices_valid, grid_indices_valid_bool, grid_indices_valid_reconst, extracted_data_loc):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "plot_contours_of_indices"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     cmap_name = 'hot'
     cont_levels = 20
     fig, ax = plt.subplots(2, 2, figsize=(12, 8))
@@ -409,6 +582,13 @@ def plot_contours_of_indices (data_at_timestamp, grid_indices_all, grid_indices_
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
     #plt.show()
     #plt.close()
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
 
 
@@ -417,6 +597,13 @@ def plot_contours_of_indices (data_at_timestamp, grid_indices_all, grid_indices_
 Plot Contours of Data at a TimeStamp
 '''
 def plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc, grid_indices_valid, masked = True):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "plot_contours_at_timestamp"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     cmap_name = 'hot'
     masked_string = 'UnMasked' 
     cont_levels = 20
@@ -451,6 +638,13 @@ def plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_l
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
     #plt.show()
     #plt.close()
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
 
     
@@ -459,6 +653,13 @@ def plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_l
 Plot Contours of Data at a TimeStamp
 '''
 def plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_plot, extracted_data_loc, grid_indices_valid, cont_levels_count, qoi_cont_range, masked = True):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "plot_contours_at_timestamp2"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     cmap_name = 'hot'
     masked_string = 'UnMasked' 
     if qoi_cont_range:
@@ -494,6 +695,13 @@ def plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_pl
         plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
         #plt.show()
         #plt.close()
+        
+        module_final_memory = process.memory_info().rss
+        module_end_time = timer()
+        module_memory_consumed = module_final_memory - module_initial_memory
+        module_compute_time = module_end_time - module_start_time
+        print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+        print('Module computing time: {:.3f} s'.format(module_compute_time))
         print('=========================================================================')
         
 #[]
@@ -501,6 +709,13 @@ def plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_pl
 Plot PDF of Data at a TimeStamp
 '''
 def plot_pdf_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "plot_pdf_at_timestamp"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     num_bins = 30
     fig, axlist = plt.subplots(3, 4, figsize=(12, 8))
     for var_ind, ax in enumerate(axlist.ravel()):
@@ -522,6 +737,13 @@ def plot_pdf_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc):
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
     #plt.show()
     #plt.close()
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     
 # []
@@ -529,6 +751,13 @@ def plot_pdf_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc):
 Sample grid indices for each ref time
 '''
 def sample_grid_indices (sampled_file_indices, percent_grid_points_to_use, grid_indices_valid_flat, valid_grid_ind_to_coord):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "sample_grid_indices"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     downsample_grid_point_count = round(percent_grid_points_to_use*len(grid_indices_valid_flat)/100.0)
     print('Selecting {} grid points (approx {} % of a total of {} considerable/valid grid points)\n'.format(
             downsample_grid_point_count, percent_grid_points_to_use, len(grid_indices_valid_flat)))
@@ -550,6 +779,12 @@ def sample_grid_indices (sampled_file_indices, percent_grid_points_to_use, grid_
                                                     valid_grid_ind_to_coord[sampled_grid_ind][1]
     #End for
     
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return grid_indices_selected, j_indices_selected, i_indices_selected
 
@@ -559,6 +794,13 @@ def sample_grid_indices (sampled_file_indices, percent_grid_points_to_use, grid_
 Plot sampled grid indices for each ref time
 '''
 def plot_sampled_grid_points (grid_indices_selected, extracted_data_loc):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "plot_sampled_grid_points"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     cmap_name = 'hot'
     cont_levels = 20
     
@@ -582,6 +824,13 @@ def plot_sampled_grid_points (grid_indices_selected, extracted_data_loc):
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
     #plt.show()
     #plt.close()
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
 
 # []
@@ -589,6 +838,13 @@ def plot_sampled_grid_points (grid_indices_selected, extracted_data_loc):
 Plot sampled grid indices for each ref time in 3D
 '''
 def plot_sampled_grid_points_3D (j_indices_selected, i_indices_selected, extracted_data_loc, fig_size):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "plot_sampled_grid_points_3D"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     fig = plt.figure(figsize = fig_size)
     ax = plt.axes(projection='3d')
     for ref_time_count in range(j_indices_selected.shape[0]):
@@ -612,6 +868,13 @@ def plot_sampled_grid_points_3D (j_indices_selected, i_indices_selected, extract
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
     #plt.show()
     #plt.close()
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
 
 # []
@@ -619,6 +882,13 @@ def plot_sampled_grid_points_3D (j_indices_selected, i_indices_selected, extract
 Create a map of time indices and grid indices at that time where we need data
 '''
 def create_time_grid_indices_map (sampled_file_indices, history_file_indices, grid_indices_selected):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "create_time_grid_indices_map"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     time_grid_indices_list_dict = dict()
     time_grid_indices_list_count = dict()
     time_grid_indices_set_dict = dict()
@@ -647,7 +917,14 @@ def create_time_grid_indices_map (sampled_file_indices, history_file_indices, gr
             set(time_grid_indices_list_dict[chosen_time_index])
         time_grid_indices_set_count[chosen_time_index] = \
             len(time_grid_indices_set_dict[chosen_time_index])
-
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
+    print('=========================================================================')
     return time_grid_indices_list_dict, time_grid_indices_list_count, time_grid_indices_set_dict, time_grid_indices_set_count
 
 # []
@@ -657,6 +934,8 @@ Read data at a desired time index and grid index
 def read_data_at_time_grid_as_dict (labels_to_read, labels_ind_in_nc_file, features_to_read, \
                                     time_ind_to_read, grid_ind_to_read, \
                                     valid_grid_ind_to_coord, dfm_file_data):
+    #print('=========================================================================')
+    #print('MODULE Name: ""')
     data_at_time_and_grid = dict()
     
     j_ind_to_read, i_ind_to_read = valid_grid_ind_to_coord[grid_ind_to_read]
@@ -669,7 +948,7 @@ def read_data_at_time_grid_as_dict (labels_to_read, labels_ind_in_nc_file, featu
         data_at_time_and_grid[label] = \
                 np.array(dfm_file_data['FMC_GC'])[j_ind_to_read, i_ind_to_read][label_ind]
     
-    #'========================================================================='
+    #print('=========================================================================')
     return data_at_time_and_grid
 
 
@@ -680,17 +959,23 @@ Read data at sampled time and grid indices
 def read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file, \
                                          features_to_read, valid_grid_ind_to_coord, \
                                          time_grid_indices_set_dict, \
-                                         data_files_location, data_files_list, \
-                                         process):
-    print('\nProcess in "read_data_at_sampled_times_and_grids()": \n{}'.format(process))
+                                         data_files_location, data_files_list):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "read_data_at_sampled_times_and_grids"')
+    print('\nProcess in the module(): {}'.format(process))
+    
     data_at_sampled_times_and_grids = dict()
     
     for time_ind_to_read in time_grid_indices_set_dict.keys():
         data_file_to_read = data_files_list[time_ind_to_read]
         year = data_file_to_read.split('_')[1].split('-')[0]
+        '''
         print('\ntime_ind_to_read: {}, data_file_to_read: {}'.format(\
                                                          time_ind_to_read, data_file_to_read))
-        
+        '''
         # Read the data file at the current time index
         file_read_start_time = timer()
         file_read_initial_memory = process.memory_info().rss
@@ -699,11 +984,12 @@ def read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file, 
         file_read_memory_consumed = \
                             file_read_final_memory - file_read_initial_memory
         file_read_end_time = timer()
+        '''
         print('"xr.open_dataset ()"memory consumed: {:.3f} KB'.format(\
                                                         file_read_memory_consumed/(1024)))
         print('"xr.open_dataset ()" computing time: {:.3f} s'.format(\
                                                          file_read_end_time - file_read_start_time))
-       
+        '''
         # Extract sampled grid data at the current time index
         grid_indices_to_read_at_current_time = time_grid_indices_set_dict[time_ind_to_read]
         data_at_sampled_grids_at_current_time = dict()
@@ -721,15 +1007,21 @@ def read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file, 
         extract_grid_data_memory_consumed = \
                             extract_grid_data_final_memory - extract_grid_data_initial_memory
         extract_grid_data_end_time = timer()
+        '''
         print('"Extract grid data at current time" memory consumed: {:.3f} KB'.format(\
                                                         extract_grid_data_memory_consumed/(1024)))
         print('"Extract grid data at current time" computing time: {:.3f} s'.format(\
                                            extract_grid_data_end_time - extract_grid_data_start_time))
-        
+        '''
         data_at_sampled_times_and_grids[time_ind_to_read] = \
                                                 data_at_sampled_grids_at_current_time
-        
-        
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return data_at_sampled_times_and_grids
 
