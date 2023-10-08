@@ -937,6 +937,7 @@ def read_data_at_time_grid_as_dict (labels_to_read, labels_ind_in_nc_file, \
                                     valid_grid_ind_to_coord, dfm_file_data):
     #print('=========================================================================')
     #print('MODULE Name: ""')
+    
     data_at_time_and_grid = dict()
     
     j_ind_to_read, i_ind_to_read = valid_grid_ind_to_coord[grid_ind_to_read]
@@ -952,6 +953,32 @@ def read_data_at_time_grid_as_dict (labels_to_read, labels_ind_in_nc_file, \
     #print('=========================================================================')
     return data_at_time_and_grid
 
+# []
+'''
+Read data at a desired time index and grid index
+'''
+def read_data_at_time_grid_as_array (labels_to_read, labels_ind_in_nc_file, \
+                                    features_to_read, \
+                                    time_ind_to_read, grid_ind_to_read,\
+                                    valid_grid_ind_to_coord, dfm_file_data):
+    #print('=========================================================================')
+    #print('MODULE Name: ""')
+    
+    data_at_time_and_grid = np.empty((len(features_to_read) + len(labels_to_read), ), \
+                                     dtype = np.float32)
+    
+    j_ind_to_read, i_ind_to_read = valid_grid_ind_to_coord[grid_ind_to_read]
+    
+    for feature_count, feature in enumerate(features_to_read):
+        data_at_time_and_grid[feature_count] = \
+                np.array(dfm_file_data[feature])[j_ind_to_read, i_ind_to_read]
+    
+    for label_count , (label, label_ind) in enumerate(zip(labels_to_read, labels_ind_in_nc_file)):
+        data_at_time_and_grid[len(features_to_read) + label_count] = \
+                np.array(dfm_file_data['FMC_GC'])[j_ind_to_read, i_ind_to_read][label_ind]
+    
+    #print('=========================================================================')
+    return data_at_time_and_grid
 
 # []
 '''
@@ -1008,7 +1035,14 @@ def read_data_at_sampled_times_and_grids (labels_to_read, labels_ind_in_nc_file,
                                                    features_to_read, \
                                                    time_ind_to_read, grid_ind_to_read_at_current_time,\
                                                    valid_grid_ind_to_coord, dfm_file_data)
-            #else:
+            elif data_at_time_grid_type == 'array':
+                data_at_sampled_grids_at_current_time[grid_ind_to_read_at_current_time] = \
+                    read_data_at_time_grid_as_array(labels_to_read, labels_ind_in_nc_file, \
+                                                    features_to_read, \
+                                                    time_ind_to_read, grid_ind_to_read_at_current_time,\
+                                                    valid_grid_ind_to_coord, dfm_file_data)
+            else:
+                print("Unrecognized data type")
             
 
         extract_grid_data_final_memory = process.memory_info().rss

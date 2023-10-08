@@ -504,12 +504,26 @@ labels_ind_in_nc_file = features_labels['labels_ind_in_nc_file']
 # In[ ]:
 
 
-data_at_sampled_times_and_grids =     read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file,                                          features_to_read, valid_grid_ind_to_coord,                                          time_grid_indices_set_dict,                                          data_files_location, data_files_list,                                          'dict')
+'''
+data_at_sampled_times_and_grids = \
+    read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file, \
+                                         features_to_read, valid_grid_ind_to_coord, \
+                                         time_grid_indices_set_dict, \
+                                         data_files_location, data_files_list, \
+                                         'dict')
+'''
 
 
 # In[ ]:
 
 
+data_at_sampled_times_and_grids =     read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file,                                          features_to_read, valid_grid_ind_to_coord,                                          time_grid_indices_set_dict,                                          data_files_location, data_files_list,                                          'array')
+
+
+# In[ ]:
+
+
+#np.set_printoptions(suppress=True)
 #data_at_sampled_times_and_grids
 
 
