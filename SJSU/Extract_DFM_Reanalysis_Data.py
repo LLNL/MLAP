@@ -435,6 +435,12 @@ if input_json_data['plot_options']['plot_fm_contours_with_cb']:
 grid_indices_selected, j_indices_selected, i_indices_selected =     sample_grid_indices (sampled_file_indices, percent_grid_points_to_use,                          grid_indices_valid_flat, valid_grid_ind_to_coord)
 
 
+# In[ ]:
+
+
+#grid_indices_selected
+
+
 # ## Plot Sampled Grid Indices
 
 # In[ ]:
@@ -498,7 +504,7 @@ labels_ind_in_nc_file = features_labels['labels_ind_in_nc_file']
 # In[ ]:
 
 
-data_at_sampled_times_and_grids =     read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file,                                          features_to_read, valid_grid_ind_to_coord,                                          time_grid_indices_set_dict,                                          data_files_location, data_files_list)
+data_at_sampled_times_and_grids =     read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file,                                          features_to_read, valid_grid_ind_to_coord,                                          time_grid_indices_set_dict,                                          data_files_location, data_files_list,                                          'dict')
 
 
 # In[ ]:

@@ -931,8 +931,9 @@ def create_time_grid_indices_map (sampled_file_indices, history_file_indices, gr
 '''
 Read data at a desired time index and grid index
 '''
-def read_data_at_time_grid_as_dict (labels_to_read, labels_ind_in_nc_file, features_to_read, \
-                                    time_ind_to_read, grid_ind_to_read, \
+def read_data_at_time_grid_as_dict (labels_to_read, labels_ind_in_nc_file, \
+                                    features_to_read, \
+                                    time_ind_to_read, grid_ind_to_read,\
                                     valid_grid_ind_to_coord, dfm_file_data):
     #print('=========================================================================')
     #print('MODULE Name: ""')
@@ -956,10 +957,11 @@ def read_data_at_time_grid_as_dict (labels_to_read, labels_ind_in_nc_file, featu
 '''
 Read data at sampled time and grid indices
 '''
-def read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file, \
-                                         features_to_read, valid_grid_ind_to_coord, \
-                                         time_grid_indices_set_dict, \
-                                         data_files_location, data_files_list):
+def read_data_at_sampled_times_and_grids (labels_to_read, labels_ind_in_nc_file, \
+                                          features_to_read, valid_grid_ind_to_coord, \
+                                          time_grid_indices_set_dict, \
+                                          data_files_location, data_files_list, \
+                                          data_at_time_grid_type = 'dict'):
     process = psutil.Process(os.getpid())
     print('=========================================================================')
     module_start_time = timer()
@@ -979,7 +981,9 @@ def read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file, 
         # Read the data file at the current time index
         file_read_start_time = timer()
         file_read_initial_memory = process.memory_info().rss
+        
         dfm_file_data = xr.open_dataset(path.join(data_files_location, year, data_file_to_read))
+        
         file_read_final_memory = process.memory_info().rss
         file_read_memory_consumed = \
                             file_read_final_memory - file_read_initial_memory
@@ -998,10 +1002,14 @@ def read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file, 
         extract_grid_data_initial_memory = process.memory_info().rss
         
         for grid_ind_to_read_at_current_time in grid_indices_to_read_at_current_time:
-            data_at_sampled_grids_at_current_time[grid_ind_to_read_at_current_time] = \
-            read_data_at_time_grid_as_dict(labels_to_read, labels_ind_in_nc_file, features_to_read, \
-                                           time_ind_to_read, grid_ind_to_read_at_current_time, \
-                                           valid_grid_ind_to_coord, dfm_file_data)
+            if data_at_time_grid_type == 'dict':
+                data_at_sampled_grids_at_current_time[grid_ind_to_read_at_current_time] = \
+                    read_data_at_time_grid_as_dict(labels_to_read, labels_ind_in_nc_file, \
+                                                   features_to_read, \
+                                                   time_ind_to_read, grid_ind_to_read_at_current_time,\
+                                                   valid_grid_ind_to_coord, dfm_file_data)
+            #else:
+            
 
         extract_grid_data_final_memory = process.memory_info().rss
         extract_grid_data_memory_consumed = \
