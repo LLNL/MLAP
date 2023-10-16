@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# ## Conver this notebook to executable python script using:
+# ## Convert this notebook to executable python script using:
 
 # In[ ]:
 
@@ -59,7 +59,7 @@ print('\nProcess in Main(): {}'.format(process))
 # In[ ]:
 
 
-#input_json_file = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_Extracted/InputJsonFiles/input_json_extract_data_000.json'
+input_json_file = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_Extracted/InputJsonFiles/input_json_extract_data_000.json'
 
 
 # ### Input file name when using python script on command line
@@ -67,7 +67,7 @@ print('\nProcess in Main(): {}'.format(process))
 # In[ ]:
 
 
-input_json_file = sys.argv[1]
+#input_json_file = sys.argv[1]
 
 
 # ### Load the Input JSON File
