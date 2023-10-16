@@ -3,6 +3,12 @@
 
 # ## Convert this notebook to executable python script using:
 
+# In[ ]:
+
+
+#jupyter nbconvert --to python TrainModel.ipynb
+
+
 # # Import Modules
 
 # ## Standard Packages
@@ -20,6 +26,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 import pickle
+import json
 from matplotlib import pyplot as plt
 from mpl_toolkits import mplot3d
 from datetime import date, datetime, timedelta, time
@@ -67,6 +74,45 @@ process = psutil.Process(os.getpid())
 global_initial_memory = process.memory_info().rss
 
 
+# # Read the Input JSON File
+
+# ### Input file name when using jupyter notebook
+
+# In[ ]:
+
+
+input_json_file = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models/InputJsonFiles/input_json_train_model_008.json'
+
+
+# ### Input file name when using python script on command line
+
+# In[ ]:
+
+
+#input_json_file = sys.argv[1]
+
+
+# ## Load the Input JSON File
+
+# In[ ]:
+
+
+print('Loading input from JSON file: \n {}'.format(input_json_file))
+
+
+# In[ ]:
+
+
+with open(input_json_file) as input_json_file_handle:
+    input_json_data = json.load(input_json_file_handle)
+
+
+# In[ ]:
+
+
+input_json_data
+
+
 # # Variables to be Used for Preparing Train, Test, and Fire Data
 
 # ## DataSet Defintion
@@ -75,7 +121,7 @@ global_initial_memory = process.memory_info().rss
 
 
 # The current data set params
-data_set_count = 8
+data_set_count = input_json_data['data_set_defn']['data_set_count']
 
 
 # ## Define Model, Label etc.
@@ -85,13 +131,13 @@ data_set_count = 8
 # In[ ]:
 
 
-label_type = 'Regr' # ['bin', 'MC', 'Regr']
+label_type = input_json_data['FM_labels']['label_type'] # ['bin', 'MC', 'Regr']
 
 
 # In[ ]:
 
 
-FM_hr = 10 # [10, 100]
+FM_hr = input_json_data['FM_labels']['FM_hr'] # [10, 100]
 
 
 # ### Models 
@@ -99,7 +145,7 @@ FM_hr = 10 # [10, 100]
 # In[ ]:
 
 
-model_considered = 'MLP' # ['RF', SVM', 'MLP']
+model_considered = input_json_data['models']['model_considered'] # ['RF', SVM', 'MLP']
 
 
 # ### Fire of Interest
@@ -107,19 +153,25 @@ model_considered = 'MLP' # ['RF', SVM', 'MLP']
 # In[ ]:
 
 
-fire_name = 'Woosley'
+fire_name = input_json_data['fire_data']['fire_name']
 
 
 # ## Paths and File Names
+
+# In[ ]:
+
+
+paths = input_json_data['paths']
+
 
 # #### Global
 
 # In[ ]:
 
 
-prepared_data_base_loc = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/ArchivedData/data_archived_2023_09_21/02_TrainTestFire_Data_Prepared'
-trained_model_base_loc = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models'
-analysis_data_base_loc = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/04_Analysis'
+prepared_data_base_loc = paths['prepared_data_base_loc']
+trained_model_base_loc = paths['trained_model_base_loc']
+analysis_data_base_loc = paths['analysis_data_base_loc']
 
 
 # #### DataSet Specific (Train, Test, Fire Prepared)
@@ -140,7 +192,7 @@ prepared_data_file_name = '{}.pkl'.format(prepared_data_set_name)
 # In[ ]:
 
 
-trained_model_set_name = 'trained_model_%02d'%(data_set_count)
+trained_model_set_name = 'trained_model_%03d'%(data_set_count)
 
 trained_model_loc = os.path.join(trained_model_base_loc, trained_model_set_name)
 os.system('mkdir -p %s'%trained_model_loc)
@@ -154,7 +206,7 @@ trained_model_file = os.path.join(trained_model_loc, trained_model_name)
 # In[ ]:
 
 
-analysis_set_name = 'analysis_%02d'%(data_set_count)
+analysis_set_name = 'analysis_%03d'%(data_set_count)
 
 analysis_loc = os.path.join(analysis_data_base_loc, analysis_set_name, label_type, model_considered)
 os.system('mkdir -p %s'%analysis_loc)
@@ -514,8 +566,8 @@ for j_loc, i_loc, gt_val, pred_val in zip (j_indices, i_indices, ground_truth, l
 # In[ ]:
 
 
-cmap_name = 'hot'
-cont_levels = [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+cmap_name = input_json_data['plot_options']['cmap_name']
+cont_levels = input_json_data['plot_options']['cont_levels']
 cont_levels = np.linspace(0, 0.28, 21)
 cont_levels_err = np.linspace(-75.0, 75.0, 21)
 fig, ax = plt.subplots(1, 3, figsize=(12, 3))
