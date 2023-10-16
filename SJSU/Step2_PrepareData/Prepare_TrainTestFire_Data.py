@@ -29,12 +29,17 @@ import pickle
 import json
 from matplotlib import pyplot as plt
 from mpl_toolkits import mplot3d
-#plt.style.use('seaborn-white')
 from datetime import date, datetime, timedelta, time
 from timeit import default_timer as timer
 
 
 # ## User-Defined Functions
+
+# In[ ]:
+
+
+sys.path.insert(0, os.path.join(os.path.pardir, 'Step1_ExtractData'))
+
 
 # In[ ]:
 
