@@ -26,6 +26,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 import pickle
+import json
 from matplotlib import pyplot as plt
 from mpl_toolkits import mplot3d
 #plt.style.use('seaborn-white')
@@ -52,6 +53,45 @@ process = psutil.Process(os.getpid())
 global_initial_memory = process.memory_info().rss
 
 
+# # Read the Input JSON File
+
+# ### Input file name when using jupyter notebook
+
+# In[ ]:
+
+
+input_json_file = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTestFire_Data_Prepared/InputJsonFiles/input_json_prep_data_000.json'
+
+
+# ### Input file name when using python script on command line
+
+# In[ ]:
+
+
+#input_json_file = sys.argv[1]
+
+
+# ### Load the Input JSON File
+
+# In[ ]:
+
+
+print('Loading input from JSON file: \n {}'.format(input_json_file))
+
+
+# In[ ]:
+
+
+with open(input_json_file) as input_json_file_handle:
+    input_json_data = json.load(input_json_file_handle)
+
+
+# In[ ]:
+
+
+#input_json_data
+
+
 # # Variables to be Used for Preparing Train, Test, and Fire Data
 
 # ## DataSet Defintion
@@ -60,7 +100,7 @@ global_initial_memory = process.memory_info().rss
 
 
 # The current data set params
-data_set_count = 0
+data_set_count = input_json_data['data_set_defn']['data_set_count']
 
 
 # ## Define FM Threshold etc.
@@ -68,11 +108,24 @@ data_set_count = 0
 # In[ ]:
 
 
-FM_binary_threshold = 0.03
-FM_levels = [0.0, 0.03, 0.06, 0.09, 0.12, 0.15, 0.19, 0.23, 0.27, 0.35, 1.0]
+FM_labels = input_json_data['FM_labels']
+
+
+# In[ ]:
+
+
+FM_label_type = FM_labels['label_type']
+FM_binary_threshold = FM_labels['FM_binary_threshold']
+FM_MC_levels = FM_labels['FM_MC_levels']
 
 
 # ## Paths and File Names
+
+# In[ ]:
+
+
+paths = input_json_data['paths']
+
 
 # #### Global
 
@@ -80,8 +133,8 @@ FM_levels = [0.0, 0.03, 0.06, 0.09, 0.12, 0.15, 0.19, 0.23, 0.27, 0.35, 1.0]
 
 
 # WRF data set location and the extracted data set location
-extracted_data_base_loc = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/ArchivedData/data_archived_2023_09_21/01_WRF_Nelson_Data_Extracted'
-prepared_data_base_loc  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTestFire_Data_Prepared'
+extracted_data_base_loc = paths['extracted_data_base_loc']
+prepared_data_base_loc  = paths['prepared_data_base_loc']
 
 
 # #### DataSet Specific (Train, Test, Fire Data Extracted from WRF)
@@ -251,10 +304,10 @@ for fire_name in fire_data_prep.keys():
 # In[ ]:
 
 
-df_tt_prep = compute_MC_FM_labels(df_tt_prep,                                   keys_FM, keys_FM_MC, FM_levels)
+df_tt_prep = compute_MC_FM_labels(df_tt_prep,                                   keys_FM, keys_FM_MC, FM_MC_levels)
 
 for fire_name in fire_data_prep.keys():
-    fire_data_prep[fire_name] = compute_MC_FM_labels (fire_data_prep[fire_name],                                       keys_FM, keys_FM_MC, FM_levels)
+    fire_data_prep[fire_name] = compute_MC_FM_labels (fire_data_prep[fire_name],                                       keys_FM, keys_FM_MC, FM_MC_levels)
 
 
 # In[ ]:
@@ -269,7 +322,7 @@ for fire_name in fire_data_prep.keys():
 # In[ ]:
 
 
-columns_to_plot = ['FM_10hr', 'FM_10hr_bin']
+columns_to_plot = input_json_data['qoi_to_plot']['FM_binary_columns_to_plot']
 plot_binary_FM_labels (df_tt_prep, columns_to_plot, prepared_data_set_name, prepared_data_loc)
 
 
@@ -278,7 +331,7 @@ plot_binary_FM_labels (df_tt_prep, columns_to_plot, prepared_data_set_name, prep
 # In[ ]:
 
 
-col_to_plot = 'FM_10hr_MC'
+col_to_plot = input_json_data['qoi_to_plot']['FM_MC_column_to_plot']
 plot_MC_FM_labels (df_tt_prep, col_to_plot, prepared_data_set_name, prepared_data_loc)
 
 
