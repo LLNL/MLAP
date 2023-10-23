@@ -6,7 +6,7 @@
 # In[ ]:
 
 
-#jupyter nbconvert --to python Prepare_TrainTestFire_Data.ipynb
+#jupyter nbconvert --to python Prepare_TrainTest_Data.ipynb
 
 
 # # Import Modules
@@ -45,7 +45,7 @@ sys.path.insert(0, os.path.join(os.path.pardir, 'Step1_ExtractData'))
 
 
 from Extract_DFM_Data_Helper import *
-from Prepare_TrainTestFire_Data_Helper import *
+from Prepare_TrainTest_Data_Helper import *
 
 
 # # Global Start Time and Memory
@@ -65,7 +65,7 @@ global_initial_memory = process.memory_info().rss
 # In[ ]:
 
 
-input_json_file = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTestFire_Data_Prepared/InputJsonFiles/input_json_prep_data_000.json'
+json_file_prep_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTest_Data_Prepared/InputJsonFiles/json_prep_data_label_000.json'
 
 
 # ### Input file name when using python script on command line
@@ -73,7 +73,7 @@ input_json_file = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTestFire_Da
 # In[ ]:
 
 
-#input_json_file = sys.argv[1]
+#json_file_prep_data = sys.argv[1]
 
 
 # ### Load the Input JSON File
@@ -81,20 +81,20 @@ input_json_file = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTestFire_Da
 # In[ ]:
 
 
-print('Loading input from JSON file: \n {}'.format(input_json_file))
+print('Loading input from JSON file: \n {}'.format(json_file_prep_data))
 
 
 # In[ ]:
 
 
-with open(input_json_file) as input_json_file_handle:
-    input_json_data = json.load(input_json_file_handle)
+with open(json_file_prep_data) as json_file_handle:
+    json_content_prep_data = json.load(json_file_handle)
 
 
 # In[ ]:
 
 
-#input_json_data
+#json_content_prep_data
 
 
 # # Variables to be Used for Preparing Train, Test, and Fire Data
@@ -105,7 +105,7 @@ with open(input_json_file) as input_json_file_handle:
 
 
 # The current data set params
-data_set_count = input_json_data['data_set_defn']['data_set_count']
+data_set_count = json_content_prep_data['data_set_defn']['data_set_count']
 
 
 # ## Define FM Threshold etc.
@@ -113,7 +113,7 @@ data_set_count = input_json_data['data_set_defn']['data_set_count']
 # In[ ]:
 
 
-FM_labels = input_json_data['FM_labels']
+FM_labels = json_content_prep_data['FM_labels']
 
 
 # In[ ]:
@@ -129,7 +129,7 @@ FM_MC_levels = FM_labels['FM_MC_levels']
 # In[ ]:
 
 
-paths = input_json_data['paths']
+paths = json_content_prep_data['paths']
 
 
 # #### Global
@@ -327,7 +327,7 @@ for fire_name in fire_data_prep.keys():
 # In[ ]:
 
 
-columns_to_plot = input_json_data['qoi_to_plot']['FM_binary_columns_to_plot']
+columns_to_plot = json_content_prep_data['qoi_to_plot']['FM_binary_columns_to_plot']
 plot_binary_FM_labels (df_tt_prep, columns_to_plot, prepared_data_set_name, prepared_data_loc)
 
 
@@ -336,7 +336,7 @@ plot_binary_FM_labels (df_tt_prep, columns_to_plot, prepared_data_set_name, prep
 # In[ ]:
 
 
-col_to_plot = input_json_data['qoi_to_plot']['FM_MC_column_to_plot']
+col_to_plot = json_content_prep_data['qoi_to_plot']['FM_MC_column_to_plot']
 plot_MC_FM_labels (df_tt_prep, col_to_plot, prepared_data_set_name, prepared_data_loc)
 
 
