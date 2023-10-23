@@ -1,10 +1,9 @@
 {
 	"paths": 	     {
-				"extracted_data_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/ArchivedData/data_archived_2023_09_21/01_WRF_Nelson_Data_Extracted",
 				"prepared_data_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTest_Data_Prepared"
 			     },	     
-	"data_set_defn":     { 
-				"data_set_count": 0
+	"label_defn": 	     {
+				"label_count": 0
 			     },
 	"FM_labels":   	     {
 		 		"label_type": "Binary",

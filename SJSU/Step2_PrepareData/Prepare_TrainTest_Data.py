@@ -65,7 +65,8 @@ global_initial_memory = process.memory_info().rss
 # In[ ]:
 
 
-json_file_prep_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTest_Data_Prepared/InputJsonFiles/json_prep_data_label_000.json'
+json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_Extracted/InputJsonFiles/json_extract_data_000.json'
+json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTest_Data_Prepared/InputJsonFiles/json_prep_data_label_000.json'
 
 
 # ### Input file name when using python script on command line
@@ -73,15 +74,37 @@ json_file_prep_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTest_Da
 # In[ ]:
 
 
-#json_file_prep_data = sys.argv[1]
+#json_file_extract_data = sys.argv[1]
+#json_file_prep_data = sys.argv[2]
 
 
-# ### Load the Input JSON File
+# ### Load the JSON file for extracting data
 
 # In[ ]:
 
 
-print('Loading input from JSON file: \n {}'.format(json_file_prep_data))
+print('Loading the JSON file for extracting data: \n {}'.format(json_file_extract_data))
+
+
+# In[ ]:
+
+
+with open(json_file_extract_data) as json_file_handle:
+    json_content_extract_data = json.load(json_file_handle)
+
+
+# In[ ]:
+
+
+#json_content_extract_data
+
+
+# ### Load the JSON file for preparing data
+
+# In[ ]:
+
+
+print('Loading the JSON file for preparing data: \n {}'.format(json_file_prep_data))
 
 
 # In[ ]:
@@ -105,10 +128,16 @@ with open(json_file_prep_data) as json_file_handle:
 
 
 # The current data set params
-data_set_count = json_content_prep_data['data_set_defn']['data_set_count']
+data_set_count = json_content_extract_data['data_set_defn']['data_set_count']
 
 
-# ## Define FM Threshold etc.
+# ## Define Label, FM Threshold etc.
+
+# In[ ]:
+
+
+label_count = json_content_prep_data['label_defn']['label_count']
+
 
 # In[ ]:
 
@@ -126,20 +155,14 @@ FM_MC_levels = FM_labels['FM_MC_levels']
 
 # ## Paths and File Names
 
-# In[ ]:
-
-
-paths = json_content_prep_data['paths']
-
-
 # #### Global
 
 # In[ ]:
 
 
 # WRF data set location and the extracted data set location
-extracted_data_base_loc = paths['extracted_data_base_loc']
-prepared_data_base_loc  = paths['prepared_data_base_loc']
+extracted_data_base_loc = json_content_extract_data['paths']['extracted_data_base_loc']
+prepared_data_base_loc  = json_content_prep_data['paths']['prepared_data_base_loc']
 
 
 # #### DataSet Specific (Train, Test, Fire Data Extracted from WRF)
@@ -161,7 +184,7 @@ fire_data_file_name = '{}.pkl'.format(fire_data_set_name)
 # In[ ]:
 
 
-prepared_data_set_name = 'data_prepared_%03d'%(data_set_count)
+prepared_data_set_name = 'dataset_%03d_label_%03d'%(data_set_count, label_count)
 
 prepared_data_loc = os.path.join(prepared_data_base_loc, prepared_data_set_name)
 os.system('mkdir -p %s'%prepared_data_loc)
