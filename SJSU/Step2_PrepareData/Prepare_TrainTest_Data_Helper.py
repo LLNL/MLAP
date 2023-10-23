@@ -159,13 +159,14 @@ def plot_MC_FM_labels (df, col_label, prepared_data_set_name, prepared_data_loc)
 '''
 Split data into groups of keys
 '''
-def split_data_into_groups (df, fire_data_prep, keys_identity, keys_labels, keys_features):
+def split_data_into_groups (df, keys_identity, keys_labels, keys_features):
     data_tt_prep = dict()
     data_tt_prep['all'] = df
     data_tt_prep['identity'] = df[keys_identity]
     data_tt_prep['labels'] = df[keys_labels]
     data_tt_prep['features'] = df[keys_features]
     
+    '''
     data_fire_prep = dict()
     for fire_name in fire_data_prep.keys():
         data_this_fire = dict()
@@ -175,5 +176,5 @@ def split_data_into_groups (df, fire_data_prep, keys_identity, keys_labels, keys
         data_this_fire['features'] = fire_data_prep[fire_name][keys_features]
 
         data_fire_prep[fire_name] = data_this_fire
-    
-    return data_tt_prep, data_fire_prep
+    '''
+    return data_tt_prep #, data_fire_prep

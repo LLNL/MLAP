@@ -120,7 +120,7 @@ with open(json_file_prep_data) as json_file_handle:
 #json_content_prep_data
 
 
-# # Variables to be Used for Preparing Train, Test, and Fire Data
+# # Variables to be Used for Preparing Train and Test Data
 
 # ## DataSet Defintion
 
@@ -165,7 +165,7 @@ extracted_data_base_loc = json_content_extract_data['paths']['extracted_data_bas
 prepared_data_base_loc  = json_content_prep_data['paths']['prepared_data_base_loc']
 
 
-# #### DataSet Specific (Train, Test, Fire Data Extracted from WRF)
+# #### DataSet Specific (Train and Test Data Extracted from WRF)
 
 # In[ ]:
 
@@ -173,13 +173,14 @@ prepared_data_base_loc  = json_content_prep_data['paths']['prepared_data_base_lo
 data_set_name = 'data_train_test_extracted_%02d'%(data_set_count)
 extracted_data_loc = os.path.join(extracted_data_base_loc, data_set_name)
 extracted_data_file_name = '{}_df.pkl'.format(data_set_name)
-
+'''
 fire_data_set_name = 'data_fire_extracted_%02d'%(data_set_count)
 fire_data_loc = os.path.join(extracted_data_base_loc, fire_data_set_name)
 fire_data_file_name = '{}.pkl'.format(fire_data_set_name)
+'''
 
 
-# #### DataSet Specific (Train, Test, Fire Prepared)
+# #### DataSet Specific (Train and Test Data Prepared)
 
 # In[ ]:
 
@@ -201,7 +202,7 @@ seed = generate_seed()
 random_state = init_random_generator(seed)
 
 
-# # Load The Pickled Extracted Data (Train, Test, Fire) from WRF 
+# # Load The Pickled Extracted Data (Train, Test) from WRF 
 
 # ## Load The Train/Test Data Saved in Pickle File
 
@@ -209,7 +210,7 @@ random_state = init_random_generator(seed)
 
 
 df_tt_extracted = pd.read_pickle(os.path.join(extracted_data_loc, extracted_data_file_name))
-#df_tt_extracted[998:1002]
+#df_tt_extracted
 
 
 # ## Load The Fire Data Saved in Pickle File
@@ -217,10 +218,12 @@ df_tt_extracted = pd.read_pickle(os.path.join(extracted_data_loc, extracted_data
 # In[ ]:
 
 
+'''
 fire_data_file_handle = open(os.path.join(fire_data_loc, fire_data_file_name), 'rb')
 fire_data_extracted = pickle.load(fire_data_file_handle)
 fire_data_file_handle.close()
 print('Read fire data from "{}" at "{}"'.format(fire_data_file_name, fire_data_loc))
+'''
 
 
 # In[ ]:
@@ -237,7 +240,7 @@ print('Read fire data from "{}" at "{}"'.format(fire_data_file_name, fire_data_l
 #df_tt_extracted.keys() == fire_data_extracted['Woosley'].keys()
 
 
-# # Get Column Names in the Train, Test, and Fire Data
+# # Get Column Names in the Train and Test Data
 
 # In[ ]:
 
@@ -262,6 +265,13 @@ keys_labels = keys_FM + keys_FM_Binary + keys_FM_MC
 keys_features = keys_UMag10 + keys_T2 + keys_RH + keys_PREC + keys_SW #+ keys_HGT
 
 
+# In[ ]:
+
+
+#keys_features
+
+
+# 
 # # Compute New Columns or Remove Some
 
 # ## Compute Wind Magnitude 
@@ -271,10 +281,12 @@ keys_features = keys_UMag10 + keys_T2 + keys_RH + keys_PREC + keys_SW #+ keys_HG
 
 df_tt_prep = compute_wind_mag (df_tt_extracted, keys_U10, keys_V10, keys_UMag10)
 
+'''
 fire_data_prep = dict()
 for fire_name in fire_data_extracted.keys():
     fire_data_prep[fire_name] = compute_wind_mag (fire_data_extracted[fire_name], 
                                                   keys_U10, keys_V10, keys_UMag10)
+'''
 
 
 # In[ ]:
@@ -291,8 +303,11 @@ for fire_name in fire_data_extracted.keys():
 
 df_tt_prep = drop_wind_components (df_tt_prep, keys_U10, keys_V10)
 
+'''
 for fire_name in fire_data_prep.keys():
-    fire_data_prep[fire_name] = drop_wind_components (                                        fire_data_prep[fire_name], keys_U10, keys_V10)
+    fire_data_prep[fire_name] = drop_wind_components (\
+                                        fire_data_prep[fire_name], keys_U10, keys_V10)
+'''
 
 
 # In[ ]:
@@ -308,9 +323,11 @@ for fire_name in fire_data_prep.keys():
 
 
 df_tt_prep = compute_binary_FM_labels(df_tt_prep,                                       keys_FM, keys_FM_Binary, FM_binary_threshold)
-
+'''
 for fire_name in fire_data_prep.keys():
-    fire_data_prep[fire_name] = compute_binary_FM_labels (fire_data_prep[fire_name],                                       keys_FM, keys_FM_Binary, FM_binary_threshold)
+    fire_data_prep[fire_name] = compute_binary_FM_labels (fire_data_prep[fire_name], \
+                                      keys_FM, keys_FM_Binary, FM_binary_threshold)
+'''
 
 
 # In[ ]:
@@ -333,9 +350,11 @@ for fire_name in fire_data_prep.keys():
 
 
 df_tt_prep = compute_MC_FM_labels(df_tt_prep,                                   keys_FM, keys_FM_MC, FM_MC_levels)
-
+'''
 for fire_name in fire_data_prep.keys():
-    fire_data_prep[fire_name] = compute_MC_FM_labels (fire_data_prep[fire_name],                                       keys_FM, keys_FM_MC, FM_MC_levels)
+    fire_data_prep[fire_name] = compute_MC_FM_labels (fire_data_prep[fire_name], \
+                                      keys_FM, keys_FM_MC, FM_MC_levels)
+'''
 
 
 # In[ ]:
@@ -368,7 +387,12 @@ plot_MC_FM_labels (df_tt_prep, col_to_plot, prepared_data_set_name, prepared_dat
 # In[ ]:
 
 
-data_tt_prep, data_fire_prep = split_data_into_groups (                                            df_tt_prep, fire_data_prep,                                             keys_identity, keys_labels, keys_features)
+data_tt_prep = split_data_into_groups (df_tt_prep,                                        keys_identity, keys_labels, keys_features)
+'''
+data_tt_prep, data_fire_prep = split_data_into_groups (\
+                                            df_tt_prep, fire_data_prep, \
+                                            keys_identity, keys_labels, keys_features)
+'''
 
 
 # # Save The Prepared Data
@@ -376,8 +400,11 @@ data_tt_prep, data_fire_prep = split_data_into_groups (                         
 # In[ ]:
 
 
+'''
 prepared_data = {'tt': data_tt_prep,
                  'fire': data_fire_prep}
+'''
+prepared_data = data_tt_prep
 prepared_data_file_handle = open(os.path.join(prepared_data_loc, prepared_data_file_name), 'wb')
 pickle.dump(prepared_data, prepared_data_file_handle)
 prepared_data_file_handle.close()
@@ -398,7 +425,7 @@ print('Read prepared data from "{}" at "{}"'.format(prepared_data_file_name, pre
 # In[ ]:
 
 
-#prepared_data_read['tt']['all'].head(5)
+prepared_data_read['labels'].head(5)
 #prepared_data_read['fire']['Woosley']['identity'].head(5)
 
 
