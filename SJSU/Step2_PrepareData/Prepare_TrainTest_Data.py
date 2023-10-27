@@ -185,7 +185,7 @@ fire_data_file_name = '{}.pkl'.format(fire_data_set_name)
 # In[ ]:
 
 
-prepared_data_set_name = 'dataset_%03d_label_%03d'%(data_set_count, label_count)
+prepared_data_set_name = 'dataset_%03d_label_%03d_%s'%(data_set_count, label_count, FM_label_type)
 
 prepared_data_loc = os.path.join(prepared_data_base_loc, prepared_data_set_name)
 os.system('mkdir -p %s'%prepared_data_loc)
@@ -261,7 +261,19 @@ keys_FM_Binary, keys_FM_MC = define_binary_and_MC_FM_labels (keys_FM)
 # In[ ]:
 
 
-keys_labels = keys_FM + keys_FM_Binary + keys_FM_MC
+if (FM_label_type == 'Regression'):
+    keys_labels = keys_FM
+elif (FM_label_type == 'Binary'):
+    keys_labels = keys_FM + keys_FM_Binary
+elif (FM_label_type == 'MultiClass'):
+    keys_labels = keys_FM + keys_FM_MC
+else:
+    raise ValueError('Invalid "label_type": {} in "FM_labels".                     \nValid types are: "Regression", "MultiClass", and "Binary"'.format(                                                                            FM_label_type))
+
+
+# In[ ]:
+
+
 keys_features = keys_UMag10 + keys_T2 + keys_RH + keys_PREC + keys_SW #+ keys_HGT
 
 
@@ -322,7 +334,8 @@ for fire_name in fire_data_prep.keys():
 # In[ ]:
 
 
-df_tt_prep = compute_binary_FM_labels(df_tt_prep,                                       keys_FM, keys_FM_Binary, FM_binary_threshold)
+if FM_label_type == 'Binary':
+    df_tt_prep = compute_binary_FM_labels(df_tt_prep,                                           keys_FM, keys_FM_Binary, FM_binary_threshold)
 '''
 for fire_name in fire_data_prep.keys():
     fire_data_prep[fire_name] = compute_binary_FM_labels (fire_data_prep[fire_name], \
@@ -349,7 +362,8 @@ for fire_name in fire_data_prep.keys():
 # In[ ]:
 
 
-df_tt_prep = compute_MC_FM_labels(df_tt_prep,                                   keys_FM, keys_FM_MC, FM_MC_levels)
+if FM_label_type == 'MultiClass':
+    df_tt_prep = compute_MC_FM_labels(df_tt_prep,                                       keys_FM, keys_FM_MC, FM_MC_levels)
 '''
 for fire_name in fire_data_prep.keys():
     fire_data_prep[fire_name] = compute_MC_FM_labels (fire_data_prep[fire_name], \
@@ -369,8 +383,9 @@ for fire_name in fire_data_prep.keys():
 # In[ ]:
 
 
-columns_to_plot = json_content_prep_data['qoi_to_plot']['FM_binary_columns_to_plot']
-plot_binary_FM_labels (df_tt_prep, columns_to_plot, prepared_data_set_name, prepared_data_loc)
+if FM_label_type == 'Binary':
+    columns_to_plot = json_content_prep_data['qoi_to_plot']['FM_binary_columns_to_plot']
+    plot_binary_FM_labels (df_tt_prep, columns_to_plot, prepared_data_set_name, prepared_data_loc)
 
 
 # ## Plot MC FM Labels
@@ -378,8 +393,9 @@ plot_binary_FM_labels (df_tt_prep, columns_to_plot, prepared_data_set_name, prep
 # In[ ]:
 
 
-col_to_plot = json_content_prep_data['qoi_to_plot']['FM_MC_column_to_plot']
-plot_MC_FM_labels (df_tt_prep, col_to_plot, prepared_data_set_name, prepared_data_loc)
+if FM_label_type == 'MultiClass':
+    col_to_plot = json_content_prep_data['qoi_to_plot']['FM_MC_column_to_plot']
+    plot_MC_FM_labels (df_tt_prep, col_to_plot, prepared_data_set_name, prepared_data_loc)
 
 
 # # Split Data into Identity, Features, and Labels
@@ -425,8 +441,19 @@ print('Read prepared data from "{}" at "{}"'.format(prepared_data_file_name, pre
 # In[ ]:
 
 
-prepared_data_read['labels'].head(5)
-#prepared_data_read['fire']['Woosley']['identity'].head(5)
+#prepared_data_read['identity'].head(5)
+
+
+# In[ ]:
+
+
+#prepared_data_read['labels'].head(5)
+
+
+# In[ ]:
+
+
+#prepared_data_read['features'].head(5)
 
 
 # # Global End Time and Memory
