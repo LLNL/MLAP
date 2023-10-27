@@ -260,8 +260,6 @@ print('Read fire data from "{}" at "{}"'.format(fire_data_file_name, fire_data_l
 keys_identity, keys_FM, keys_U10, keys_V10, keys_UMag10, keys_T2, keys_RH, keys_PREC, keys_SW,                             keys_HGT = get_keys_from_extracted_data (df_tt_extracted)
 
 
-# ### Define Binary and MC FM labels
-
 # In[ ]:
 
 
@@ -286,7 +284,18 @@ else:
 # In[ ]:
 
 
-keys_features = keys_UMag10 + keys_T2 + keys_RH + keys_PREC + keys_SW #+ keys_HGT
+features_to_use = json_content_prep_data['features']['features_to_use']
+keys_features = []
+if 'UMag10' in features_to_use:
+    keys_features += keys_UMag10 
+if 'T2' in features_to_use:
+    keys_features += keys_T2
+if 'RH' in features_to_use:
+    keys_features += keys_RH 
+if 'PREC' in features_to_use:
+    keys_features += keys_PREC
+if 'SW' in features_to_use:
+    keys_features += keys_SW
 
 
 # In[ ]:
