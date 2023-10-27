@@ -38,7 +38,19 @@ from timeit import default_timer as timer
 # In[ ]:
 
 
-sys.path.insert(0, os.path.join(os.path.pardir, 'Step1_ExtractData'))
+current_running_file_dir = sys.path[0]
+current_running_file_par = '/'.join(sys.path[0].split('/')[:-1])
+sys.path.insert(0, os.path.join(current_running_file_par, 'Step1_ExtractData'))
+
+
+# In[ ]:
+
+
+'''
+print('current_running_file_dir:', current_running_file_dir)
+print('current_running_file_par:', current_running_file_par)
+print('PATH: ', sys.path)
+'''
 
 
 # In[ ]:
