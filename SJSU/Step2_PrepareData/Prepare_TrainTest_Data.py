@@ -399,24 +399,19 @@ for fire_name in fire_data_prep.keys():
 #fire_data_prep['Woosley'][keys_FM + keys_FM_MC]
 
 
-# ## Plot Binary FM Labels
+# # Plot FM Labels
 
 # In[ ]:
 
 
-if FM_label_type == 'Binary':
-    columns_to_plot = json_content_prep_data['qoi_to_plot']['FM_binary_columns_to_plot']
-    plot_binary_FM_labels (df_tt_prep, columns_to_plot, prepared_data_set_name, prepared_data_loc)
+FM_hr = json_content_prep_data['qoi_to_plot']['FM_hr']
+FM_hr
 
-
-# ## Plot MC FM Labels
 
 # In[ ]:
 
 
-if FM_label_type == 'MultiClass':
-    col_to_plot = json_content_prep_data['qoi_to_plot']['FM_MC_column_to_plot']
-    plot_MC_FM_labels (df_tt_prep, col_to_plot, prepared_data_set_name, prepared_data_loc)
+plot_FM_labels (df_tt_prep, FM_label_type, FM_hr,                 prepared_data_set_name, prepared_data_loc)
 
 
 # # Split Data into Identity, Features, and Labels

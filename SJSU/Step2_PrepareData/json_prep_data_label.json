@@ -14,7 +14,6 @@
 				"features_to_use": ["UMag10", "T2", "RH", "PREC", "SW"]
 			     },
 	"qoi_to_plot":	     {
-				"FM_binary_columns_to_plot": ["FM_10hr", "FM_10hr_bin"],
-				"FM_MC_column_to_plot": "FM_10hr_MC"
+				"FM_hr": 10
 			     }
 }

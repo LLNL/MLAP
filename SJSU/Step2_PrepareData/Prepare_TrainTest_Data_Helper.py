@@ -116,43 +116,35 @@ def compute_MC_FM_labels(df, keys_FM, keys_FM_MC, FM_levels):
 
 # []
 '''
-Plot Binary FM labels
+Plot FM labels
 '''
-def plot_binary_FM_labels (df, columns_to_plot, prepared_data_set_name, prepared_data_loc):
+def plot_FM_labels (df, FM_label_type, FM_hr, \
+                    prepared_data_set_name, prepared_data_loc):
+    
+    if (FM_label_type == 'Regression'):
+        columns_to_plot = ['FM_{}hr'.format(FM_hr)]
+    elif (FM_label_type == 'Binary'):
+        columns_to_plot = ['FM_{}hr_bin'.format(FM_hr)]
+    elif (FM_label_type == 'MultiClass'):
+        columns_to_plot = ['FM_{}hr_MC'.format(FM_hr)]
+    else:
+        raise ValueError('Invalid "label_type": {} in "FM_labels". \
+                        \nValid types are: "Regression", "MultiClass", and "Binary"'.format(\
+                                                                                FM_label_type))
+        
     plt.figure()
     for col_label in columns_to_plot:
-        plt.hist(df[col_label], bins = 20, density=False, label = col_label)
+        plt.hist(df[col_label], bins = 19, density=False, label = col_label)
     plt.legend()
-    plt.xlabel('Fuel Moisture (Absolute and Binary)', fontsize = 14)
+    plt.xlabel('Fuel Moisture ({})'.format(FM_label_type), fontsize = 14)
     plt.ylabel('Frequency', fontsize = 14)
 
-    filename = '{}_{}.png'.format(prepared_data_set_name, columns_to_plot[0])
+    filename = '{}_FM_{}hr.png'.format(prepared_data_set_name, FM_hr)
     filedir = prepared_data_loc
     os.system('mkdir -p %s'%filedir)
 
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
-    #plt.show()
-    plt.close()
-    
-    
-# []
-'''
-Plot MC FM labels
-'''
-def plot_MC_FM_labels (df, col_label, prepared_data_set_name, prepared_data_loc):
-    plt.figure()
-    plt.hist(df[col_label], bins = 20, density=False, label = col_label)
-    plt.legend()
-    plt.xlabel('Fuel Moisture (MC)', fontsize = 14)
-    plt.ylabel('Frequency', fontsize = 14)
-
-    filename = '{}_{}.png'.format(prepared_data_set_name, col_label)
-    filedir = prepared_data_loc
-    os.system('mkdir -p %s'%filedir)
-
-    plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
-    #plt.show()
-    plt.close()
+    plt.show()
     
     
 # []
