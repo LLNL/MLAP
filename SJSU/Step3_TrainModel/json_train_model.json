@@ -1,0 +1,25 @@
+{
+	"paths": 	     {
+				"prepared_data_base_loc": 
+				"/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/ArchivedData/data_archived_2023_09_21/02_TrainTestFire_Data_Prepared",
+				"trained_model_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models",
+				"analysis_data_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/04_Analysis"
+			     },	     
+	"data_set_defn":     { 
+				"data_set_count": 8
+			     },
+	"FM_labels":   	     {
+		 		"label_type": "Regr",
+				"FM_hr": 10
+			     },
+	"models":	     {
+				"model_considered": "MLP"
+			     },
+	"fire_data":		     {
+				"fire_name": "Woosley"
+			     },
+	"plot_options":	     {
+				"cmap_name": "hot",
+				"cont_levels": [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+			     }
+}
