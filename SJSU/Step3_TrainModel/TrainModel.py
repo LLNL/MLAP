@@ -55,7 +55,9 @@ from sklearn.metrics import precision_recall_curve, classification_report
 # In[ ]:
 
 
-sys.path.insert(0, os.path.join(os.path.pardir, 'Step1_ExtractData'))
+current_running_file_dir = sys.path[0]
+current_running_file_par = '/'.join(sys.path[0].split('/')[:-1])
+sys.path.insert(0, os.path.join(current_running_file_par, 'Step1_ExtractData'))
 
 
 # In[ ]:
@@ -81,7 +83,7 @@ global_initial_memory = process.memory_info().rss
 # In[ ]:
 
 
-input_json_file = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models/InputJsonFiles/input_json_train_model_008.json'
+json_file_train_model = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models/InputJsonFiles/json_train_model_008.json'
 
 
 # ### Input file name when using python script on command line
@@ -89,31 +91,31 @@ input_json_file = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models/I
 # In[ ]:
 
 
-#input_json_file = sys.argv[1]
+#json_file_train_model = sys.argv[1]
 
 
-# ## Load the Input JSON File
-
-# In[ ]:
-
-
-print('Loading input from JSON file: \n {}'.format(input_json_file))
-
+# ### Load the JSON file for training model
 
 # In[ ]:
 
 
-with open(input_json_file) as input_json_file_handle:
-    input_json_data = json.load(input_json_file_handle)
+print('Loading the JSON file for training model: \n {}'.format(json_file_train_model))
 
 
 # In[ ]:
 
 
-input_json_data
+with open(json_file_train_model) as json_file_handle:
+    json_content_train_model = json.load(json_file_handle)
 
 
-# # Variables to be Used for Preparing Train, Test, and Fire Data
+# In[ ]:
+
+
+#json_content_train_model
+
+
+# # Variables to be Used for Training Model
 
 # ## DataSet Defintion
 
@@ -121,7 +123,7 @@ input_json_data
 
 
 # The current data set params
-data_set_count = input_json_data['data_set_defn']['data_set_count']
+data_set_count = json_content_train_model['data_set_defn']['data_set_count']
 
 
 # ## Define Model, Label etc.
@@ -131,13 +133,13 @@ data_set_count = input_json_data['data_set_defn']['data_set_count']
 # In[ ]:
 
 
-label_type = input_json_data['FM_labels']['label_type'] # ['bin', 'MC', 'Regr']
+label_type = json_content_train_model['FM_labels']['label_type'] # ['bin', 'MC', 'Regr']
 
 
 # In[ ]:
 
 
-FM_hr = input_json_data['FM_labels']['FM_hr'] # [10, 100]
+FM_hr = json_content_train_model['FM_labels']['FM_hr'] # [10, 100]
 
 
 # ### Models 
@@ -145,7 +147,7 @@ FM_hr = input_json_data['FM_labels']['FM_hr'] # [10, 100]
 # In[ ]:
 
 
-model_considered = input_json_data['models']['model_considered'] # ['RF', SVM', 'MLP']
+model_considered = json_content_train_model['models']['model_considered'] # ['RF', SVM', 'MLP']
 
 
 # ### Fire of Interest
@@ -153,7 +155,7 @@ model_considered = input_json_data['models']['model_considered'] # ['RF', SVM', 
 # In[ ]:
 
 
-fire_name = input_json_data['fire_data']['fire_name']
+fire_name = json_content_train_model['fire_data']['fire_name']
 
 
 # ## Paths and File Names
@@ -161,7 +163,7 @@ fire_name = input_json_data['fire_data']['fire_name']
 # In[ ]:
 
 
-paths = input_json_data['paths']
+paths = json_content_train_model['paths']
 
 
 # #### Global
