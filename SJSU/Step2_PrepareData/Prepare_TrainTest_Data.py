@@ -161,8 +161,11 @@ FM_labels = json_content_prep_data['FM_labels']
 
 
 FM_label_type = FM_labels['label_type']
-FM_binary_threshold = FM_labels['FM_binary_threshold']
-FM_MC_levels = FM_labels['FM_MC_levels']
+
+if (FM_label_type == 'Binary'):
+    FM_binary_threshold = FM_labels['FM_binary_threshold']
+if (FM_label_type == 'MultiClass'):
+    FM_MC_levels = FM_labels['FM_MC_levels']
 
 
 # ## Paths and File Names
@@ -192,7 +195,7 @@ fire_data_file_name = '{}.pkl'.format(fire_data_set_name)
 '''
 
 
-# #### DataSet Specific (Train and Test Data Prepared)
+# #### DataSet and Label Specific (Train and Test Data Prepared)
 
 # In[ ]:
 
@@ -405,7 +408,6 @@ for fire_name in fire_data_prep.keys():
 
 
 FM_hr = json_content_prep_data['qoi_to_plot']['FM_hr']
-FM_hr
 
 
 # In[ ]:
@@ -437,9 +439,8 @@ prepared_data = {'tt': data_tt_prep,
                  'fire': data_fire_prep}
 '''
 prepared_data = data_tt_prep
-prepared_data_file_handle = open(os.path.join(prepared_data_loc, prepared_data_file_name), 'wb')
-pickle.dump(prepared_data, prepared_data_file_handle)
-prepared_data_file_handle.close()
+with open(os.path.join(prepared_data_loc, prepared_data_file_name), 'wb') as file_handle:
+    pickle.dump(prepared_data, file_handle)
 print('Wrote prepared data in "{}" at "{}"'.format(prepared_data_file_name, prepared_data_loc))
 
 
@@ -448,9 +449,8 @@ print('Wrote prepared data in "{}" at "{}"'.format(prepared_data_file_name, prep
 # In[ ]:
 
 
-prepared_data_file_handle = open(os.path.join(prepared_data_loc, prepared_data_file_name), 'rb')
-prepared_data_read = pickle.load(prepared_data_file_handle)
-prepared_data_file_handle.close()
+with open(os.path.join(prepared_data_loc, prepared_data_file_name), 'rb') as file_handle:
+    prepared_data = pickle.load(file_handle)
 print('Read prepared data from "{}" at "{}"'.format(prepared_data_file_name, prepared_data_loc))
 
 
