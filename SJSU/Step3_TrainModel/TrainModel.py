@@ -83,7 +83,9 @@ global_initial_memory = process.memory_info().rss
 # In[ ]:
 
 
-json_file_train_model = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models/InputJsonFiles/json_train_model_008.json'
+json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_Extracted/InputJsonFiles/json_extract_data_005.json'
+json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTest_Data_Prepared/InputJsonFiles/json_prep_data_label_002.json'
+json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models/InputJsonFiles/json_train_model_000.json'
 
 
 # ### Input file name when using python script on command line
@@ -91,7 +93,51 @@ json_file_train_model = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Mo
 # In[ ]:
 
 
-#json_file_train_model = sys.argv[1]
+#json_file_extract_data = sys.argv[1]
+#json_file_prep_data = sys.argv[2]
+#json_file_train_model = sys.argv[3]
+
+
+# ### Load the JSON file for extracting data
+
+# In[ ]:
+
+
+print('Loading the JSON file for extracting data: \n {}'.format(json_file_extract_data))
+
+
+# In[ ]:
+
+
+with open(json_file_extract_data) as json_file_handle:
+    json_content_extract_data = json.load(json_file_handle)
+
+
+# In[ ]:
+
+
+#json_content_extract_data
+
+
+# ### Load the JSON file for preparing data
+
+# In[ ]:
+
+
+print('Loading the JSON file for preparing data: \n {}'.format(json_file_prep_data))
+
+
+# In[ ]:
+
+
+with open(json_file_prep_data) as json_file_handle:
+    json_content_prep_data = json.load(json_file_handle)
+
+
+# In[ ]:
+
+
+#json_content_prep_data
 
 
 # ### Load the JSON file for training model
@@ -123,30 +169,48 @@ with open(json_file_train_model) as json_file_handle:
 
 
 # The current data set params
-data_set_count = json_content_train_model['data_set_defn']['data_set_count']
+data_set_count = json_content_extract_data['data_set_defn']['data_set_count']
 
 
-# ## Define Model, Label etc.
-
-# ### Label Type
+# ## Define Label, FM Threshold etc.
 
 # In[ ]:
 
 
-label_type = json_content_train_model['FM_labels']['label_type'] # ['bin', 'MC', 'Regr']
+label_count = json_content_prep_data['label_defn']['label_count']
 
 
 # In[ ]:
 
 
-FM_hr = json_content_train_model['FM_labels']['FM_hr'] # [10, 100]
+FM_labels = json_content_prep_data['FM_labels']
 
+
+# In[ ]:
+
+
+FM_label_type = FM_labels['label_type']
+
+if (FM_label_type == 'Binary'):
+    FM_binary_threshold = FM_labels['FM_binary_threshold']
+if (FM_label_type == 'MultiClass'):
+    FM_MC_levels = FM_labels['FM_MC_levels']
+
+
+# In[ ]:
+
+
+FM_hr = json_content_prep_data['qoi_to_plot']['FM_hr']
+
+
+# ## Define ML Model and Params etc.
 
 # ### Models 
 
 # In[ ]:
 
 
+model_count = json_content_train_model['models']['model_count']
 model_considered = json_content_train_model['models']['model_considered'] # ['RF', SVM', 'MLP']
 
 
@@ -160,28 +224,22 @@ fire_name = json_content_train_model['fire_data']['fire_name']
 
 # ## Paths and File Names
 
-# In[ ]:
-
-
-paths = json_content_train_model['paths']
-
-
 # #### Global
 
 # In[ ]:
 
 
-prepared_data_base_loc = paths['prepared_data_base_loc']
-trained_model_base_loc = paths['trained_model_base_loc']
-analysis_data_base_loc = paths['analysis_data_base_loc']
+prepared_data_base_loc = json_content_prep_data[ 'paths']['prepared_data_base_loc']
+trained_model_base_loc = json_content_train_model['paths']['trained_model_base_loc']
+analysis_data_base_loc = json_content_train_model['paths']['analysis_data_base_loc']
 
 
-# #### DataSet Specific (Train, Test, Fire Prepared)
+# #### DataSet and Label Specific (Train and Test Data Prepared)
 
 # In[ ]:
 
 
-prepared_data_set_name = 'data_prepared_%02d'%(data_set_count)
+prepared_data_set_name = 'dataset_%03d_label_%03d_%s'%(data_set_count,                                                        label_count, FM_label_type)
 
 prepared_data_loc = os.path.join(prepared_data_base_loc, prepared_data_set_name)
 os.system('mkdir -p %s'%prepared_data_loc)
@@ -189,18 +247,17 @@ os.system('mkdir -p %s'%prepared_data_loc)
 prepared_data_file_name = '{}.pkl'.format(prepared_data_set_name)
 
 
-# #### DataSet Specific (Trained Model)
+# #### DataSet, Label, and Model Specific (Trained Model)
 
 # In[ ]:
 
 
-trained_model_set_name = 'trained_model_%03d'%(data_set_count)
+trained_model_name = 'dataset_%03d_label_%03d_%s_model_%03d_%s'%(data_set_count,                                                         label_count, FM_label_type,                                                         model_count, model_considered)
 
-trained_model_loc = os.path.join(trained_model_base_loc, trained_model_set_name)
+trained_model_loc = os.path.join(trained_model_base_loc, trained_model_name)
 os.system('mkdir -p %s'%trained_model_loc)
 
-trained_model_name = '{}_{}_{}.pkl'.format(trained_model_set_name, label_type, model_considered)
-trained_model_file = os.path.join(trained_model_loc, trained_model_name)
+trained_model_file_name = '{}.pkl'.format(trained_model_name)
 
 
 # #### DataSet Specific (Analysis Data)
@@ -229,14 +286,13 @@ seed = generate_seed()
 random_state = init_random_generator(seed)
 
 
-# # Load The The Prepared Data Saved in Pickle File
+# # Load The Prepared Data Saved in Pickle File
 
 # In[ ]:
 
 
-prepared_data_file_handle = open(os.path.join(prepared_data_loc, prepared_data_file_name), 'rb')
-prepared_data = pickle.load(prepared_data_file_handle)
-prepared_data_file_handle.close()
+with open(os.path.join(prepared_data_loc, prepared_data_file_name), 'rb') as file_handle:
+    prepared_data = pickle.load(file_handle)
 print('Read prepared data from "{}" at "{}"'.format(prepared_data_file_name, prepared_data_loc))
 
 
@@ -245,7 +301,7 @@ print('Read prepared data from "{}" at "{}"'.format(prepared_data_file_name, pre
 # In[ ]:
 
 
-prepared_data['tt']['all']
+prepared_data['all']
 #prepared_data['fire']['Woosley']['identity'].head(5)
 
 
