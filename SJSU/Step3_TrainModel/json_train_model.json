@@ -6,12 +6,5 @@
 	"models":	     {
 				"model_count": 0,
 				"model_considered": "MLP"
-			     },
-	"fire_data":	     {
-				"fire_name": "Woosley"
-			     },
-	"plot_options":	     {
-				"cmap_name": "hot",
-				"cont_levels": [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 			     }
 }
