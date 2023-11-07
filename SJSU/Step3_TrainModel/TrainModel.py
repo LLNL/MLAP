@@ -39,7 +39,8 @@ import time
 # In[ ]:
 
 
-from sklearn.svm import SVC
+from sklearn.svm import SVC, SVR
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 from sklearn.neural_network import MLPClassifier, MLPRegressor
 
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
@@ -84,7 +85,7 @@ global_initial_memory = process.memory_info().rss
 
 
 json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_Extracted/InputJsonFiles/json_extract_data_005.json'
-json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTest_Data_Prepared/InputJsonFiles/json_prep_data_label_002.json'
+json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTest_Data_Prepared/InputJsonFiles/json_prep_data_label_000.json'
 json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models/InputJsonFiles/json_train_model_000.json'
 
 
@@ -103,7 +104,7 @@ json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_M
 # In[ ]:
 
 
-print('Loading the JSON file for extracting data: \n {}'.format(json_file_extract_data))
+print('\nLoading the JSON file for extracting data: \n {}'.format(json_file_extract_data))
 
 
 # In[ ]:
@@ -205,7 +206,7 @@ FM_hr = json_content_prep_data['qoi_to_plot']['FM_hr']
 
 # ## Define ML Model and Params etc.
 
-# ### Models 
+# ### Model Defintion
 
 # In[ ]:
 
@@ -214,7 +215,7 @@ model_count = json_content_train_model['models']['model_count']
 model_considered = json_content_train_model['models']['model_considered'] # ['RF', SVM', 'MLP']
 
 
-# ## Paths and File Names
+# # Paths and File Names
 
 # #### Global
 
@@ -267,10 +268,12 @@ random_state = init_random_generator(seed)
 
 with open(os.path.join(prepared_data_loc, prepared_data_file_name), 'rb') as file_handle:
     prepared_data = pickle.load(file_handle)
-print('Read prepared data from "{}" at "{}"'.format(prepared_data_file_name, prepared_data_loc))
+print('\nRead prepared data from "{}" at "{}"\n'.format(prepared_data_file_name, prepared_data_loc))
 
 
 # # Get Features and Labels to Use
+
+# ## Features
 
 # In[ ]:
 
@@ -281,51 +284,64 @@ features_to_use = prepared_data['features'].keys()
 # In[ ]:
 
 
-prepared_data['labels'].keys()
+#features_to_use
 
 
-# ## Get the Headers for Features and Labels
+# ## Labels
 
 # In[ ]:
 
 
-if (label_type == 'Regr'):
-    label_to_use = 'FM_{}hr'.format(FM_hr)
+#prepared_data['labels'].keys()
+
+
+# In[ ]:
+
+
+if (FM_label_type == 'Regression'):
+    labels_to_use = ['FM_{}hr'.format(FM_hr)]
+elif (FM_label_type == 'Binary'):
+    labels_to_use = ['FM_{}hr_bin'.format(FM_hr)]
+elif (FM_label_type == 'MultiClass'):
+    labels_to_use = ['FM_{}hr_MC'.format(FM_hr)]
 else:
-    label_to_use = 'FM_{}hr_{}'.format(FM_hr, label_type)
+    raise ValueError('Invalid "label_type": {} in "FM_labels".                     \nValid types are: "Regression", "MultiClass", and "Binary"'.format(                                                                            FM_label_type))
 
 
 # In[ ]:
 
 
-#label_to_use
+#labels_to_use
 
 
-# ## Extract Features and Labels
-
-# In[ ]:
-
-
-X_tt     = prepared_data['tt']['features'][features_to_use]
-y_tt     = prepared_data['tt']['labels'][label_to_use]
-idy_tt   = prepared_data['tt']['identity']
-#all = prepared_data['tt']['all']
-
+# ## Extract Features and Labels from Prepared Train/Test Data
 
 # In[ ]:
 
 
-y_tt
+X_tt     = prepared_data['features'][features_to_use]
+y_tt     = prepared_data['labels'][labels_to_use]
+idy_tt   = prepared_data['identity']
+#all_tt = prepared_data['all']
+
+
+# In[ ]:
+
+
+#X_tt, y_tt, all_tt
 
 
 # ## Scale Features
-
-# #### Features for Train/Test
 
 # In[ ]:
 
 
 scaler = MinMaxScaler()
+
+
+# In[ ]:
+
+
 scaler.fit(X_tt)
 X_tt_scaled = scaler.transform(X_tt)
 
@@ -333,7 +349,7 @@ X_tt_scaled = scaler.transform(X_tt)
 # In[ ]:
 
 
-#X_tt_scaled
+#X_tt_scaled.shape
 
 
 # ## Train /Test Split
@@ -341,20 +357,36 @@ X_tt_scaled = scaler.transform(X_tt)
 # In[ ]:
 
 
-features_train, features_test, labels_train, labels_test = train_test_split(X_tt_scaled, y_tt, test_size=0.2)
+test_size = 0.2
 
 
-# # Model
+# In[ ]:
+
+
+features_train, features_test, labels_train, labels_test = train_test_split(X_tt_scaled, y_tt.to_numpy(), test_size=test_size)
+
+
+# In[ ]:
+
+
+#type(labels_test)
+
+
+# # ML Model
 
 # ## Define the Model
 
 # In[ ]:
 
 
-print ('label_type: {}'.format(label_type))
-print ('Model: {}'.format(model_considered))
+print ('FM label type: {}'.format(FM_label_type))
+print ('ML model considered: {}'.format(model_considered))
 
-if (label_type == 'Regr'):
+
+# In[ ]:
+
+
+if (FM_label_type == 'Regression'):
     match model_considered:
         case 'SVM':
             model = SVR(kernel='rbf')
@@ -362,7 +394,7 @@ if (label_type == 'Regr'):
             model = RandomForestRegressor(max_depth=2, random_state=0)
         case 'MLP':
             model = MLPRegressor(random_state=1, max_iter=500)
-else: # 'bin' or 'MC'
+elif (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
     match model_considered:
         case 'SVM':
             model = SVC(kernel="linear", class_weight = "balanced")
@@ -376,7 +408,7 @@ else: # 'bin' or 'MC'
 # In[ ]:
 
 
-model
+#model
 
 
 # ## Train the Model
@@ -385,7 +417,7 @@ model
 
 
 t0 = time.time()
-model.fit(features_train, labels_train)
+model.fit(features_train, labels_train.ravel())
 print ("Training Time:", round(time.time()-t0, 3), "s")
 
 
@@ -394,27 +426,9 @@ print ("Training Time:", round(time.time()-t0, 3), "s")
 # In[ ]:
 
 
+trained_model_file = os.path.join(trained_model_loc, trained_model_file_name)
 pickle.dump(model, open(trained_model_file, 'wb'))
-
-
-# ## Load the Model
-
-# In[ ]:
-
-
-trained_model_file
-
-
-# In[ ]:
-
-
-model = pickle.load(open(trained_model_file, 'rb'))
-
-
-# In[ ]:
-
-
-model
+print ('\nSaved the ML model file at: {}\n'.format(trained_model_file))
 
 
 # # Global End Time and Memory
@@ -428,5 +442,5 @@ global_memory_consumed = global_final_memory - global_initial_memory
 print('Total memory consumed: {:.3f} MB'.format(global_memory_consumed/(1024*1024)))
 print('Total computing time: {:.3f} s'.format(global_end_time - global_start_time))
 print('=========================================================================')
-print("SUCCESS: Done Training and Testing of Model")
+print("SUCCESS: Done Training of ML Model")
 
