@@ -390,20 +390,20 @@ print ('ML model considered: {}'.format(model_name))
 if (FM_label_type == 'Regression'):
     match model_name:
         case 'SVM':
-            model = SVR(kernel='rbf')
+            model = SVR()
         case 'RF':
-            model = RandomForestRegressor(max_depth=2, random_state=0)
+            model = RandomForestRegressor()
         case 'MLP':
-            model = MLPRegressor(random_state=1, max_iter=500)
+            model = MLPRegressor()
+            
 elif (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
     match model_name:
         case 'SVM':
-            model = SVC(kernel="linear", class_weight = "balanced")
+            model = SVC()
         case 'RF':
-            model = RandomForestClassifier(max_depth=2, random_state=0)
+            model = RandomForestClassifier()
         case 'MLP':
-            model = MLPClassifier(solver = 'sgd', activation = 'relu', max_iter= 10000, 
-                    random_state = 0, hidden_layer_sizes = [15,15,15])
+            model = MLPClassifier()
 
 
 # In[ ]:
