@@ -5,6 +5,14 @@
 			     },	     
 	"models":	     {
 				"model_count": 0,
-				"model_considered": "MLP"
+				"model_name": "MLP",
+				"params": {
+						"hidden_layer_sizes": [15, 15],
+						"activation": "relu",
+						"solver": "sgd",
+						"alpha": 0.001,
+						"learning_rate": "invscaling",
+						"max_iter": 300
+					  }
 			     }
 }

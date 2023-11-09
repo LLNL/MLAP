@@ -212,7 +212,8 @@ FM_hr = json_content_prep_data['qoi_to_plot']['FM_hr']
 
 
 model_count = json_content_train_model['models']['model_count']
-model_considered = json_content_train_model['models']['model_considered'] # ['RF', SVM', 'MLP']
+model_name = json_content_train_model['models']['model_name'] # ['RF', SVM', 'MLP']
+model_params = json_content_train_model['models']['params']
 
 
 # # Paths and File Names
@@ -244,7 +245,7 @@ prepared_data_file_name = '{}.pkl'.format(prepared_data_set_name)
 # In[ ]:
 
 
-trained_model_name = 'dataset_%03d_label_%03d_%s_model_%03d_%s'%(data_set_count,                                                         label_count, FM_label_type,                                                         model_count, model_considered)
+trained_model_name = 'dataset_%03d_label_%03d_%s_model_%03d_%s'%(data_set_count,                                                         label_count, FM_label_type,                                                         model_count, model_name)
 
 trained_model_loc = os.path.join(trained_model_base_loc, trained_model_name)
 os.system('mkdir -p %s'%trained_model_loc)
@@ -380,14 +381,14 @@ features_train, features_test, labels_train, labels_test = train_test_split(X_tt
 
 
 print ('FM label type: {}'.format(FM_label_type))
-print ('ML model considered: {}'.format(model_considered))
+print ('ML model considered: {}'.format(model_name))
 
 
 # In[ ]:
 
 
 if (FM_label_type == 'Regression'):
-    match model_considered:
+    match model_name:
         case 'SVM':
             model = SVR(kernel='rbf')
         case 'RF':
@@ -395,7 +396,7 @@ if (FM_label_type == 'Regression'):
         case 'MLP':
             model = MLPRegressor(random_state=1, max_iter=500)
 elif (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
-    match model_considered:
+    match model_name:
         case 'SVM':
             model = SVC(kernel="linear", class_weight = "balanced")
         case 'RF':
@@ -408,7 +409,26 @@ elif (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
 # In[ ]:
 
 
-#model
+print ('The model chosen is: {}\n'.format(model))
+print ('Deafult model params: {}.format'.format(model.get_params()))
+
+
+# In[ ]:
+
+
+print ('Updating the model params with the dict: {}'.format(model_params))
+
+
+# In[ ]:
+
+
+model.set_params(**model_params)
+
+
+# In[ ]:
+
+
+print ('Updated model params: {}.format'.format(model.get_params()))
 
 
 # ## Train the Model
