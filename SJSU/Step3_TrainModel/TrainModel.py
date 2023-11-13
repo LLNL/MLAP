@@ -43,7 +43,7 @@ from sklearn.svm import SVC, SVR
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 from sklearn.neural_network import MLPClassifier, MLPRegressor
 
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, MaxAbsScaler, RobustScaler
 from sklearn.model_selection import train_test_split
 
 from sklearn.metrics import accuracy_score, confusion_matrix, average_precision_score
@@ -212,6 +212,7 @@ FM_hr = json_content_prep_data['qoi_to_plot']['FM_hr']
 
 
 model_count = json_content_train_model['models']['model_count']
+scaler_type = json_content_train_model['models']['scaler_type']
 model_name = json_content_train_model['models']['model_name'] # ['RF', SVM', 'MLP']
 model_params = json_content_train_model['models']['params']
 
@@ -337,7 +338,22 @@ idy_tt   = prepared_data['identity']
 # In[ ]:
 
 
-scaler = MinMaxScaler()
+print ('Data scaler type: {}'.format(scaler_type))
+
+
+# In[ ]:
+
+
+if (scaler_type == 'Standard'):
+    scaler = StandardScaler()
+elif (scaler_type == 'MinMax'):
+    scaler = MinMaxScaler()
+elif (scaler_type == 'MaxAbs'):
+    scaler = MaxAbsScaler()
+elif (scaler_type == 'Robust'):
+    scaler = RobustScaler()
+else:
+    raise ValueError('Invalid "scaler_type": "{}" in "models".                     \nValid types are:                     "Standard", "MinMax", "MaxAbs", and "Robust"'.format(                                                             scaler_type))
 
 
 # In[ ]:
@@ -352,6 +368,8 @@ X_tt_scaled = scaler.transform(X_tt)
 
 #X_tt_scaled.shape
 
+
+# #### Clarify if train/test split should be performed after or before scaling
 
 # ## Train /Test Split
 

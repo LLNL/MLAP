@@ -5,6 +5,7 @@
 			     },	     
 	"models":	     {
 				"model_count": 0,
+				"scaler_type": "Standard",
 				"model_name": "MLP",
 				"params": {
 						"hidden_layer_sizes": [15, 15],
