@@ -376,13 +376,13 @@ X_tt_scaled = scaler.transform(X_tt)
 # In[ ]:
 
 
-test_size = 0.2
+test_data_frac = json_content_train_model['models']['test_data_frac']
 
 
 # In[ ]:
 
 
-features_train, features_test, labels_train, labels_test = train_test_split(X_tt_scaled, y_tt.to_numpy(), test_size=test_size)
+features_train, features_test, labels_train, labels_test = train_test_split(                             X_tt_scaled, y_tt.to_numpy(), test_size = test_data_frac)
 
 
 # In[ ]:
