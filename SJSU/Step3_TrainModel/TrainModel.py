@@ -427,14 +427,14 @@ elif (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
 # In[ ]:
 
 
-print ('The model chosen is: {}\n'.format(model))
-print ('Deafult model params: {}.format'.format(model.get_params()))
+print ('The model chosen is: {} \n'.format(model))
+print ('Deafult model params: \n {}'.format(model.get_params()))
 
 
 # In[ ]:
 
 
-print ('Updating the model params with the dict: {}'.format(model_params))
+print ('Updating the model params with the dict: \n {}'.format(model_params))
 
 
 # In[ ]:
@@ -446,7 +446,7 @@ model.set_params(**model_params)
 # In[ ]:
 
 
-print ('Updated model params: {}.format'.format(model.get_params()))
+print ('Updated model params: \n {}'.format(model.get_params()))
 
 
 # ## Train the Model
