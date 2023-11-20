@@ -1,7 +1,6 @@
 {
 	"paths": 	     {
-				"trained_model_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models",
-				"analysis_data_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/04_Analysis"
+				"trained_model_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models"
 			     },	     
 	"models":	     {
 				"model_count": 0,
