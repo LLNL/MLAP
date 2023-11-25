@@ -263,23 +263,25 @@ print ('Time and Region Info available for these data sets: \n {}'.format(      
 # In[ ]:
 
 
+time_region_info = dict()
 for analysis_data_elem in analysis_data_defined:
-    print('\nExtracting Time and Region Info for {}:\n'.format(analysis_data_elem))
-    if (analysis_data_elem == 'SJSU'):
-        SJSU = json_content_analyze['SJSU']
-    elif (analysis_data_elem == 'HRRR'):
-        HRRR = json_content_analyze['HRRR']
-    elif (analysis_data_elem == 'RRM'):
-        RRM = json_content_analyze['RRM']
+    print('Extracting Time and Region Info for {}'.format(analysis_data_elem))
+    if (analysis_data_elem == 'SJSU' or         analysis_data_elem == 'HRRR' or         analysis_data_elem == 'RRM'):
+        time_region_info[analysis_data_elem] = json_content_analyze[analysis_data_elem]
     else:
         raise ValueError('Invalid analysis data type: {}.                     \nValid types are: "SJSU", "HRRR", and "RRM"'.format(analysis_data_elem))
-        
-    for count_ref_time, item_ref_time in enumerate(json_content_analyze[analysis_data_elem]):
+
+
+# In[ ]:
+
+
+for analysis_data_elem in time_region_info.keys():
+    print('\nTime and Region Info for {}:'.format(analysis_data_elem))
+    for count_ref_time, item_ref_time in enumerate(time_region_info[analysis_data_elem]):
         print ('... Reference Time {}: {}'.format(count_ref_time, item_ref_time['RefTime']))
-        
+
         for count_regions, (x_clip, y_clip) in enumerate(            zip (item_ref_time['regions_x_indices'], item_ref_time['regions_y_indices'])):
             print ('... ... Region {}:, x_clip: {}, y_clip: {}'.format(                            count_regions, x_clip, y_clip))
-        
 
 
 # ## Paths and File Names

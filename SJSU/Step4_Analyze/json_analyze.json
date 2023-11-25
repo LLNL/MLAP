@@ -2,7 +2,7 @@
 	"paths": {
 			"analysis_data_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/04_Analysis"
 		 },
-	"analysis_data": ["SJSU", "HRRR", "RRM", "Dummy"],
+	"analysis_data": ["SJSU", "HRRR", "RRM"],
 	"SJSU": [
 			{
 				"RefTime": "2018-11-08_22",
@@ -23,5 +23,13 @@
                                 "regions_y_indices": [[30, 60], [50, 90], [110, 130]]
 
                         }
-                ]
+                ],
+	"RRM":  [
+		        {
+                                "RefTime": "2020-09-04_00",
+                                "regions_x_indices": [[20, 50], [40, 80], [ 90, 110]],
+                                "regions_y_indices": [[30, 60], [50, 90], [110, 130]]
+
+                        }
+	        ]
 }
