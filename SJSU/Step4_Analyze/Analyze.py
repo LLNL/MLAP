@@ -284,29 +284,21 @@ for analysis_data_elem in time_region_info.keys():
             print ('... ... Region {}:, x_clip: {}, y_clip: {}'.format(                            count_regions, x_clip, y_clip))
 
 
-# ## Paths and File Names
+# # Paths and File Names
 
 # #### Global
 
 # In[ ]:
 
 
-prepared_data_base_loc = json_content_prep_data[ 'paths']['prepared_data_base_loc']
 trained_model_base_loc = json_content_train_model['paths']['trained_model_base_loc']
 analysis_data_base_loc = json_content_analyze['paths']['analysis_data_base_loc']
 
 
-# #### DataSet and Label Specific (Train and Test Data Prepared)
-
 # In[ ]:
 
 
-prepared_data_set_name = 'dataset_%03d_label_%03d_%s'%(data_set_count,                                                        label_count, FM_label_type)
-
-prepared_data_loc = os.path.join(prepared_data_base_loc, prepared_data_set_name)
-os.system('mkdir -p %s'%prepared_data_loc)
-
-prepared_data_file_name = '{}.pkl'.format(prepared_data_set_name)
+raw_data_paths = json_content_analyze['paths']['raw_data']
 
 
 # #### DataSet, Label, and Model Specific (Trained Model)
@@ -314,7 +306,7 @@ prepared_data_file_name = '{}.pkl'.format(prepared_data_set_name)
 # In[ ]:
 
 
-trained_model_name = 'dataset_%03d_label_%03d_%s_model_%03d_%s'%(data_set_count,                                                         label_count, FM_label_type,                                                         model_count, model_considered)
+trained_model_name = 'dataset_%03d_label_%03d_%s_model_%03d_%s'%(data_set_count,                                                         label_count, FM_label_type,                                                         model_count, model_name)
 
 trained_model_loc = os.path.join(trained_model_base_loc, trained_model_name)
 os.system('mkdir -p %s'%trained_model_loc)
@@ -322,184 +314,25 @@ os.system('mkdir -p %s'%trained_model_loc)
 trained_model_file_name = '{}.pkl'.format(trained_model_name)
 
 
-# #### DataSet Specific (Analysis Data)
-
-# In[ ]:
-
-
-analysis_set_name = 'analysis_%03d'%(data_set_count)
-
-analysis_loc = os.path.join(analysis_data_base_loc, analysis_set_name, label_type, model_considered)
-os.system('mkdir -p %s'%analysis_loc)
-
-
-# In[ ]:
-
-
-#analysis_loc
-
-
-# # Generate seed for the random number generator
-
-# In[ ]:
-
-
-seed = generate_seed()
-random_state = init_random_generator(seed)
-
-
-# # Load The Prepared Data Saved in Pickle File
-
-# In[ ]:
-
-
-with open(os.path.join(prepared_data_loc, prepared_data_file_name), 'rb') as file_handle:
-    prepared_data = pickle.load(file_handle)
-print('Read prepared data from "{}" at "{}"'.format(prepared_data_file_name, prepared_data_loc))
-
-
-# # Get Features and Labels to Use
-
-# In[ ]:
-
-
-prepared_data['all']
-#prepared_data['fire']['Woosley']['identity'].head(5)
-
-
-# ## Get the Headers for Features and Labels
-
-# In[ ]:
-
-
-features_to_use = prepared_data['tt']['features'].keys()
-if (label_type == 'Regr'):
-    label_to_use = 'FM_{}hr'.format(FM_hr)
-else:
-    label_to_use = 'FM_{}hr_{}'.format(FM_hr, label_type)
-
-
-# In[ ]:
-
-
-label_to_use
-
-
-# ## Extract Features and Labels
-
-# In[ ]:
-
-
-X_tt     = prepared_data['tt']['features'][features_to_use]
-y_tt     = prepared_data['tt']['labels'][label_to_use]
-idy_tt   = prepared_data['tt']['identity']
-
-X_fire   = prepared_data['fire'][fire_name]['features'][features_to_use]
-y_fire   = prepared_data['fire'][fire_name]['labels'][label_to_use]
-idy_fire = prepared_data['fire'][fire_name]['identity']
-
-#all = prepared_data['tt']['all']
-
-
-# In[ ]:
-
-
-y_tt
-
-
-# ## Scale Features
-
-# #### Features for Train/Test
-
-# In[ ]:
-
-
-scaler = MinMaxScaler()
-scaler.fit(X_tt)
-X_tt_scaled = scaler.transform(X_tt)
-
-
-# In[ ]:
-
-
-#X_tt_scaled
-
-
 # #### Features for Fire Data
 
 # In[ ]:
 
 
+'''
 scaler = MinMaxScaler()
 scaler.fit(X_fire)
 X_fire_scaled = scaler.transform(X_fire)
+'''
 
 
-# In[ ]:
-
-
-#X_fire_scaled.max()
-
-
-# ## Train /Test Split
+# # ML Model
 
 # In[ ]:
 
 
-features_train, features_test, labels_train, labels_test = train_test_split(X_tt_scaled, y_tt, test_size=0.2)
-
-
-# # Model
-
-# ## Define the Model
-
-# In[ ]:
-
-
-print ('label_type: {}'.format(label_type))
-print ('Model: {}'.format(model_considered))
-
-if (label_type == 'Regr'):
-    match model_considered:
-        case 'SVM':
-            model = SVR(kernel='rbf')
-        case 'RF':
-            model = RandomForestRegressor(max_depth=2, random_state=0)
-        case 'MLP':
-            model = MLPRegressor(random_state=1, max_iter=500)
-else: # 'bin' or 'MC'
-    match model_considered:
-        case 'SVM':
-            model = SVC(kernel="linear", class_weight = "balanced")
-        case 'RF':
-            model = RandomForestClassifier(max_depth=2, random_state=0)
-        case 'MLP':
-            model = MLPClassifier(solver = 'sgd', activation = 'relu', max_iter= 10000, 
-                    random_state = 0, hidden_layer_sizes = [15,15,15])
-
-
-# In[ ]:
-
-
-model
-
-
-# ## Train the Model
-
-# In[ ]:
-
-
-t0 = time.time()
-model.fit(features_train, labels_train)
-print ("Training Time:", round(time.time()-t0, 3), "s")
-
-
-# ## Save the Model
-
-# In[ ]:
-
-
-pickle.dump(model, open(trained_model_file, 'wb'))
+print ('FM label type: {}'.format(FM_label_type))
+print ('ML model considered: {}'.format(model_name))
 
 
 # ## Load the Model
@@ -507,19 +340,16 @@ pickle.dump(model, open(trained_model_file, 'wb'))
 # In[ ]:
 
 
-trained_model_file
-
-
-# In[ ]:
-
-
+trained_model_file = os.path.join(trained_model_loc, trained_model_file_name)
 model = pickle.load(open(trained_model_file, 'rb'))
+print ('\nLoaded the ML model file at: {}\n'.format(trained_model_file))
 
 
 # In[ ]:
 
 
-model
+print ('The model loaded is: {} \n'.format(model))
+print ('Model params: \n {}'.format(model.get_params()))
 
 
 # # Prediction with Trained Model
