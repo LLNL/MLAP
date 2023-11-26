@@ -2,7 +2,7 @@
 	"paths": {
 			"analysis_data_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/04_Analysis"
 		 },
-	"analysis_data": ["SJSU", "HRRR", "RRM"],
+	"analysis_data": ["SJSU"],
 	"SJSU": [
 			{
 				"RefTime": "2018-11-08_22",
@@ -13,23 +13,20 @@
 				"RefTime": "2020-09-04_00",
                                 "regions_x_indices": [[20, 50], [40, 80], [ 90, 110]],
                                 "regions_y_indices": [[30, 60], [50, 90], [110, 130]]
-
 			}
 		],
 	"HRRR": [
                         {
-                                "RefTime": "2020-09-04_00",
-                                "regions_x_indices": [[20, 50], [40, 80], [ 90, 110]],
-                                "regions_y_indices": [[30, 60], [50, 90], [110, 130]]
-
+                                "RefTime": "2025-09-04_00",
+                                "regions_x_indices": [[40, 60], [60, 100], [90, 120]],
+                                "regions_y_indices": [[70, 90], [50, 80], [120, 140]]
                         }
                 ],
 	"RRM":  [
 		        {
-                                "RefTime": "2020-09-04_00",
-                                "regions_x_indices": [[20, 50], [40, 80], [ 90, 110]],
-                                "regions_y_indices": [[30, 60], [50, 90], [110, 130]]
-
+                                "RefTime": "2030-09-04_00",
+                                "regions_x_indices": [[50, 80], [70, 90], [ 80, 110]],
+                                "regions_y_indices": [[30, 50], [50, 80], [100, 130]]
                         }
 	        ]
 }
