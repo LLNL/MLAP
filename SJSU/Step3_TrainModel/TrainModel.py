@@ -432,6 +432,86 @@ pickle.dump(model, open(trained_model_file, 'wb'))
 print ('\nSaved the ML model file at: {}\n'.format(trained_model_file))
 
 
+# # Prediction with Trained Model
+
+# ## Prediction on Train Data
+
+# In[ ]:
+
+
+t1 = time.time()
+labels_pred = model.predict(features_train)
+print ("Prediction Time:", round(time.time()-t1, 3), "s")
+
+
+# In[ ]:
+
+
+if (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
+    accuracy = accuracy_score(labels_pred, labels_train)
+else:
+    accuracy = model.score(features_train, labels_train)
+conf_mat = None
+
+
+# In[ ]:
+
+
+if (FM_label_type == 'Binary'):
+    conf_mat = confusion_matrix(labels_train, labels_pred, labels = [0, 1])
+    print('Classification Report: \n')
+    print(classification_report(labels_train, labels_pred, labels=[0, 1]))
+    average_precision = average_precision_score(labels_train, labels_pred)
+    print('Average precision-recall score: {0:0.2f}'.format(
+          average_precision))
+elif (FM_label_type == 'MultiClass'):
+    conf_mat = confusion_matrix(labels_train, labels_pred, labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+else:
+    print('Confusion Matrix is not suitable for label_type: {}'.format(FM_label_type))
+
+print('Accuracy Score: {}'.format(accuracy))
+print('Confusion Matrix: \n{}'.format(conf_mat))
+
+
+# ## Prediction on Test Data
+
+# In[ ]:
+
+
+t1 = time.time()
+labels_pred = model.predict(features_test)
+print ("Prediction Time:", round(time.time()-t1, 3), "s")
+
+
+# In[ ]:
+
+
+if (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
+    accuracy = accuracy_score(labels_pred, labels_test)
+else:
+    accuracy = model.score(features_test, labels_test)
+conf_mat = None
+
+
+# In[ ]:
+
+
+if (FM_label_type == 'Binary'):
+    conf_mat = confusion_matrix(labels_test, labels_pred, labels = [0, 1])
+    print('Classification Report: \n')
+    print(classification_report(labels_test, labels_pred, labels=[0, 1]))
+    average_precision = average_precision_score(labels_test, labels_pred)
+    print('Average precision-recall score: {0:0.2f}'.format(
+          average_precision))
+elif (FM_label_type == 'MultiClass'):
+    conf_mat = confusion_matrix(labels_test, labels_pred, labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+else:
+    print('Confusion Matrix is not suitable for label_type: {}'.format(FM_label_type))
+
+print('Accuracy Score: {}'.format(accuracy))
+print('Confusion Matrix: \n{}'.format(conf_mat))
+
+
 # # Global End Time and Memory
 
 # In[ ]:
