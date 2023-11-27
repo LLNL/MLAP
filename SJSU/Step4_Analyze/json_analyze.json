@@ -7,7 +7,7 @@
 					"RRM":  "/p/vast1/climres/E3SM/RRM"
 				    }
 		 },
-	"analysis_data": ["SJSU", "HRRR", "RRM"],
+	"analysis_data_desired": ["SJSU"],
 	"SJSU": [
 			{
 				"RefTime": "2018-11-08_22",

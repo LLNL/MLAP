@@ -55,6 +55,7 @@ current_running_file_dir = sys.path[0]
 current_running_file_par = '/'.join(sys.path[0].split('/')[:-1])
 sys.path.insert(0, os.path.join(current_running_file_par, 'Step1_ExtractData'))
 sys.path.insert(0, os.path.join(current_running_file_par, 'Step2_PrepareData'))
+sys.path.insert(0, os.path.join(current_running_file_par, 'Step3_TrainModel'))
 
 
 # In[ ]:
@@ -62,6 +63,8 @@ sys.path.insert(0, os.path.join(current_running_file_par, 'Step2_PrepareData'))
 
 from Extract_DFM_Data_Helper import *
 from Prepare_TrainTest_Data_Helper import *
+from TrainModel_Helper import *
+from Analyze_Helper import *
 
 
 # # Global Start Time and Memory
@@ -83,7 +86,7 @@ global_initial_memory = process.memory_info().rss
 
 json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_Extracted/InputJsonFiles/json_extract_data_005.json'
 json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTest_Data_Prepared/InputJsonFiles/json_prep_data_label_000.json'
-json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models/InputJsonFiles/json_train_model_000.json'
+json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models/InputJsonFiles/json_train_model_002.json'
 json_file_analyze      = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/04_Analysis/InputJsonFiles/json_analyze_000.json'
 
 
@@ -243,45 +246,27 @@ model_params = json_content_train_model['models']['params']
 
 
 analysis_data_paths = json_content_analyze['paths']
-analysis_data = json_content_analyze['analysis_data']
+analysis_data_desired = json_content_analyze['analysis_data_desired']
 
 
 # In[ ]:
 
 
-analysis_data_defined = [analysis_data_elem for analysis_data_elem in analysis_data                                              if analysis_data_elem in json_content_analyze]
+analysis_data_defined = [analysis_data_elem                          for analysis_data_elem in analysis_data_desired                          if analysis_data_elem in json_content_analyze]
 
 
 # In[ ]:
 
 
-print ('Analysis desired to be performed on the following data sets:\n {}'.format(                                                                  analysis_data))
+print ('Analysis desired to be performed on the following data sets:\n {}'.format(                                                            analysis_data_desired))
 
-print ('Time and Region Info available for these data sets: \n {}'.format(                                                            analysis_data_defined))
-
-
-# In[ ]:
-
-
-time_region_info = dict()
-for analysis_data_elem in analysis_data_defined:
-    print('Extracting Time and Region Info for {}'.format(analysis_data_elem))
-    if (analysis_data_elem == 'SJSU' or         analysis_data_elem == 'HRRR' or         analysis_data_elem == 'RRM'):
-        time_region_info[analysis_data_elem] = json_content_analyze[analysis_data_elem]
-    else:
-        raise ValueError('Invalid analysis data type: {}.                     \nValid types are: "SJSU", "HRRR", and "RRM"'.format(analysis_data_elem))
+print ('Time and Region Info available for these data sets out of those desired:\n {}'                                                    .format(analysis_data_defined))
 
 
 # In[ ]:
 
 
-for analysis_data_elem in time_region_info.keys():
-    print('\nTime and Region Info for {}:'.format(analysis_data_elem))
-    for count_ref_time, item_ref_time in enumerate(time_region_info[analysis_data_elem]):
-        print ('... Reference Time {}: {}'.format(count_ref_time, item_ref_time['RefTime']))
-
-        for count_regions, (x_clip, y_clip) in enumerate(            zip (item_ref_time['regions_x_indices'], item_ref_time['regions_y_indices'])):
-            print ('... ... Region {}:, x_clip: {}, y_clip: {}'.format(                            count_regions, x_clip, y_clip))
+time_region_info = get_time_region_info (analysis_data_defined, json_content_analyze)
 
 
 # # Paths and File Names
