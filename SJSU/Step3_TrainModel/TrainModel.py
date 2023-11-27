@@ -55,12 +55,14 @@ from sklearn.metrics import precision_recall_curve, classification_report
 current_running_file_dir = sys.path[0]
 current_running_file_par = '/'.join(sys.path[0].split('/')[:-1])
 sys.path.insert(0, os.path.join(current_running_file_par, 'Step1_ExtractData'))
+sys.path.insert(0, os.path.join(current_running_file_par, 'Step3_TrainModel'))
 
 
 # In[ ]:
 
 
 from Extract_DFM_Data_Helper import *
+from TrainModel_Helper import *
 
 
 # # Global Start Time and Memory
@@ -82,7 +84,7 @@ global_initial_memory = process.memory_info().rss
 
 json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_Extracted/InputJsonFiles/json_extract_data_005.json'
 json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTest_Data_Prepared/InputJsonFiles/json_prep_data_label_000.json'
-json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models/InputJsonFiles/json_train_model_001.json'
+json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models/InputJsonFiles/json_train_model_002.json'
 
 
 # ### Input file name when using python script on command line
@@ -319,7 +321,7 @@ else:
 
 X_tt     = prepared_data['features'][features_to_use]
 y_tt     = prepared_data['labels'][labels_to_use]
-idy_tt   = prepared_data['identity']
+#idy_tt   = prepared_data['identity']
 #all_tt = prepared_data['all']
 
 
@@ -335,26 +337,7 @@ idy_tt   = prepared_data['identity']
 
 
 print ('Data scaler type: {}'.format(scaler_type))
-
-
-# In[ ]:
-
-
-if (scaler_type == 'Standard'):
-    scaler = StandardScaler()
-elif (scaler_type == 'MinMax'):
-    scaler = MinMaxScaler()
-elif (scaler_type == 'MaxAbs'):
-    scaler = MaxAbsScaler()
-elif (scaler_type == 'Robust'):
-    scaler = RobustScaler()
-else:
-    raise ValueError('Invalid "scaler_type": "{}" in "models".                     \nValid types are:                     "Standard", "MinMax", "MaxAbs", and "Robust"'.format(                                                             scaler_type))
-
-
-# In[ ]:
-
-
+scaler = define_scaler (scaler_type)
 scaler.fit(X_tt)
 X_tt_scaled = scaler.transform(X_tt)
 
@@ -401,23 +384,7 @@ print ('ML model considered: {}'.format(model_name))
 # In[ ]:
 
 
-if (FM_label_type == 'Regression'):
-    match model_name:
-        case 'SVM':
-            model = SVR()
-        case 'RF':
-            model = RandomForestRegressor()
-        case 'MLP':
-            model = MLPRegressor()
-            
-elif (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
-    match model_name:
-        case 'SVM':
-            model = SVC()
-        case 'RF':
-            model = RandomForestClassifier()
-        case 'MLP':
-            model = MLPClassifier()
+model = define_model (FM_label_type, model_name)
 
 
 # In[ ]:
