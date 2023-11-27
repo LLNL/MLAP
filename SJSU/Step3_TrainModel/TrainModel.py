@@ -3,11 +3,7 @@
 
 # ## Convert this notebook to executable python script using:
 
-# In[ ]:
-
-
-#jupyter nbconvert --to python TrainModel.ipynb
-
+# - jupyter nbconvert --to python TrainModel.ipynb
 
 # # Import Modules
 
@@ -86,7 +82,7 @@ global_initial_memory = process.memory_info().rss
 
 json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_Extracted/InputJsonFiles/json_extract_data_005.json'
 json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTest_Data_Prepared/InputJsonFiles/json_prep_data_label_000.json'
-json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models/InputJsonFiles/json_train_model_000.json'
+json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models/InputJsonFiles/json_train_model_001.json'
 
 
 # ### Input file name when using python script on command line
