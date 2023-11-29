@@ -194,6 +194,8 @@ with open(json_file_analyze) as json_file_handle:
 
 # The current data set params
 data_set_count = json_content_extract_data['data_set_defn']['data_set_count']
+max_history_to_consider = json_content_extract_data['data_set_defn']['max_history_to_consider']
+history_interval = json_content_extract_data['data_set_defn']['history_interval']
 
 
 # ## Define Label, FM Threshold etc.
@@ -263,12 +265,6 @@ print ('Analysis desired to be performed on the following data sets:\n {}'.forma
 print ('Time and Region Info available for these data sets out of those desired:\n {}'                                                    .format(analysis_data_defined))
 
 
-# In[ ]:
-
-
-time_region_info = get_time_region_info (analysis_data_defined, json_content_analyze)
-
-
 # # Paths and File Names
 
 # #### Global
@@ -335,6 +331,20 @@ print ('\nLoaded the ML model file at: {}\n'.format(trained_model_file))
 
 print ('The model loaded is: {} \n'.format(model))
 print ('Model params: \n {}'.format(model.get_params()))
+
+
+# # Extract SJSU, HRRR and RRM Data for Analysis
+
+# In[ ]:
+
+
+time_region_info = get_time_region_info (analysis_data_defined, json_content_analyze)
+
+
+# In[ ]:
+
+
+time_region_info = get_history_time_stamps_all_data_types (                            time_region_info, max_history_to_consider, history_interval)
 
 
 # # Prediction with Trained Model

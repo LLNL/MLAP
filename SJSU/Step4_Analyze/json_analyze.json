@@ -7,7 +7,7 @@
 					"RRM":  "/p/vast1/climres/E3SM/RRM"
 				    }
 		 },
-	"analysis_data_desired": ["SJSU"],
+	"analysis_data_desired": ["SJSU", "HRRR", "RRM"],
 	"SJSU": [
 			{
 				"RefTime": "2018-11-08_22",
@@ -22,14 +22,14 @@
 		],
 	"HRRR": [
                         {
-                                "RefTime": "2025-09-04_00",
+                                "RefTime": "2025-09-03_16",
                                 "regions_x_indices": [[40, 60], [60, 100], [90, 120]],
                                 "regions_y_indices": [[70, 90], [50, 80], [120, 140]]
                         }
                 ],
 	"RRM":  [
 		        {
-                                "RefTime": "2030-09-04_00",
+                                "RefTime": "2030-08-02_20",
                                 "regions_x_indices": [[50, 80], [70, 90], [ 80, 110]],
                                 "regions_y_indices": [[30, 50], [50, 80], [100, 130]]
                         }
