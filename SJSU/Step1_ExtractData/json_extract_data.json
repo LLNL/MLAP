@@ -29,14 +29,14 @@
 							"PRECIP": "apcp",
 							"SWDOWN": "dswrf"
 						 },
-				"SJSU_RRM_Maps": {
-                                                        "U10": "",
-                                                        "V10": "",
-                                                        "T2": "",
-                                                        "RH": "",
-                                                        "PRECIP": "",
-                                                        "SWDOWN": ""
-                                                 }
+				"SJSU_RRM_Map":  {
+							"U10": "",
+							"V10": "",
+							"T2": "",
+							"RH": "",
+							"PRECIP": "",
+							"SWDOWN": ""
+						 }
 			     },
 	"fire_flags":        {
 				"remove_fire_data_from_train_test": false,
