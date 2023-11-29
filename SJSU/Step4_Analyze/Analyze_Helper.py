@@ -30,6 +30,18 @@ from sklearn.metrics import accuracy_score, confusion_matrix, average_precision_
 #from sklearn.metrics import plot_confusion_matrix
 from sklearn.metrics import precision_recall_curve, classification_report
 
+# []
+'''
+Get year, month, day, hour from timestamp
+'''
+def split_timestamp (timestamp):
+    hour = timestamp.split('_')[-1]
+    yr_mo_day = timestamp.split('_')[0].split('-')
+    year, month, day = yr_mo_day[0], yr_mo_day[1], yr_mo_day[2]
+    
+    #'========================================================================='
+    return year, month, day, hour
+
 
 # []
 '''

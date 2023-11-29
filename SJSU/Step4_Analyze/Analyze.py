@@ -347,6 +347,51 @@ time_region_info = get_time_region_info (analysis_data_defined, json_content_ana
 time_region_info = get_history_time_stamps_all_data_types (                            time_region_info, max_history_to_consider, history_interval)
 
 
+# In[ ]:
+
+
+#time_region_info
+
+
+# ## HRRR Data
+
+# In[ ]:
+
+
+analysis_data_type = 'HRRR'
+
+
+# In[ ]:
+
+
+raw_data_path = raw_data_paths[analysis_data_type]
+raw_data_path
+
+
+# In[ ]:
+
+
+qoi = 'ugrd10m'
+
+
+# In[ ]:
+
+
+desired_time = '2020-09-04_00'
+
+
+# In[ ]:
+
+
+year, month, day, hour = split_timestamp (desired_time)
+
+
+# In[ ]:
+
+
+#year, month, day, hour
+
+
 # # Prediction with Trained Model
 
 # ## Prediction on Fire Data
