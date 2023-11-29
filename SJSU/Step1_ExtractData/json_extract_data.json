@@ -4,7 +4,7 @@
 				"extracted_data_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_Extracted"
 			     },	     
 	"data_set_defn":     { 
-				"data_set_count": 0,
+				"data_set_count": 5,
 				"percent_files_to_use": 0.00817755098, 
 				"percent_grid_points_to_use": 0.0063656565, 
 				"max_history_to_consider": 8, 
@@ -20,7 +20,23 @@
 	"features_labels":   {
 				"features_to_read": ["U10", "V10", "T2", "RH", "PRECIP", "SWDOWN"],
 				"labels_to_read": ["FMC_10hr", "FMC_100hr"],
-				"labels_ind_in_nc_file": [1, 2]
+				"labels_ind_in_nc_file": [1, 2],
+				"SJSU_HRRR_Map": {
+							"U10": "ugrd10m", 
+							"V10": "vgrd10m", 
+							"T2": "tmp2m",
+							"RH": "rh",
+							"PRECIP": "apcp",
+							"SWDOWN": "dswrf"
+						 },
+				"SJSU_RRM_Maps": {
+                                                        "U10": "",
+                                                        "V10": "",
+                                                        "T2": "",
+                                                        "RH": "",
+                                                        "PRECIP": "",
+                                                        "SWDOWN": ""
+                                                 }
 			     },
 	"fire_flags":        {
 				"remove_fire_data_from_train_test": false,
