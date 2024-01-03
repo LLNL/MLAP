@@ -3,11 +3,7 @@
 
 # ## Convert this notebook to executable python script using:
 
-# In[ ]:
-
-
-#jupyter nbconvert --to python Extract_DFM_Reanalysis_Data.ipynb
-
+# - jupyter nbconvert --to python Extract_DFM_Data.ipynb
 
 # # Import Modules
 
@@ -38,7 +34,7 @@ from timeit import default_timer as timer
 # In[ ]:
 
 
-from Extract_DFM_Reanalysis_Data_Helper import *
+from Extract_DFM_Data_Helper import *
 
 
 # # Global Start Time and Memory
@@ -59,7 +55,7 @@ print('\nProcess in Main(): {}'.format(process))
 # In[ ]:
 
 
-input_json_file = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_Extracted/InputJsonFiles/input_json_extract_data_000.json'
+json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_Extracted/InputJsonFiles/json_extract_data_000.json'
 
 
 # ### Input file name when using python script on command line
@@ -67,28 +63,28 @@ input_json_file = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_
 # In[ ]:
 
 
-#input_json_file = sys.argv[1]
+#json_file_extract_data = sys.argv[1]
 
 
-# ### Load the Input JSON File
-
-# In[ ]:
-
-
-print('Loading input from JSON file: \n {}'.format(input_json_file))
-
+# ### Load the JSON file for extracting data
 
 # In[ ]:
 
 
-with open(input_json_file) as input_json_file_handle:
-    input_json_data = json.load(input_json_file_handle)
+print('Loading input from JSON file: \n {}'.format(json_file_extract_data))
 
 
 # In[ ]:
 
 
-#input_json_data
+with open(json_file_extract_data) as json_file_handle:
+    json_content_extract_data = json.load(json_file_handle)
+
+
+# In[ ]:
+
+
+#json_content_extract_data
 
 
 # # Variables to be Used for Extracting WRF Data
@@ -99,7 +95,7 @@ with open(input_json_file) as input_json_file_handle:
 
 
 # The current data set params
-data_set_defn = input_json_data['data_set_defn']
+data_set_defn = json_content_extract_data['data_set_defn']
 
 data_set_count = data_set_defn['data_set_count']
 percent_files_to_use = data_set_defn['percent_files_to_use']  # f1 = what percent of available files to use
@@ -115,7 +111,7 @@ history_interval        = data_set_defn['history_interval']
 # In[ ]:
 
 
-nevada_data = input_json_data['nevada_data']
+nevada_data = json_content_extract_data['nevada_data']
 remove_nevada = nevada_data['remove_nevada']
 j_nevada, i_nevada = nevada_data['j_nevada'], nevada_data['i_nevada']
 j_anchor, i_anchor = nevada_data['j_anchor'], nevada_data['i_anchor']
@@ -126,7 +122,7 @@ j_anchor, i_anchor = nevada_data['j_anchor'], nevada_data['i_anchor']
 # In[ ]:
 
 
-fire_flags = input_json_data['fire_flags']
+fire_flags = json_content_extract_data['fire_flags']
 remove_fire_data_from_train_test = fire_flags['remove_fire_data_from_train_test']
 extract_fire_data = fire_flags['extract_fire_data']
 
@@ -136,18 +132,12 @@ extract_fire_data = fire_flags['extract_fire_data']
 # In[ ]:
 
 
-clip_data_train_test = input_json_data['clip_data_train_test']
+clip_data_train_test = json_content_extract_data['clip_data_train_test']
 x_clip_train_test = clip_data_train_test['x_clip']
 y_clip_train_test = clip_data_train_test['y_clip']
 
 
 # ## Paths and File Names
-
-# In[ ]:
-
-
-paths = input_json_data['paths']
-
 
 # #### Global
 
@@ -155,37 +145,23 @@ paths = input_json_data['paths']
 
 
 # WRF data set location and the extracted data set location
-data_files_location = paths['data_files_location']
-extracted_data_base_loc = paths['extracted_data_base_loc']
+data_files_location = json_content_extract_data['paths']['data_files_location']
+extracted_data_base_loc = json_content_extract_data['paths']['extracted_data_base_loc']
 
 
-# #### DataSet Specific (Train and Test)
+# #### DataSet Specific (Train and Test Data Extracted from WRF)
 
 # In[ ]:
 
 
 data_set_name = 'data_train_test_extracted_%03d'%(data_set_count)
-
 extracted_data_loc = os.path.join(extracted_data_base_loc, data_set_name)
 os.system('mkdir -p %s'%extracted_data_loc)
 
-collection_of_read_data_files = '{}_files_read.pkl'.format(data_set_name)
+#collection_of_read_data_files = '{}_files_read.pkl'.format(data_set_name)
 extracted_data_file_name = '{}_df.pkl'.format(data_set_name)
 
 tab_data_file_name = '{}_tab_data.csv'.format(data_set_name)
-
-
-# #### DataSet Specific (Fire)
-
-# In[ ]:
-
-
-fire_data_set_name = 'data_fire_extracted_%03d'%(data_set_count)
-
-fire_data_loc = os.path.join(extracted_data_base_loc, fire_data_set_name)
-os.system('mkdir -p %s'%fire_data_loc)
-
-fire_data_file_name = '{}.pkl'.format(fire_data_set_name)
 
 
 # ## Relevant Fire TimeStamps
@@ -193,7 +169,7 @@ fire_data_file_name = '{}.pkl'.format(fire_data_set_name)
 # In[ ]:
 
 
-fire_time_stamps = input_json_data['fire_time_stamps']
+fire_time_stamps = json_content_extract_data['fire_time_stamps']
 
 
 # # Generate seed for the random number generator
@@ -297,7 +273,7 @@ df_sampled_time.head(30)
 # In[ ]:
 
 
-if input_json_data['plot_options']['plot_sampled_datetime']:
+if json_content_extract_data['plot_options']['plot_sampled_datetime']:
     plot_sampled_datetime (df_sampled_time, extracted_data_loc)
 
 
@@ -308,7 +284,7 @@ if input_json_data['plot_options']['plot_sampled_datetime']:
 # In[ ]:
 
 
-data_in_a_file = input_json_data['data_in_a_file']
+data_in_a_file = json_content_extract_data['data_in_a_file']
 prescribe_file = data_in_a_file['prescribe_file_flag']
 if prescribe_file:
     data_file_to_read = data_in_a_file['data_file_to_read']
@@ -363,7 +339,7 @@ grid_indices_valid_reconst, grid_indices_valid_bool, valid_grid_ind_to_coord =  
 # In[ ]:
 
 
-if input_json_data['plot_options']['plot_contours_of_indices']:
+if json_content_extract_data['plot_options']['plot_contours_of_indices']:
     plot_contours_of_indices (data_at_timestamp, grid_indices_all, grid_indices_valid,                               grid_indices_valid_bool, grid_indices_valid_reconst,                               extracted_data_loc)
 
 
@@ -382,8 +358,8 @@ if input_json_data['plot_options']['plot_contours_of_indices']:
 # In[ ]:
 
 
-if input_json_data['plot_options']['plot_contours_of_qoi']:
-    qoi_to_plot = input_json_data['qoi_to_plot']['contours']
+if json_content_extract_data['plot_options']['plot_contours_of_qoi']:
+    qoi_to_plot = json_content_extract_data['qoi_to_plot']['contours']
     plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc,                                 grid_indices_valid, masked = False)
 
 
@@ -392,8 +368,8 @@ if input_json_data['plot_options']['plot_contours_of_qoi']:
 # In[ ]:
 
 
-if input_json_data['plot_options']['plot_contours_of_qoi']:
-    qoi_to_plot = input_json_data['qoi_to_plot']['contours']
+if json_content_extract_data['plot_options']['plot_contours_of_qoi']:
+    qoi_to_plot = json_content_extract_data['qoi_to_plot']['contours']
     plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc,                                 grid_indices_valid, masked = True)
 
 
@@ -402,8 +378,8 @@ if input_json_data['plot_options']['plot_contours_of_qoi']:
 # In[ ]:
 
 
-if input_json_data['plot_options']['plot_pdfs_of_qoi']:
-    qoi_to_plot = input_json_data['qoi_to_plot']['pdfs']
+if json_content_extract_data['plot_options']['plot_pdfs_of_qoi']:
+    qoi_to_plot = json_content_extract_data['qoi_to_plot']['pdfs']
     plot_pdf_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc)
 
 
@@ -412,16 +388,16 @@ if input_json_data['plot_options']['plot_pdfs_of_qoi']:
 # In[ ]:
 
 
-if input_json_data['plot_options']['plot_fm_contours_with_cb']:
-    qoi_to_plot = input_json_data['qoi_to_plot']['contours_with_cb']
-    cont_levels_count = input_json_data['qoi_to_plot']['cont_levels_count']
-    qoi_cont_range = input_json_data['qoi_to_plot']['qoi_cont_range']
+if json_content_extract_data['plot_options']['plot_fm_contours_with_cb']:
+    qoi_to_plot = json_content_extract_data['qoi_to_plot']['contours_with_cb']
+    cont_levels_count = json_content_extract_data['qoi_to_plot']['cont_levels_count']
+    qoi_cont_range = json_content_extract_data['qoi_to_plot']['qoi_cont_range']
 
 
 # In[ ]:
 
 
-if input_json_data['plot_options']['plot_fm_contours_with_cb']:
+if json_content_extract_data['plot_options']['plot_fm_contours_with_cb']:
     plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_plot,                                  extracted_data_loc, grid_indices_valid,                                  cont_levels_count, qoi_cont_range, masked = True)
 
 
@@ -446,7 +422,7 @@ grid_indices_selected, j_indices_selected, i_indices_selected =     sample_grid_
 # In[ ]:
 
 
-if input_json_data['plot_options']['plot_sampled_grid_indices_2d']:
+if json_content_extract_data['plot_options']['plot_sampled_grid_indices_2d']:
     plot_sampled_grid_points (grid_indices_selected, extracted_data_loc)
 
 
@@ -455,7 +431,7 @@ if input_json_data['plot_options']['plot_sampled_grid_indices_2d']:
 # In[ ]:
 
 
-if input_json_data['plot_options']['plot_sampled_grid_indices_3d']:
+if json_content_extract_data['plot_options']['plot_sampled_grid_indices_3d']:
     plot_sampled_grid_points_3D (j_indices_selected, i_indices_selected,                                  extracted_data_loc, (6, 6)) #fig_size hard-coded
 
 
@@ -495,7 +471,7 @@ time_grid_indices_list_dict, time_grid_indices_list_count, time_grid_indices_set
 # In[ ]:
 
 
-features_labels = input_json_data['features_labels']
+features_labels = json_content_extract_data['features_labels']
 features_to_read = features_labels['features_to_read']
 labels_to_read = features_labels['labels_to_read']
 labels_ind_in_nc_file = features_labels['labels_ind_in_nc_file']
