@@ -3,11 +3,7 @@
 
 # ## Convert this notebook to executable python script using:
 
-# In[ ]:
-
-
-#jupyter nbconvert --to python Prepare_TrainTest_Data.ipynb
-
+# - jupyter nbconvert --to python Prepare_TrainTest_Data.ipynb
 
 # # Import Modules
 
@@ -185,14 +181,9 @@ prepared_data_base_loc  = json_content_prep_data['paths']['prepared_data_base_lo
 # In[ ]:
 
 
-data_set_name = 'data_train_test_extracted_%02d'%(data_set_count)
+data_set_name = 'data_train_test_extracted_%03d'%(data_set_count)
 extracted_data_loc = os.path.join(extracted_data_base_loc, data_set_name)
 extracted_data_file_name = '{}_df.pkl'.format(data_set_name)
-'''
-fire_data_set_name = 'data_fire_extracted_%02d'%(data_set_count)
-fire_data_loc = os.path.join(extracted_data_base_loc, fire_data_set_name)
-fire_data_file_name = '{}.pkl'.format(fire_data_set_name)
-'''
 
 
 # #### DataSet and Label Specific (Train and Test Data Prepared)
@@ -225,6 +216,11 @@ random_state = init_random_generator(seed)
 
 
 df_tt_extracted = pd.read_pickle(os.path.join(extracted_data_loc, extracted_data_file_name))
+
+
+# In[ ]:
+
+
 #df_tt_extracted
 
 
