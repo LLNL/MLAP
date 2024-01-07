@@ -83,7 +83,7 @@ global_initial_memory = process.memory_info().rss
 
 
 json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_Extracted/InputJsonFiles/json_extract_data_005.json'
-json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTest_Data_Prepared/InputJsonFiles/json_prep_data_label_000.json'
+json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTest_Data_Prepared/InputJsonFiles/json_prep_data_label_002.json'
 json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models/InputJsonFiles/json_train_model_002.json'
 
 
@@ -192,8 +192,10 @@ FM_label_type = FM_labels['label_type']
 
 if (FM_label_type == 'Binary'):
     FM_binary_threshold = FM_labels['FM_binary_threshold']
+    class_labels = range(2)
 if (FM_label_type == 'MultiClass'):
     FM_MC_levels = FM_labels['FM_MC_levels']
+    class_labels = range(len(FM_MC_levels) -1)
 
 
 # In[ ]:
@@ -328,7 +330,7 @@ y_tt     = prepared_data['labels'][labels_to_use]
 # In[ ]:
 
 
-#X_tt, y_tt, all_tt
+#X_tt, y_tt
 
 
 # ## Scale Features
@@ -345,7 +347,7 @@ X_tt_scaled = scaler.transform(X_tt)
 # In[ ]:
 
 
-#X_tt_scaled.shape
+#X_tt_scaled
 
 
 # #### Clarify if train/test split should be performed after or before scaling
@@ -419,7 +421,7 @@ print ('Updated model params: \n {}'.format(model.get_params()))
 
 t0 = time.time()
 model.fit(features_train, labels_train.ravel())
-print ("Training Time:", round(time.time()-t0, 3), "s")
+print ("\nTraining Time:", round(time.time()-t0, 3), "s")
 
 
 # ## Save the Model
@@ -439,38 +441,32 @@ print ('\nSaved the ML model file at: {}\n'.format(trained_model_file))
 # In[ ]:
 
 
-t1 = time.time()
-labels_pred = model.predict(features_train)
-print ("Prediction Time:", round(time.time()-t1, 3), "s")
+labels_pred_train = predict(model, features_train, "Train Data")
+
+
+# In[ ]:
+
+
+accuracy_train = get_accuracy_score(model, FM_label_type,                                    features_train, labels_train, labels_pred_train,                                   "Train Data")
 
 
 # In[ ]:
 
 
 if (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
-    accuracy = accuracy_score(labels_pred, labels_train)
+    conf_mat_train = get_confusion_matrix (FM_label_type, labels_train, labels_pred_train,                                       "Train Data", class_labels)
+    get_classification_report (FM_label_type, labels_train, labels_pred_train,                           "Train Data", class_labels)
 else:
-    accuracy = model.score(features_train, labels_train)
-conf_mat = None
+    print('Confusion Matrix is not suitable for label_type: {}'.format(FM_label_type))
 
 
 # In[ ]:
 
 
 if (FM_label_type == 'Binary'):
-    conf_mat = confusion_matrix(labels_train, labels_pred, labels = [0, 1])
-    print('Classification Report: \n')
-    print(classification_report(labels_train, labels_pred, labels=[0, 1]))
-    average_precision = average_precision_score(labels_train, labels_pred)
-    print('Average precision-recall score: {0:0.2f}'.format(
-          average_precision))
-elif (FM_label_type == 'MultiClass'):
-    conf_mat = confusion_matrix(labels_train, labels_pred, labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-else:
-    print('Confusion Matrix is not suitable for label_type: {}'.format(FM_label_type))
-
-print('Accuracy Score: {}'.format(accuracy))
-print('Confusion Matrix: \n{}'.format(conf_mat))
+    average_precision_train = average_precision_score(labels_train, labels_pred_train)
+    print('Average precision-recall score for Train Data: {0:0.2f}'.format(
+          average_precision_train))
 
 
 # ## Prediction on Test Data
@@ -478,38 +474,32 @@ print('Confusion Matrix: \n{}'.format(conf_mat))
 # In[ ]:
 
 
-t1 = time.time()
-labels_pred = model.predict(features_test)
-print ("Prediction Time:", round(time.time()-t1, 3), "s")
+labels_pred_test = predict(model, features_test, "Test Data")
+
+
+# In[ ]:
+
+
+accuracy_test = get_accuracy_score(model, FM_label_type,                                    features_test, labels_test, labels_pred_test,                                   "Test Data")
 
 
 # In[ ]:
 
 
 if (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
-    accuracy = accuracy_score(labels_pred, labels_test)
+    conf_mat_test = get_confusion_matrix (FM_label_type, labels_test, labels_pred_test,                                       "Test Data", class_labels)
+    get_classification_report (FM_label_type, labels_test, labels_pred_test,                           "Test Data", class_labels)
 else:
-    accuracy = model.score(features_test, labels_test)
-conf_mat = None
+    print('Confusion Matrix is not suitable for label_type: {}'.format(FM_label_type))
 
 
 # In[ ]:
 
 
 if (FM_label_type == 'Binary'):
-    conf_mat = confusion_matrix(labels_test, labels_pred, labels = [0, 1])
-    print('Classification Report: \n')
-    print(classification_report(labels_test, labels_pred, labels=[0, 1]))
-    average_precision = average_precision_score(labels_test, labels_pred)
-    print('Average precision-recall score: {0:0.2f}'.format(
-          average_precision))
-elif (FM_label_type == 'MultiClass'):
-    conf_mat = confusion_matrix(labels_test, labels_pred, labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-else:
-    print('Confusion Matrix is not suitable for label_type: {}'.format(FM_label_type))
-
-print('Accuracy Score: {}'.format(accuracy))
-print('Confusion Matrix: \n{}'.format(conf_mat))
+    average_precision_test = average_precision_score(labels_test, labels_pred_test)
+    print('Average precision-recall score for Test Data: {0:0.2f}'.format(
+          average_precision_test))
 
 
 # # Global End Time and Memory
@@ -523,5 +513,5 @@ global_memory_consumed = global_final_memory - global_initial_memory
 print('Total memory consumed: {:.3f} MB'.format(global_memory_consumed/(1024*1024)))
 print('Total computing time: {:.3f} s'.format(global_end_time - global_start_time))
 print('=========================================================================')
-print("SUCCESS: Done Training of ML Model")
+print("SUCCESS: Done Training and Evaluation of ML Model")
 

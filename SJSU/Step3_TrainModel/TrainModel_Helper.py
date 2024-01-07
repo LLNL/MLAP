@@ -79,3 +79,56 @@ def define_model (FM_label_type, model_name):
                 
     #'========================================================================='    
     return model
+
+
+# []
+'''
+Predict labels on data/features using a trained model
+'''
+def predict(model, features_gt, data_identifier):
+    t1 = time.time()
+    labels_pred = model.predict(features_gt)
+    print ('Prediction Time for {} is {} s'.format(\
+                        data_identifier, round(time.time()-t1, 3)))
+    
+    return labels_pred
+
+
+# []
+'''
+Get Accuracy Score
+'''
+def get_accuracy_score (model, FM_label_type, features_gt, labels_gt, labels_pred, \
+                        data_identifier):
+    
+    if (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
+        accuracy = accuracy_score(labels_pred, labels_gt)
+    else:
+        accuracy = model.score(features_gt, labels_gt)
+    
+    print ('Accuracy for {} is {} s'.format(data_identifier, accuracy))
+    return accuracy
+
+
+# []
+'''
+Get Confusion Matrix
+'''
+def get_confusion_matrix (FM_label_type, labels_gt, labels_pred, \
+                          data_identifier, class_labels):
+    
+    conf_mat = confusion_matrix(labels_gt, labels_pred, labels = class_labels)
+    print('\nConfusion Matrix for {} is: \n{}'.format(data_identifier, conf_mat))
+    
+    return conf_mat
+
+
+# []
+'''
+Get Classification Report
+'''
+def get_classification_report (FM_label_type, labels_gt, labels_pred, \
+                          data_identifier, class_labels):
+    
+    print('\nClassification Report for {}: \n'.format(data_identifier))
+    print(classification_report(labels_gt, labels_pred, labels=class_labels))
