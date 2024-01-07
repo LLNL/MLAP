@@ -84,7 +84,7 @@ global_initial_memory = process.memory_info().rss
 
 json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_Extracted/InputJsonFiles/json_extract_data_005.json'
 json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTest_Data_Prepared/InputJsonFiles/json_prep_data_label_002.json'
-json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models/InputJsonFiles/json_train_model_002.json'
+json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models/InputJsonFiles/json_train_model_001.json'
 
 
 # ### Input file name when using python script on command line
@@ -252,6 +252,8 @@ trained_model_loc = os.path.join(trained_model_base_loc, trained_model_name)
 os.system('mkdir -p %s'%trained_model_loc)
 
 trained_model_file_name = '{}.pkl'.format(trained_model_name)
+
+model_eval_file = '{}_eval'.format(trained_model_name)
 
 
 # # Generate seed for the random number generator
@@ -457,6 +459,7 @@ if (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
     conf_mat_train = get_confusion_matrix (FM_label_type, labels_train, labels_pred_train,                                       "Train Data", class_labels)
     get_classification_report (FM_label_type, labels_train, labels_pred_train,                           "Train Data", class_labels)
 else:
+    conf_mat_train = None
     print('Confusion Matrix is not suitable for label_type: {}'.format(FM_label_type))
 
 
@@ -490,6 +493,7 @@ if (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
     conf_mat_test = get_confusion_matrix (FM_label_type, labels_test, labels_pred_test,                                       "Test Data", class_labels)
     get_classification_report (FM_label_type, labels_test, labels_pred_test,                           "Test Data", class_labels)
 else:
+    conf_mat_test = None
     print('Confusion Matrix is not suitable for label_type: {}'.format(FM_label_type))
 
 
@@ -500,6 +504,45 @@ if (FM_label_type == 'Binary'):
     average_precision_test = average_precision_score(labels_test, labels_pred_test)
     print('Average precision-recall score for Test Data: {0:0.2f}'.format(
           average_precision_test))
+
+
+# # Save ML Model Evaluation Metrics
+
+# In[ ]:
+
+
+data_for_csv = { 'accuracy_train':    [accuracy_train],
+                 'accuracy_test':     [accuracy_test]        
+               }
+
+
+# In[ ]:
+
+
+more_data_for_df = { 'conf_mat_train':    [conf_mat_train],
+                     'conf_mat_test':     [conf_mat_test]
+                   }
+
+
+# In[ ]:
+
+
+model_eval_csv = pd.DataFrame(data_for_csv)
+model_eval_csv.to_csv(os.path.join(trained_model_loc, model_eval_file+'.csv'), index=False)
+
+
+# In[ ]:
+
+
+model_eval_df = pd.DataFrame(data_for_csv | more_data_for_df) # Merge two dicts
+model_eval_df.to_pickle(os.path.join(trained_model_loc, model_eval_file+'.pkl'))
+
+
+# In[ ]:
+
+
+#df_from_pickle = pd.read_pickle(os.path.join(trained_model_loc, model_eval_file+'.pkl'))
+#df_from_pickle
 
 
 # # Global End Time and Memory
