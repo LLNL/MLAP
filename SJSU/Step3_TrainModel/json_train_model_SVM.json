@@ -3,10 +3,21 @@
 				"trained_model_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models"
 			     },	     
 	"models":	     {
-				"model_count": 1,
+				"model_count": 2,
 				"scaler_type": "Standard",
 				"test_data_frac": 0.2,
 				"model_name": "SVM",
-				"params": {}
+				"params": {
+						"kernel": "rbf",
+						"degree": 3,
+						"gamma": "scale",
+						"coef0": 0.0,
+						"tol": 1e-3,
+						"C": 1.0,
+						"shrinking": true,
+						"cache_size": 200,
+						"verbose": true,
+						"max_iter": -1
+					  }
 			     }
 }

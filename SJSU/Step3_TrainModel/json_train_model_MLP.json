@@ -3,7 +3,7 @@
 				"trained_model_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models"
 			     },	     
 	"models":	     {
-				"model_count": 0,
+				"model_count": 1,
 				"scaler_type": "Standard",
 				"test_data_frac": 0.2,
 				"model_name": "MLP",
@@ -16,7 +16,7 @@
 						"learning_rate": "constant",
 						"learning_rate_init": 0.001,
 						"power_t": 0.5,
-						"max_iter": 300,
+						"max_iter": 500,
 						"shuffle": true,
 						"random_state": null,
 						"tol": 1e-3,
