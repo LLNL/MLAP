@@ -82,9 +82,9 @@ global_initial_memory = process.memory_info().rss
 # In[ ]:
 
 
-json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_Extracted/InputJsonFiles/json_extract_data_005.json'
-json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTest_Data_Prepared/InputJsonFiles/json_prep_data_label_002.json'
-json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models/InputJsonFiles/json_train_model_001.json'
+json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_005.json'
+json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_001.json'
+json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Train/json_train_model_003.json'
 
 
 # ### Input file name when using python script on command line
@@ -204,7 +204,17 @@ if (FM_label_type == 'MultiClass'):
 FM_hr = json_content_prep_data['qoi_to_plot']['FM_hr']
 
 
-# ## Define ML Model and Params etc.
+# ## Define Training Options, ML Model, and Params etc.
+
+# ### Training Options
+
+# In[ ]:
+
+
+train_from_scratch = json_content_train_model['train_options']['train_from_scratch']
+save_train_data = json_content_train_model['train_options']['save_train_data']
+save_test_data = json_content_train_model['train_options']['save_test_data']
+
 
 # ### Model Defintion
 
@@ -251,9 +261,14 @@ trained_model_name = 'dataset_%03d_label_%03d_%s_model_%03d_%s'%(data_set_count,
 trained_model_loc = os.path.join(trained_model_base_loc, trained_model_name)
 os.system('mkdir -p %s'%trained_model_loc)
 
-trained_model_file_name = '{}.pkl'.format(trained_model_name)
+trained_model_file_name = '{}_model.pkl'.format(trained_model_name)
 
-model_eval_file = '{}_eval'.format(trained_model_name)
+train_data_features_file_name  = '{}_features_train.pkl'.format(trained_model_name)
+train_data_labels_file_name    = '{}_labels_train.pkl'.format(trained_model_name)
+test_data_features_file_name   = '{}_features_test.pkl'.format(trained_model_name)
+test_data_labels_file_name     = '{}_labels_test.pkl'.format(trained_model_name)
+
+model_eval_file_name           = '{}_eval.pkl'.format(trained_model_name)
 
 
 # # Generate seed for the random number generator
@@ -270,9 +285,10 @@ random_state = init_random_generator(seed)
 # In[ ]:
 
 
-with open(os.path.join(prepared_data_loc, prepared_data_file_name), 'rb') as file_handle:
-    prepared_data = pickle.load(file_handle)
-print('\nRead prepared data from "{}" at "{}"\n'.format(prepared_data_file_name, prepared_data_loc))
+if train_from_scratch:
+    with open(os.path.join(prepared_data_loc, prepared_data_file_name), 'rb') as file_handle:
+        prepared_data = pickle.load(file_handle)
+    print('\nRead prepared data from "{}" at "{}"\n'.format(prepared_data_file_name, prepared_data_loc))
 
 
 # # Get Features and Labels to Use
@@ -282,7 +298,8 @@ print('\nRead prepared data from "{}" at "{}"\n'.format(prepared_data_file_name,
 # In[ ]:
 
 
-features_to_use = prepared_data['features'].keys()
+if train_from_scratch:
+    features_to_use = prepared_data['features'].keys()
 
 
 # In[ ]:
@@ -302,14 +319,15 @@ features_to_use = prepared_data['features'].keys()
 # In[ ]:
 
 
-if (FM_label_type == 'Regression'):
-    labels_to_use = ['FM_{}hr'.format(FM_hr)]
-elif (FM_label_type == 'Binary'):
-    labels_to_use = ['FM_{}hr_bin'.format(FM_hr)]
-elif (FM_label_type == 'MultiClass'):
-    labels_to_use = ['FM_{}hr_MC'.format(FM_hr)]
-else:
-    raise ValueError('Invalid "label_type": {} in "FM_labels".                     \nValid types are: "Regression", "MultiClass", and "Binary"'.format(                                                                            FM_label_type))
+if train_from_scratch:
+    if (FM_label_type == 'Regression'):
+        labels_to_use = ['FM_{}hr'.format(FM_hr)]
+    elif (FM_label_type == 'Binary'):
+        labels_to_use = ['FM_{}hr_bin'.format(FM_hr)]
+    elif (FM_label_type == 'MultiClass'):
+        labels_to_use = ['FM_{}hr_MC'.format(FM_hr)]
+    else:
+        raise ValueError('Invalid "label_type": {} in "FM_labels".                         \nValid types are: "Regression", "MultiClass", and "Binary"'.format(                                                                                FM_label_type))
 
 
 # In[ ]:
@@ -323,10 +341,11 @@ else:
 # In[ ]:
 
 
-X_tt     = prepared_data['features'][features_to_use]
-y_tt     = prepared_data['labels'][labels_to_use]
-#idy_tt   = prepared_data['identity']
-#all_tt = prepared_data['all']
+if train_from_scratch:
+    X_tt     = prepared_data['features'][features_to_use]
+    y_tt     = prepared_data['labels'][labels_to_use]
+    #idy_tt   = prepared_data['identity']
+    #all_tt = prepared_data['all']
 
 
 # In[ ]:
@@ -340,10 +359,11 @@ y_tt     = prepared_data['labels'][labels_to_use]
 # In[ ]:
 
 
-print ('Data scaler type: {}'.format(scaler_type))
-scaler = define_scaler (scaler_type)
-scaler.fit(X_tt)
-X_tt_scaled = scaler.transform(X_tt)
+if train_from_scratch:
+    print ('Data scaler type: {}'.format(scaler_type))
+    scaler = define_scaler (scaler_type)
+    scaler.fit(X_tt)
+    X_tt_scaled = scaler.transform(X_tt)
 
 
 # In[ ]:
@@ -359,13 +379,9 @@ X_tt_scaled = scaler.transform(X_tt)
 # In[ ]:
 
 
-test_data_frac = json_content_train_model['models']['test_data_frac']
-
-
-# In[ ]:
-
-
-features_train, features_test, labels_train, labels_test = train_test_split(                             X_tt_scaled, y_tt.to_numpy(), test_size = test_data_frac)
+if train_from_scratch:
+    test_data_frac = json_content_train_model['models']['test_data_frac']
+    features_train, features_test, labels_train, labels_test = train_test_split(                             X_tt_scaled, y_tt.to_numpy(), test_size = test_data_frac)
 
 
 # In[ ]:
@@ -388,32 +404,31 @@ print ('ML model considered: {}'.format(model_name))
 # In[ ]:
 
 
-model = define_model (FM_label_type, model_name)
+if train_from_scratch:
+    model = define_model (FM_label_type, model_name)
 
 
 # In[ ]:
 
 
-print ('The model chosen is: {} \n'.format(model))
-print ('Deafult model params: \n {}'.format(model.get_params()))
+if train_from_scratch:
+    print ('The model chosen is: {} \n'.format(model))
+    print ('Deafult model params: \n {}'.format(model.get_params()))
 
 
 # In[ ]:
 
 
-print ('Updating the model params with the dict: \n {}'.format(model_params))
+if train_from_scratch and model_params != {}:
+    print ('Updating the model params with the dict: \n {}'.format(model_params))
+    model.set_params(**model_params)
 
 
 # In[ ]:
 
 
-model.set_params(**model_params)
-
-
-# In[ ]:
-
-
-print ('Updated model params: \n {}'.format(model.get_params()))
+if train_from_scratch and model_params != {}:
+    print ('Updated model params: \n {}'.format(model.get_params()))
 
 
 # ## Train the Model
@@ -421,9 +436,11 @@ print ('Updated model params: \n {}'.format(model.get_params()))
 # In[ ]:
 
 
-t0 = time.time()
-model.fit(features_train, labels_train.ravel())
-print ("\nTraining Time:", round(time.time()-t0, 3), "s")
+if train_from_scratch:
+    t0 = time.time()
+    model.fit(features_train, labels_train.ravel())
+    training_time = round(time.time()-t0, 3)
+    print ("\nTraining Time: {} s".format(training_time))
 
 
 # ## Save the Model
@@ -431,14 +448,58 @@ print ("\nTraining Time:", round(time.time()-t0, 3), "s")
 # In[ ]:
 
 
-trained_model_file = os.path.join(trained_model_loc, trained_model_file_name)
-pickle.dump(model, open(trained_model_file, 'wb'))
-print ('\nSaved the ML model file at: {}\n'.format(trained_model_file))
+if train_from_scratch:
+    trained_model_file = os.path.join(trained_model_loc, trained_model_file_name)
+    pickle.dump(model, open(trained_model_file, 'wb'))
+    print ('\nSaved the ML model file at: {}\n'.format(trained_model_file))
+
+
+# ## Save Train/Test Data
+
+# In[ ]:
+
+
+if train_from_scratch and save_train_data:
+    pickle.dump(features_train, open(os.path.join(                        trained_model_loc, train_data_features_file_name), 'wb'))
+    pickle.dump(labels_train, open(os.path.join(                        trained_model_loc, train_data_labels_file_name), 'wb'))
+
+
+# In[ ]:
+
+
+if train_from_scratch and save_test_data:
+    pickle.dump(features_test, open(os.path.join(                        trained_model_loc, test_data_features_file_name), 'wb'))
+    pickle.dump(labels_test, open(os.path.join(                        trained_model_loc, test_data_labels_file_name), 'wb'))
 
 
 # # Prediction with Trained Model
 
+# ### Load the ML Model
+
+# In[ ]:
+
+
+if not train_from_scratch:
+    trained_model_file = os.path.join(trained_model_loc, trained_model_file_name)
+    model = pickle.load(open(trained_model_file, 'rb'))
+    print ('\nLoaded the ML model file at: {}\n'.format(trained_model_file))
+    print ('The model loaded is: {} \n'.format(model))
+
+
 # ## Prediction on Train Data
+
+# ### Load the features and labels used in training if not training from scratch
+
+# In[ ]:
+
+
+if not train_from_scratch:
+    print('Loading the saved features and labels used in training')
+    features_train = pickle.load(open(os.path.join(                            trained_model_loc, train_data_features_file_name), 'rb'))
+    labels_train   =  pickle.load(open(os.path.join(                            trained_model_loc, train_data_labels_file_name), 'rb'))
+
+
+# ### Predict and Evaluate
 
 # In[ ]:
 
@@ -473,6 +534,19 @@ if (FM_label_type == 'Binary'):
 
 
 # ## Prediction on Test Data
+
+# ### Load the features and labels saved for testing if not training from scratch
+
+# In[ ]:
+
+
+if not train_from_scratch:
+    print('Loading the saved features and labels meant for testing')
+    features_test = pickle.load(open(os.path.join(                            trained_model_loc, test_data_features_file_name), 'rb'))
+    labels_test   =  pickle.load(open(os.path.join(                            trained_model_loc, test_data_labels_file_name), 'rb'))
+
+
+# ### Predict and Evaluate
 
 # In[ ]:
 
@@ -528,14 +602,14 @@ more_data_for_df = { 'conf_mat_train':    [conf_mat_train],
 
 
 model_eval_csv = pd.DataFrame(data_for_csv)
-model_eval_csv.to_csv(os.path.join(trained_model_loc, model_eval_file+'.csv'), index=False)
+model_eval_csv.to_csv(os.path.join(trained_model_loc,                                    model_eval_file_name.replace('pkl','csv')), index=False)
 
 
 # In[ ]:
 
 
 model_eval_df = pd.DataFrame(data_for_csv | more_data_for_df) # Merge two dicts
-model_eval_df.to_pickle(os.path.join(trained_model_loc, model_eval_file+'.pkl'))
+model_eval_df.to_pickle(os.path.join(trained_model_loc, model_eval_file_name))
 
 
 # In[ ]:
