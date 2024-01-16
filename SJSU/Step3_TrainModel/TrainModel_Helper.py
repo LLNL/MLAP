@@ -20,9 +20,11 @@ from datetime import date, datetime, timedelta, time
 from timeit import default_timer as timer
 import time
 
+from sklearn.linear_model import LinearRegression
 from sklearn.svm import SVC, SVR
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 from sklearn.neural_network import MLPClassifier, MLPRegressor
+from sklearn.ensemble import GradientBoostingRegressor, GradientBoostingClassifier
 
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, MaxAbsScaler, RobustScaler
 from sklearn.model_selection import train_test_split
@@ -61,12 +63,17 @@ Define ML Model
 def define_model (FM_label_type, model_name):
     if (FM_label_type == 'Regression'):
         match model_name:
+            case 'Linear':
+                model = LinearRegression()
             case 'SVM':
                 model = SVR()
             case 'RF':
                 model = RandomForestRegressor()
             case 'MLP':
                 model = MLPRegressor()
+            case 'GB':
+                model = GradientBoostingRegressor()
+            
             
     elif (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
         match model_name:
@@ -76,6 +83,8 @@ def define_model (FM_label_type, model_name):
                 model = RandomForestClassifier()
             case 'MLP':
                 model = MLPClassifier()
+            case 'GB':
+                model = GradientBoostingClassifier
                 
     #'========================================================================='    
     return model

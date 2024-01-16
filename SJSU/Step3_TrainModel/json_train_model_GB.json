@@ -1,0 +1,24 @@
+{
+	"paths": 	     {
+				"trained_model_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models"
+			     },
+	"train_options":     {
+				"train_from_scratch": true,
+				"save_train_data": true,
+				"save_test_data": true
+			     },
+	"models":	     {
+				"model_count": 3,
+				"scaler_type": "Standard",
+				"test_data_frac": 0.2,
+				"model_name": "GB",
+				"params": {}
+			     },
+	"evaluation":	     {
+				"max_data_size_scatter": 800,
+				"fig_size_x": 15,
+				"fig_size_y": 15,
+				"font_size": 20,
+				"x_lim": [0, 0.7]
+			     }
+}
