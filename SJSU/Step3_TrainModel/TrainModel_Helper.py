@@ -106,7 +106,7 @@ def get_accuracy_score (model, FM_label_type, features_gt, labels_gt, labels_pre
     else:
         accuracy = model.score(features_gt, labels_gt)
     
-    print ('Accuracy for {} is {} s'.format(data_identifier, accuracy))
+    print ('Accuracy for {} is: {}'.format(data_identifier, accuracy))
     return accuracy
 
 
@@ -132,3 +132,38 @@ def get_classification_report (FM_label_type, labels_gt, labels_pred, \
     
     print('\nClassification Report for {}: \n'.format(data_identifier))
     print(classification_report(labels_gt, labels_pred, labels=class_labels))
+    
+
+# []
+'''
+Plot Scatter for Rgeression
+'''
+def plot_scatter_regression (labels_gt, labels_pred, accuracy, model_name, \
+                             plot_loc, fig_name, \
+                             max_data_size_scatter, fig_size_x, fig_size_y, \
+                             font_size, x_lim):
+    
+    labels_gt_range = [labels_gt.min(), labels_gt.max()]
+    data_indices = range(len(labels_gt))
+    if (max_data_size_scatter < 1):
+        data_ind_subset = data_indices
+    else:
+        data_ind_subset = random.sample(data_indices, k = max_data_size_scatter)
+    
+    if not os.path.exists(plot_loc):
+        os.system('mkdir -p %s' %(plot_loc))
+    scatter_plot_path = os.path.join(plot_loc, fig_name)
+
+    plt.figure(figsize = (fig_size_x, fig_size_y))
+
+    plt.scatter(labels_gt[data_ind_subset], labels_pred[data_ind_subset])
+    plt.plot(labels_gt_range, labels_gt_range, '--r')
+    plt.xlabel('Ground Truth', fontsize = font_size)
+    plt.ylabel('Prediction', fontsize = font_size)
+    plt.title('Model: {}, Accuracy: {:.3f}'.format(model_name, accuracy), fontsize = font_size)
+    plt.xlim(x_lim)
+    plt.ylim(x_lim)
+    plt.yticks(fontsize = font_size, rotation = 0)
+    plt.xticks(fontsize = font_size, rotation = 0)
+
+    plt.savefig(scatter_plot_path, bbox_inches='tight')

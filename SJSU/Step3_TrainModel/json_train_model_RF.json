@@ -13,5 +13,12 @@
 				"test_data_frac": 0.2,
 				"model_name": "RF",
 				"params": {}
+			     },
+	"evaluation":	     {
+				"max_data_size_scatter": 800,
+				"fig_size_x": 15,
+				"fig_size_y": 15,
+				"font_size": 20,
+				"x_lim": [0, 0.7]
 			     }
 }

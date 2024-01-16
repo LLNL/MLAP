@@ -223,8 +223,22 @@ save_test_data = json_content_train_model['train_options']['save_test_data']
 
 model_count = json_content_train_model['models']['model_count']
 scaler_type = json_content_train_model['models']['scaler_type']
-model_name = json_content_train_model['models']['model_name'] # ['RF', SVM', 'MLP']
+model_name  = json_content_train_model['models']['model_name'] # ['RF', SVM', 'MLP']
 model_params = json_content_train_model['models']['params']
+
+
+# ### Evaluation
+
+# In[ ]:
+
+
+if (FM_label_type == 'Regression'):
+    evaluation = json_content_train_model['evaluation']
+    max_data_size_scatter = evaluation['max_data_size_scatter']
+    fig_size_x = evaluation['fig_size_x']
+    fig_size_y = evaluation['fig_size_y']
+    font_size  = evaluation['font_size']
+    x_lim      = evaluation['x_lim']
 
 
 # # Paths and File Names
@@ -265,8 +279,11 @@ trained_model_file_name = '{}_model.pkl'.format(trained_model_name)
 
 train_data_features_file_name  = '{}_features_train.pkl'.format(trained_model_name)
 train_data_labels_file_name    = '{}_labels_train.pkl'.format(trained_model_name)
+train_data_scatter_file_name   = '{}_scatter_train.png'.format(trained_model_name)
+
 test_data_features_file_name   = '{}_features_test.pkl'.format(trained_model_name)
 test_data_labels_file_name     = '{}_labels_test.pkl'.format(trained_model_name)
+test_data_scatter_file_name   = '{}_scatter_test.png'.format(trained_model_name)
 
 model_eval_file_name           = '{}_eval.pkl'.format(trained_model_name)
 
@@ -533,6 +550,14 @@ if (FM_label_type == 'Binary'):
           average_precision_train))
 
 
+# ### Plot Scatter
+
+# In[ ]:
+
+
+plot_scatter_regression (labels_train, labels_pred_train, accuracy_train, model_name,                         trained_model_loc, train_data_scatter_file_name,                         max_data_size_scatter, fig_size_x, fig_size_y,                         font_size, x_lim)
+
+
 # ## Prediction on Test Data
 
 # ### Load the features and labels saved for testing if not training from scratch
@@ -578,6 +603,14 @@ if (FM_label_type == 'Binary'):
     average_precision_test = average_precision_score(labels_test, labels_pred_test)
     print('Average precision-recall score for Test Data: {0:0.2f}'.format(
           average_precision_test))
+
+
+# ### Plot Scatter
+
+# In[ ]:
+
+
+plot_scatter_regression (labels_test, labels_pred_test, accuracy_test, model_name,                         trained_model_loc, test_data_scatter_file_name,                         max_data_size_scatter, fig_size_x, fig_size_y,                         font_size, x_lim)
 
 
 # # Save ML Model Evaluation Metrics
