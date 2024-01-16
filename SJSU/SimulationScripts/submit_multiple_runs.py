@@ -1,47 +1,53 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import os
 import os.path as path
 
 
-# In[2]:
+# In[ ]:
 
 
-sbatch_script = 'run_python_from_conda_env_2024_01_07.sh'
+sim_dir = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI'
 
 
-# In[3]:
+# In[ ]:
+
+
+sbatch_script = '/g/g92/jha3/Codes/Wildfire_ML/SJSU/SimulationScripts/run_python_from_conda_env_2024_01_07.sh'
+
+
+# In[ ]:
 
 
 python_script = '/g/g92/jha3/Codes/Wildfire_ML/SJSU/Step3_TrainModel/TrainModel.py'
 
 
-# In[4]:
+# In[ ]:
 
 
-json_extract_base = 'InputJson/Extract/json_extract_data'
+json_extract_base = os.path.join(sim_dir, 'InputJson/Extract/json_extract_data')
 json_extract_counts = [2, 3, 4, 5, 6, 7, 8]
 
 
-# In[5]:
+# In[ ]:
 
 
-json_prep_base = 'InputJson/Prep/json_prep_data_label'
-json_prep_counts = [1, 2, 3]
+json_prep_base = os.path.join(sim_dir, 'InputJson/Prep/json_prep_data_label')
+json_prep_counts = [1] #[1, 2, 3]
 
 
-# In[6]:
+# In[ ]:
 
 
-json_train_base = 'InputJson/Train/json_train_model'
-json_train_counts = [2]
+json_train_base = os.path.join(sim_dir, 'InputJson/Train/json_train_model')
+json_train_counts = [1, 2, 3, 4, 5]
 
 
-# In[7]:
+# In[ ]:
 
 
 for data_count in json_extract_counts:
