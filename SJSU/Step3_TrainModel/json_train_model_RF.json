@@ -3,7 +3,7 @@
 				"trained_model_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models"
 			     },
 	"train_options":     {
-				"train_from_scratch": false,
+				"train_from_scratch": true,
 				"save_train_data": true,
 				"save_test_data": true
 			     },
