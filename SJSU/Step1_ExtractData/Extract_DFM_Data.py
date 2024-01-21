@@ -221,7 +221,7 @@ if remove_fire_data_from_train_test:
 # In[ ]:
 
 
-#data_files_list = data_files_list[0:30]
+#data_files_list = data_files_list[0:18]
 
 
 # # Downsample Files
@@ -486,59 +486,22 @@ labels_ind_in_nc_file = features_labels['labels_ind_in_nc_file']
 # In[ ]:
 
 
-'''
-data_at_sampled_times_and_grids = \
-    read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file, \
-                                         features_to_read, valid_grid_ind_to_coord, \
-                                         time_grid_indices_set_dict, \
-                                         data_files_location, data_files_list, \
-                                         'dict')
-'''
-
-
-# In[ ]:
-
-
 data_at_sampled_times_and_grids =     read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file,                                          features_to_read, valid_grid_ind_to_coord,                                          time_grid_indices_set_dict,                                          data_files_location, data_files_list,                                          'array')
 
 
 # In[ ]:
 
 
-#np.set_printoptions(suppress=True)
+#np.set_printoptions (suppress=True)
 #data_at_sampled_times_and_grids
 
 
-# # Extract and Save Data at The Sampled Time and Grid Points
-
-# ## Extract Data at The Sampled Time and Grid Points
+# # Create DataFrame of Data at Sampled Time and Grid Indices
 
 # In[ ]:
 
 
-'''
-data_at_times = collection_of_read_data['file_indices_data_dict']
-#data_at_times.keys()
-'''
-
-
-# In[ ]:
-
-
-'''
-module_start_time = timer()
-module_initial_memory = process.memory_info().rss
-df = create_dataframe_FM_atm_data (data_at_times, \
-                                   sampled_file_indices, history_file_indices, \
-                                   sampled_time_stamps, history_interval, \
-                                   grid_indices_selected, \
-                                   j_indices_selected, i_indices_selected)
-module_final_memory = process.memory_info().rss
-module_end_time = timer()
-module_memory_consumed = module_final_memory - module_initial_memory
-print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
-print('Module "create_dataframe_FM_atm_data" computing time: {:.3f} s'.format(module_end_time - module_start_time))
-'''
+df = create_dataframe_FM_atm_data (data_at_sampled_times_and_grids, data_at_timestamp,                                  sampled_file_indices, history_file_indices,                                   sampled_time_stamps, history_interval,                                   grid_indices_selected,                                   j_indices_selected, i_indices_selected,                                  labels_to_read, features_to_read)
 
 
 # In[ ]:

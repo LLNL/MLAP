@@ -1067,7 +1067,119 @@ def read_data_at_sampled_times_and_grids (labels_to_read, labels_ind_in_nc_file,
     print('=========================================================================')
     return data_at_sampled_times_and_grids
 
+# []
+'''
+Create DataFrame of FM and Historical Data. Also Extract Time and Grid Info.
+'''
+def create_dataframe_FM_atm_data (data_at_sampled_times_and_grids, data_at_timestamp, \
+                                  sampled_file_indices, history_file_indices, \
+                                  sampled_time_stamps, history_interval, \
+                                  grid_indices_selected, \
+                                  j_indices_selected, i_indices_selected,\
+                                  labels_to_read, features_to_read):
+    
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "create_dataframe_FM_atm_data"')
+    print('\nProcess in the module(): {}'.format(process))
+    
+    ## Define the Sizes to Contain Sampled Data
+    num_sampled_times  = grid_indices_selected.shape[0]
+    num_sampled_points = grid_indices_selected.shape[1]
+    num_data_points    = num_sampled_times*num_sampled_points
+    num_hist_indices   = len(history_file_indices[0])
+    
+    FM_time_ind  = np.zeros((num_data_points, 1), int)
+    FM_ts        = np.zeros((num_data_points, 1), '<U13') #list()
+    his_time_ind = np.zeros((num_data_points, num_hist_indices), int)
 
+    grid_ind     = np.zeros((num_data_points, 1), int)
+    j_ind        = np.zeros((num_data_points, 1), int)
+    i_ind        = np.zeros((num_data_points, 1), int)
+
+    HGT          = np.zeros((num_data_points, 1), float)
+
+    label_data_at_ref_time = dict()
+    for label in labels_to_read:
+        label_data_at_ref_time[label] = np.zeros((num_data_points, 1), float)
+
+    atm_data_at_hist_times = dict()
+    for feature in features_to_read:
+        atm_data_at_hist_times[feature] = np.zeros((num_data_points, num_hist_indices), float)
+        
+        
+    ## Fill in the Data Arrays
+    for sampled_time_count, sampled_time_ind in enumerate(sampled_file_indices):
+        hist_indices = np.array(history_file_indices[sampled_time_count])
+
+        for sampled_grid_point_count in range(num_sampled_points):
+            data_point_count = sampled_time_count*num_sampled_points + sampled_grid_point_count
+
+            # Time Indices
+            FM_time_ind [ data_point_count] = sampled_time_ind
+            FM_ts [       data_point_count] = sampled_time_stamps [sampled_time_count]
+            his_time_ind [data_point_count] = hist_indices
+
+            # Grid Identifier
+            grid_index = grid_indices_selected[sampled_time_count][sampled_grid_point_count]
+            j_loc      = j_indices_selected[   sampled_time_count][sampled_grid_point_count]
+            i_loc      = i_indices_selected[   sampled_time_count][sampled_grid_point_count]
+            #print(sampled_time_count, sampled_grid_point_count, data_point_count)
+
+            # Grid Indices
+            grid_ind [    data_point_count] = grid_index
+            j_ind [       data_point_count] = j_loc
+            i_ind [       data_point_count] = i_loc
+
+            # Height for Features
+            HGT [data_point_count] = data_at_timestamp['HGT'][j_loc][i_loc]
+
+            # FM at Ref Time (Labels)
+            for label_count, label in enumerate(labels_to_read):
+                label_data_at_ref_time[label][data_point_count] = \
+                        data_at_sampled_times_and_grids[sampled_time_ind][grid_index][\
+                                                  len(features_to_read) + label_count]
+
+            # Historical Atmospheric Data (Features)
+            for feature_count, feature in enumerate(features_to_read):
+                for hist_ind_count, hist_ind in enumerate(hist_indices):
+                    atm_data_at_hist_times[feature][data_point_count][hist_ind_count] = \
+                            data_at_sampled_times_and_grids[hist_ind][grid_index][\
+                                                      feature_count] 
+    
+    ## Create DataFrame
+    df = pd.DataFrame()
+    df['FM_time_ind'] = FM_time_ind.flatten()
+    df['FM_ts'] = FM_ts
+    df['his_time_ind'] = list(his_time_ind)
+
+    df['grid_ind'] = grid_ind
+    df['j_ind'] = j_ind
+    df['i_ind'] = i_ind
+
+    df['HGT'] = HGT
+    
+    for label_count, label in enumerate(labels_to_read):
+        df[label] = label_data_at_ref_time[label]
+        
+    for hist_ind_count, hist_ind in enumerate(hist_indices):
+        for feature_count, feature in enumerate(features_to_read):
+            hist_hr = (num_hist_indices-hist_ind_count)*history_interval
+            feature_header = '{}[-{}hr]'.format(feature, hist_hr)
+            df[feature_header] = atm_data_at_hist_times[feature].T[hist_ind_count]
+            
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
+    print('=========================================================================')
+    
+    return df
+    
 # []
 '''
 Create DataFrame of FM and Historical Data. Also Extract Time and Grid Info.
