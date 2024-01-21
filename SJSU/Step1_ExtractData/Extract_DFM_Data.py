@@ -480,6 +480,12 @@ labels_ind_in_nc_file = features_labels['labels_ind_in_nc_file']
 # In[ ]:
 
 
+#features_to_read, labels_to_read, labels_ind_in_nc_file
+
+
+# In[ ]:
+
+
 '''
 data_at_sampled_times_and_grids = \
     read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file, \
@@ -501,92 +507,6 @@ data_at_sampled_times_and_grids =     read_data_at_sampled_times_and_grids(label
 
 #np.set_printoptions(suppress=True)
 #data_at_sampled_times_and_grids
-
-
-# # Read Files At All Possible Time Indices (Ref + History)
-
-# ## Read Data at All Times
-
-# In[ ]:
-
-
-'''
-module_start_time = timer()
-module_initial_memory = process.memory_info().rss
-
-file_indices_to_read = list(time_grid_indices_list_dict.keys())
-data_files_to_read, time_stamps_to_read, file_indices_data_dict = \
-                read_data_all_possible_times (file_indices_to_read, data_files_list, \
-                                             data_files_location)
-
-module_final_memory = process.memory_info().rss
-module_end_time = timer()
-module_memory_consumed = module_final_memory - module_initial_memory
-print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
-print('Module "read_data_all_possible_times" computing time: {:.3f} s'.format(module_end_time - module_start_time))
-'''
-
-
-# ## Save Data In a Pickle File
-
-# In[ ]:
-
-
-'''
-module_start_time = timer()
-module_initial_memory = process.memory_info().rss
-save_data_read_at_all_possible_times (file_indices_to_read, data_files_to_read, \
-                                      time_stamps_to_read, file_indices_data_dict, \
-                                      extracted_data_loc, collection_of_read_data_files)
-module_final_memory = process.memory_info().rss
-module_end_time = timer()
-module_memory_consumed = module_final_memory - module_initial_memory
-print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
-print('Module "save_data_read_at_all_possible_times" computing time: {:.3f} s'.format(module_end_time - module_start_time))
-'''
-
-
-# ## Delete Data No Longer Needed To Free Memory
-
-# In[ ]:
-
-
-'''
-global_final_memory = process.memory_info().rss
-global_memory_consumed = global_final_memory - global_initial_memory
-print('Total memory consumed so far: {:.3f} MB'.format(global_memory_consumed/(1024*1024)))
-
-print('Deleting Some Variables')
-del file_indices_data_dict
-
-global_final_memory = process.memory_info().rss
-global_memory_consumed = global_final_memory - global_initial_memory
-print('Total memory consumed so far: {:.3f} MB'.format(global_memory_consumed/(1024*1024)))
-'''
-
-
-# ## Read Data at All Possible Times Saved in a Pickle File
-
-# In[ ]:
-
-
-'''
-module_start_time = timer()
-module_initial_memory = process.memory_info().rss
-collection_of_read_data = read_data_from_pickle_all_possible_times (extracted_data_loc, \
-                                                              collection_of_read_data_files)
-module_final_memory = process.memory_info().rss
-module_end_time = timer()
-module_memory_consumed = module_final_memory - module_initial_memory
-print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
-print('Module "read_data_from_pickle_all_possible_times" computing time: {:.3f} s'.format(module_end_time - module_start_time))
-'''
-
-
-# In[ ]:
-
-
-#collection_of_read_data['file_indices_data_dict'].keys()
 
 
 # # Extract and Save Data at The Sampled Time and Grid Points
