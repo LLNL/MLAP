@@ -265,7 +265,7 @@ df_sampled_time = create_df_sampled_time (sampled_file_indices, sampled_data_fil
 # In[ ]:
 
 
-df_sampled_time.head(30)
+#df_sampled_time.head(30)
 
 
 # # Plot Sampled Datetime
@@ -507,7 +507,7 @@ df = create_dataframe_FM_atm_data (data_at_sampled_times_and_grids, data_at_time
 # In[ ]:
 
 
-df.head(7)
+#df.head(7)
 
 
 # ## Save The Data Extracted  at Sampled Time and Grid Points
@@ -515,9 +515,7 @@ df.head(7)
 # In[ ]:
 
 
-'''
 df.to_pickle(os.path.join(extracted_data_loc, extracted_data_file_name))
-'''
 
 
 # ## Load and Test The Extracted Data Saved in Pickle File
@@ -525,10 +523,8 @@ df.to_pickle(os.path.join(extracted_data_loc, extracted_data_file_name))
 # In[ ]:
 
 
-'''
-df_from_pickle = pd.read_pickle(os.path.join(extracted_data_loc, extracted_data_file_name))
-df_from_pickle.head(5)
-'''
+#df_from_pickle = pd.read_pickle(os.path.join(extracted_data_loc, extracted_data_file_name))
+#df_from_pickle.head(5)
 
 
 # # Save Other Relevant Info in A CSV File
@@ -536,33 +532,32 @@ df_from_pickle.head(5)
 # In[ ]:
 
 
-'''
-data_for_csv = { 'max_history_to_consider':    [max_history_to_consider],
-                 'history_interval':           [history_interval],
-                 'num_hist_indices':           [len(history_file_indices[0])],
+data_for_csv = { 'max_hist':    [max_history_to_consider],
+                 'hist_interval':           [history_interval],
+                 'num_hist':           [len(history_file_indices[0])],
+                 'num_qois': [len(features_to_read) - 1],
                  'num_total_files':            [len(data_files_list)],
                  'percent_files_to_use':       [percent_files_to_use],
                  'num_sampled_times':          [grid_indices_selected.shape[0]],
-                 'num_data_files_to_read':     [len(data_files_to_read)],
+                 'num_data_files_to_read':     [grid_indices_selected.shape[0] * \
+                                                (len(history_file_indices[0]) + 1)],
                  'num_grid_points_sn':         [grid_indices_all.shape[0]],
                  'num_grid_points_we':         [grid_indices_all.shape[1]],
                  'num_total_grid_points':      [len(grid_indices_all_flat)],
                  'num_valid_grid_points':      [len(grid_indices_valid_flat)],
                  'percent_grid_points_to_use': [percent_grid_points_to_use],
                  'num_sampled_grid_points':    [grid_indices_selected.shape[1]],
-                 'num_data_points':            [len(df)]               
+                 'num_time_grid_to_read':      [grid_indices_selected.shape[0] * \
+                                                (len(history_file_indices[0]) + 1) * \
+                                                grid_indices_selected.shape[1]],
+                 'rows_feature_mat':           [grid_indices_selected.shape[0] * \
+                                                grid_indices_selected.shape[1]],
+                 'cols_feature_mat':           [len(history_file_indices[0]) * \
+                                                (len(features_to_read) - 1)]
 }
 tabulated_data = pd.DataFrame(data_for_csv)
 tabulated_data.to_csv(os.path.join(extracted_data_loc, tab_data_file_name), index = False)
-'''
-
-
-# In[ ]:
-
-
-'''
-tabulated_data
-'''
+#tabulated_data
 
 
 # # Extract Fire Data
