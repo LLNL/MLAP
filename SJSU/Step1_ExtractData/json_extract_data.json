@@ -19,7 +19,7 @@
 			     },
 	"features_labels":   {
 				"features_to_read": ["U10", "V10", "T2", "RH", "PRECIP", "SWDOWN"],
-				"labels_to_read": ["FMC_10hr", "FMC_100hr"],
+				"labels_to_read": ["FM_10hr", "FM_100hr"],
 				"labels_ind_in_nc_file": [1, 2],
 				"SJSU_HRRR_Map": {
 							"U10": "ugrd10m", 
