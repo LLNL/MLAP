@@ -14,9 +14,14 @@ echo "Job id = $SLURM_JOBID"
 hostname
 
 export python_script=$1
-export input_json=$2
+export json_extract_data=$2
+#export json_prepare_data=$3
+#export json_train_model=$4
 echo "Running the python script: ${python_script}"
-echo "...Using the input json file: ${input_json}"
+echo "... Using the input json files for: "
+echo "... ... Extracting Data: ${json_extract_data}"
+#echo "... ... Preparing Data:  ${json_prepare_data}"
+#echo "... ... Training Model:  ${json_train_model}"
 
 # RUN THIS SCRIPT FROM A conda ENVIRONMENT
 
@@ -25,7 +30,7 @@ echo "...Using the input json file: ${input_json}"
 #conda activate py3_ml
 #source $HOME/VirtualEnv/py3_ml_wind/bin/activate
 
-python $python_script $input_json
+python $python_script $json_extract_data
 
 #conda deactivate
 #conda deactivate
