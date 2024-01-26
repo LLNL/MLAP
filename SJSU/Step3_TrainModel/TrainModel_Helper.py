@@ -176,3 +176,40 @@ def plot_scatter_regression (labels_gt, labels_pred, accuracy, model_name, \
     plt.xticks(fontsize = font_size, rotation = 0)
 
     plt.savefig(scatter_plot_path, bbox_inches='tight')
+    
+
+# []
+'''
+Plot Confusion Matrix for Classification
+'''
+def plot_confusion_matrix (conf_mat, accuracy, model_name, \
+                           plot_loc, fig_name, \
+                           fig_size_x, fig_size_y, \
+                           font_size,\
+                           normalize_cm):
+    
+    if normalize_cm:
+        num_format = '{:.3f}'
+        conf_mat_row_sum = conf_mat.sum(axis = 1)[:,np.newaxis]
+        conf_mat = conf_mat/conf_mat_row_sum
+    else:
+        num_format = '{:.0f}'
+        
+    if not os.path.exists(plot_loc):
+        os.system('mkdir -p %s' %(plot_loc))
+    cm_plot_path = os.path.join(plot_loc, fig_name)
+    
+    fig, ax = plt.subplots(figsize = (fig_size_x, fig_size_y))
+    
+    im = plt.imshow(conf_mat, cmap = 'viridis')
+    plt.ylabel('Ground Truth', fontsize = font_size)
+    plt.xlabel('Prediction', fontsize = font_size)
+    plt.title('Model: {}, Accuracy: {:.3f}'.format(model_name, accuracy), fontsize = font_size)
+
+    plt.tick_params(axis='both', which='major', labelsize=font_size, labelbottom = False, bottom=False, top = False, labeltop=True)
+    for (i, j), z in np.ndenumerate(conf_mat):
+        ax.text(j, i, num_format.format(z), fontsize = font_size, ha='center', va='center')
+    cbar = plt.colorbar(shrink = 0.8)
+    cbar.ax.tick_params(labelsize=font_size)
+    
+    plt.savefig(cm_plot_path, bbox_inches='tight')

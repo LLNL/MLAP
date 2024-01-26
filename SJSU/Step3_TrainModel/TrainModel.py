@@ -82,9 +82,9 @@ global_initial_memory = process.memory_info().rss
 # In[ ]:
 
 
-json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_005.json'
+json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_015.json'
 json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_001.json'
-json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Train/json_train_model_003.json'
+json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Train/json_train_model_001.json'
 
 
 # ### Input file name when using python script on command line
@@ -232,13 +232,16 @@ model_params = json_content_train_model['models']['params']
 # In[ ]:
 
 
+evaluation = json_content_train_model['evaluation']
+fig_size_x = evaluation['fig_size_x']
+fig_size_y = evaluation['fig_size_y']
+font_size  = evaluation['font_size']
+
 if (FM_label_type == 'Regression'):
-    evaluation = json_content_train_model['evaluation']
     max_data_size_scatter = evaluation['max_data_size_scatter']
-    fig_size_x = evaluation['fig_size_x']
-    fig_size_y = evaluation['fig_size_y']
-    font_size  = evaluation['font_size']
     x_lim      = evaluation['x_lim']
+else:
+    normalize_cm = evaluation['normalize_cm']
 
 
 # # Paths and File Names
@@ -280,10 +283,12 @@ trained_model_file_name = '{}_model.pkl'.format(trained_model_name)
 train_data_features_file_name  = '{}_features_train.pkl'.format(trained_model_name)
 train_data_labels_file_name    = '{}_labels_train.pkl'.format(trained_model_name)
 train_data_scatter_file_name   = '{}_scatter_train.png'.format(trained_model_name)
+train_data_cm_file_name        = '{}_cm_train.png'.format(trained_model_name)
 
 test_data_features_file_name   = '{}_features_test.pkl'.format(trained_model_name)
 test_data_labels_file_name     = '{}_labels_test.pkl'.format(trained_model_name)
-test_data_scatter_file_name   = '{}_scatter_test.png'.format(trained_model_name)
+test_data_scatter_file_name    = '{}_scatter_test.png'.format(trained_model_name)
+test_data_cm_file_name         = '{}_cm_test.png'.format(trained_model_name)
 
 model_eval_file_name           = '{}_eval.pkl'.format(trained_model_name)
 
@@ -550,12 +555,15 @@ if (FM_label_type == 'Binary'):
           average_precision_train))
 
 
-# ### Plot Scatter
+# ### Plot Scatter or Confusion Matrix
 
 # In[ ]:
 
 
-plot_scatter_regression (labels_train, labels_pred_train, accuracy_train, model_name,                         trained_model_loc, train_data_scatter_file_name,                         max_data_size_scatter, fig_size_x, fig_size_y,                         font_size, x_lim)
+if (FM_label_type == 'Regression'):
+    plot_scatter_regression (labels_train, labels_pred_train, accuracy_train, model_name,                             trained_model_loc, train_data_scatter_file_name,                             max_data_size_scatter, fig_size_x, fig_size_y,                             font_size, x_lim)
+else:
+    plot_confusion_matrix (conf_mat_train, accuracy_train, model_name,                            trained_model_loc, train_data_cm_file_name,                            fig_size_x, fig_size_y,                            font_size,                           normalize_cm)
 
 
 # ## Prediction on Test Data
@@ -605,12 +613,15 @@ if (FM_label_type == 'Binary'):
           average_precision_test))
 
 
-# ### Plot Scatter
+# ### Plot Scatter or Confusion Matrix
 
 # In[ ]:
 
 
-plot_scatter_regression (labels_test, labels_pred_test, accuracy_test, model_name,                         trained_model_loc, test_data_scatter_file_name,                         max_data_size_scatter, fig_size_x, fig_size_y,                         font_size, x_lim)
+if (FM_label_type == 'Regression'):
+    plot_scatter_regression (labels_test, labels_pred_test, accuracy_test, model_name,                             trained_model_loc, test_data_scatter_file_name,                             max_data_size_scatter, fig_size_x, fig_size_y,                             font_size, x_lim)
+else:
+    plot_confusion_matrix (conf_mat_test, accuracy_test, model_name,                            trained_model_loc, train_data_cm_file_name,                            fig_size_x, fig_size_y,                            font_size,                           normalize_cm)
 
 
 # # Save ML Model Evaluation Metrics
