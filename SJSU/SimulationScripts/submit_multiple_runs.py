@@ -7,7 +7,7 @@
 
 # ## Import Packages
 
-# In[1]:
+# In[ ]:
 
 
 import os
@@ -16,15 +16,15 @@ import os.path as path
 
 # ## Action To Be Taken
 
-# In[2]:
+# In[ ]:
 
 
-action = "Extract" # "Extract", "Prep", "Train", "Analyze"
+action = "Train" # "Extract", "Prep", "Train", "Analyze"
 
 
 # ## Simulation Directory
 
-# In[3]:
+# In[ ]:
 
 
 sim_dir = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI'
@@ -32,7 +32,7 @@ sim_dir = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI'
 
 # ## `sbatch` Scripts
 
-# In[4]:
+# In[ ]:
 
 
 sbatch_script_extract = '/g/g92/jha3/Codes/Wildfire_ML/SJSU/SimulationScripts/sbatch_script_extract.sh'
@@ -42,7 +42,7 @@ sbatch_script_train = '/g/g92/jha3/Codes/Wildfire_ML/SJSU/SimulationScripts/sbat
 
 # ## `python` Scripts
 
-# In[5]:
+# In[ ]:
 
 
 python_script_extract = '/g/g92/jha3/Codes/Wildfire_ML/SJSU/Step1_ExtractData/Extract_DFM_Data.py'
@@ -52,37 +52,37 @@ python_script_train = '/g/g92/jha3/Codes/Wildfire_ML/SJSU/Step3_TrainModel/Train
 
 # ## `json` Input Files
 
-# In[6]:
+# In[ ]:
 
 
 json_extract_base = os.path.join(sim_dir, 'InputJson/Extract/json_extract_data')
-#json_extract_counts = [0] #[0, 1]
+#json_extract_counts = [15]
 json_extract_counts = range(15, 39)
 
 
-# In[7]:
+# In[ ]:
 
 
 json_extract_counts
 
 
-# In[8]:
+# In[ ]:
 
 
 json_prep_base = os.path.join(sim_dir, 'InputJson/Prep/json_prep_data_label')
-json_prep_counts = [1, 2] #[1, 2, 3]
+json_prep_counts = [2] #[1, 2, 3]
 
 
-# In[9]:
+# In[ ]:
 
 
 json_train_base = os.path.join(sim_dir, 'InputJson/Train/json_train_model')
-json_train_counts = [3, 4]
+json_train_counts = [3, 5, 1, 2]
 
 
 # ## Generate and Execute `command`
 
-# In[10]:
+# In[ ]:
 
 
 for data_count in json_extract_counts:
@@ -119,10 +119,4 @@ for data_count in json_extract_counts:
                                                       json_train)
             print(sbatch_submit_command, '\n')
             #os.system(sbatch_submit_command)
-
-
-# In[ ]:
-
-
-
 
