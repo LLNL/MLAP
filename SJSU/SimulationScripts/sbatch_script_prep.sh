@@ -5,7 +5,7 @@
 #SBATCH -t 24:00:00
 #SBATCH -A gsmisc
 #SBATCH -p pbatch
-#SBATCH --mail-type=ALL
+##SBATCH --mail-type=ALL
 #SBATCH --export=ALL
 
 #Display job info
