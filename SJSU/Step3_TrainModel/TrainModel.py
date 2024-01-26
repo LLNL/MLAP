@@ -621,7 +621,7 @@ if (FM_label_type == 'Binary'):
 if (FM_label_type == 'Regression'):
     plot_scatter_regression (labels_test, labels_pred_test, accuracy_test, model_name,                             trained_model_loc, test_data_scatter_file_name,                             max_data_size_scatter, fig_size_x, fig_size_y,                             font_size, x_lim)
 else:
-    plot_confusion_matrix (conf_mat_test, accuracy_test, model_name,                            trained_model_loc, train_data_cm_file_name,                            fig_size_x, fig_size_y,                            font_size,                           normalize_cm)
+    plot_confusion_matrix (conf_mat_test, accuracy_test, model_name,                            trained_model_loc, test_data_cm_file_name,                            fig_size_x, fig_size_y,                            font_size,                           normalize_cm)
 
 
 # # Save ML Model Evaluation Metrics
