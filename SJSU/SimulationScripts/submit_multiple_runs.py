@@ -56,27 +56,16 @@ python_script_train = '/g/g92/jha3/Codes/Wildfire_ML/SJSU/Step3_TrainModel/Train
 
 
 json_extract_base = os.path.join(sim_dir, 'InputJson/Extract/json_extract_data')
+json_prep_base = os.path.join(sim_dir, 'InputJson/Prep/json_prep_data_label')
+json_train_base = os.path.join(sim_dir, 'InputJson/Train/json_train_model')
+
+
+# In[ ]:
+
+
 #json_extract_counts = [15]
 json_extract_counts = range(15, 39)
-
-
-# In[ ]:
-
-
-json_extract_counts
-
-
-# In[ ]:
-
-
-json_prep_base = os.path.join(sim_dir, 'InputJson/Prep/json_prep_data_label')
 json_prep_counts = [2] #[1, 2, 3]
-
-
-# In[ ]:
-
-
-json_train_base = os.path.join(sim_dir, 'InputJson/Train/json_train_model')
 json_train_counts = [3, 5, 1, 2]
 
 
