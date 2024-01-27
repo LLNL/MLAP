@@ -213,3 +213,125 @@ def plot_confusion_matrix (conf_mat, accuracy, model_name, \
     cbar.ax.tick_params(labelsize=font_size)
     
     plt.savefig(cm_plot_path, bbox_inches='tight')
+    
+    
+# []
+'''
+Create a dict of metrics from trained models
+'''
+def create_trained_models_metrics (json_prep_base, json_prep_counts, \
+                                   json_train_base, json_train_counts, \
+                                   json_extract_base, json_extract_counts):
+    
+    trained_models_metrics = dict()
+    
+    for label_count in json_prep_counts:
+        metric_for_label = dict()
+        json_prep    = '%s_%03d.json'%(json_prep_base, label_count)
+        #print(json_prep)
+        with open(json_prep) as json_file_handle:
+            json_content_prep_data = json.load(json_file_handle)
+        label_count = json_content_prep_data['label_defn']['label_count']
+        FM_label_type = json_content_prep_data['FM_labels']['label_type']
+        #print('label_count: {}, FM_label_type: {}'.format(label_count, FM_label_type))
+
+        for train_count in json_train_counts:
+            metric_for_model = dict()
+            json_train   = '%s_%03d.json'%(json_train_base, train_count)
+            #print(json_train)
+            with open(json_train) as json_file_handle:
+                json_content_train_model = json.load(json_file_handle)
+            model_count = json_content_train_model['models']['model_count']
+            model_name = json_content_train_model['models']['model_name'] # ['RF', SVM', 'MLP']
+            #print('Model Count: {}, Model Name: {}'.format(model_count, model_name))
+
+            accuracy_train = []
+            accuracy_test = []
+            data_nomenclature = []
+            for data_count in json_extract_counts:
+                data_nomenclature.append(data_count)
+
+                json_extract = '%s_%03d.json'%(json_extract_base, data_count)
+                #print(json_extract)
+                with open(json_extract) as json_file_handle:
+                    json_content_extract_data = json.load(json_file_handle)
+                data_set_count = json_content_extract_data['data_set_defn']['data_set_count']
+                #print('Data Set Count: {}'.format(data_set_count))
+
+                # Names of trained model and related files
+                trained_model_base_loc = json_content_train_model['paths']['trained_model_base_loc']
+                trained_model_name = 'dataset_%03d_label_%03d_%s_model_%03d_%s'%(data_set_count, \
+                                                            label_count, FM_label_type, \
+                                                            model_count, model_name)
+
+                trained_model_loc = os.path.join(trained_model_base_loc, trained_model_name)
+                model_eval_file = '{}_eval'.format(trained_model_name)
+                model_metric_file = os.path.join(trained_model_loc, model_eval_file+'.csv')
+                #trained_model_file_name = '{}.pkl'.format(trained_model_name)
+                #print('Trained Model Location: {}'.format(trained_model_loc))
+                #print('Trained Model Metrric File: {}'.format(model_metric_file))
+
+                eval_metric = pd.read_csv(model_metric_file).to_dict(orient='records')[0]
+                #print('Eval Metrics: {}'.format(eval_metric))
+                accuracy_train.append(eval_metric['accuracy_train'])
+                accuracy_test.append(eval_metric['accuracy_test'])
+                #print('\n')
+
+            #print('label_count: {}, FM_label_type: {}, Model Count: {}, Model Name: {}'.format(
+             #   label_count, FM_label_type, model_count, model_name))
+            #print('data_nomenclature: {}'.format(data_nomenclature))
+            #print('accuracy_train: {}'.format(accuracy_train))
+            #print('accuracy_test: {}'.format(accuracy_test))
+
+            metric_for_model['data_nomenclature'] = data_nomenclature
+            metric_for_model['accuracy_train'] = accuracy_train
+            metric_for_model['accuracy_test'] = accuracy_test
+
+            #print('metric_for_model: \n{}'.format(metric_for_model))
+            #print('\n')
+            metric_for_label[model_name] = metric_for_model
+
+        #print('metric_for_label: \n{}'.format(metric_for_label))
+        #print('\n')
+
+        trained_models_metrics[FM_label_type] =  metric_for_label
+    
+    #print('trained_models_metrics: \n{}'.format(trained_models_metrics))
+    #print('\n')   
+    #'=========================================================================' 
+    return trained_models_metrics
+
+
+
+# []
+'''
+Plot metrics from trained models
+'''
+def plot_trained_models_metrics (FM_label_type, json_extract_counts, trained_models_metrics):
+    
+    label = FM_label_type
+    ds_name = json_extract_counts
+    models = list(trained_models_metrics['Regression'].keys())
+    
+    train_accuracy_all_models = dict()
+    test_accuracy_all_models = dict()
+    for model in models:
+        train_accuracy_all_models[model] = trained_models_metrics[label][model]['accuracy_train']
+        test_accuracy_all_models[model] = trained_models_metrics[label][model]['accuracy_test']
+
+        df_train = pd.DataFrame(train_accuracy_all_models, index = ds_name)
+        df_test  = pd.DataFrame(test_accuracy_all_models, index = ds_name)
+
+    ax1 = df_train.plot.bar(rot = 0)
+    ax1.set_xlabel('Data Set Name')
+    ax1.set_ylabel('Accuracy')
+    ax1.set_title('Train')
+
+    ax2 = df_test.plot.bar(rot = 0)
+    ax2.set_xlabel('Data Set Name')
+    ax2.set_ylabel('Accuracy')
+    ax2.set_title('Test')
+    
+    #'========================================================================='
+    return df_train, df_test
+    
