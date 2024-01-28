@@ -247,7 +247,15 @@ def create_trained_models_metrics (json_prep_base, json_prep_counts, \
 
             accuracy_train = []
             accuracy_test = []
+            
             data_nomenclature = []
+            temporal_data_percent = []
+            spatial_data_percent = []
+            max_history = []
+            hist_interval = []
+            
+            data_defn_dict = dict()
+            
             for data_count in json_extract_counts:
                 data_nomenclature.append(data_count)
 
@@ -255,8 +263,19 @@ def create_trained_models_metrics (json_prep_base, json_prep_counts, \
                 #print(json_extract)
                 with open(json_extract) as json_file_handle:
                     json_content_extract_data = json.load(json_file_handle)
-                data_set_count = json_content_extract_data['data_set_defn']['data_set_count']
+                
+                data_set_defn = json_content_extract_data['data_set_defn']
+                data_set_count = data_set_defn['data_set_count']
+                percent_files_to_use = data_set_defn['percent_files_to_use']
+                percent_grid_points_to_use = data_set_defn['percent_grid_points_to_use']
+                max_history_to_consider = data_set_defn['max_history_to_consider']
+                history_interval        = data_set_defn['history_interval']
                 #print('Data Set Count: {}'.format(data_set_count))
+                
+                temporal_data_percent.append(percent_files_to_use)
+                spatial_data_percent.append(percent_grid_points_to_use)
+                max_history.append(max_history_to_consider)
+                hist_interval.append(history_interval)
 
                 # Names of trained model and related files
                 trained_model_base_loc = json_content_train_model['paths']['trained_model_base_loc']
@@ -286,6 +305,13 @@ def create_trained_models_metrics (json_prep_base, json_prep_counts, \
             metric_for_model['data_nomenclature'] = data_nomenclature
             metric_for_model['accuracy_train'] = accuracy_train
             metric_for_model['accuracy_test'] = accuracy_test
+            
+            data_defn_dict['temporal_data [%]'] = temporal_data_percent
+            data_defn_dict['spatial_data [%]'] = spatial_data_percent
+            data_defn_dict['max_history [hrs]'] = max_history
+            data_defn_dict['hist_interval [hrs]'] = hist_interval
+            
+            data_defn = pd.DataFrame(data_defn_dict, index = data_nomenclature)
 
             #print('metric_for_model: \n{}'.format(metric_for_model))
             #print('\n')
@@ -299,7 +325,7 @@ def create_trained_models_metrics (json_prep_base, json_prep_counts, \
     #print('trained_models_metrics: \n{}'.format(trained_models_metrics))
     #print('\n')   
     #'=========================================================================' 
-    return trained_models_metrics
+    return trained_models_metrics, data_defn
 
 
 
@@ -311,7 +337,7 @@ def plot_trained_models_metrics (FM_label_type, json_extract_counts, trained_mod
     
     label = FM_label_type
     ds_name = json_extract_counts
-    models = list(trained_models_metrics['Regression'].keys())
+    models = list(trained_models_metrics[FM_label_type].keys())
     
     if (label == 'Regression'):
         ylabel_text = '$R^2$'
