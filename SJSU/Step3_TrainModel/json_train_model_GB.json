@@ -8,7 +8,7 @@
 				"save_test_data": true
 			     },
 	"models":	     {
-				"model_count": 3,
+				"model_count": 5,
 				"scaler_type": "Standard",
 				"test_data_frac": 0.2,
 				"model_name": "GB",
