@@ -313,6 +313,11 @@ def plot_trained_models_metrics (FM_label_type, json_extract_counts, trained_mod
     ds_name = json_extract_counts
     models = list(trained_models_metrics['Regression'].keys())
     
+    if (label == 'Regression'):
+        ylabel_text = '$R^2$'
+    else:
+        ylabel_text = 'Accuracy'
+    
     train_accuracy_all_models = dict()
     test_accuracy_all_models = dict()
     for model in models:
@@ -324,12 +329,12 @@ def plot_trained_models_metrics (FM_label_type, json_extract_counts, trained_mod
 
     ax1 = df_train.plot.bar(rot = 0)
     ax1.set_xlabel('Data Set Name')
-    ax1.set_ylabel('Accuracy')
+    ax1.set_ylabel(ylabel_text)
     ax1.set_title('Train')
 
     ax2 = df_test.plot.bar(rot = 0)
     ax2.set_xlabel('Data Set Name')
-    ax2.set_ylabel('Accuracy')
+    ax2.set_ylabel(ylabel_text)
     ax2.set_title('Test')
     
     #'========================================================================='
