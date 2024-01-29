@@ -417,8 +417,8 @@ def read_single_data_file_lightweight (data_files_location, data_file_to_read, t
     dfm_file_data = xr.open_dataset(path.join(data_files_location, year, data_file_to_read))
     
     #data_at_timestamp['TimeStamp' ] = timestamp_to_read
-    #data_at_timestamp['ny'        ] = dfm_file_data.dims['south_north']
-    #data_at_timestamp['nx'        ] = dfm_file_data.dims['west_east']
+    data_at_timestamp['ny'        ] = dfm_file_data.dims['south_north']
+    data_at_timestamp['nx'        ] = dfm_file_data.dims['west_east']
     data_at_timestamp['HGT'       ] = np.array(dfm_file_data['HGT'])
     data_at_timestamp['T2'        ] = np.array(dfm_file_data['T2'])
     #data_at_timestamp['Q2'        ] = np.array(dfm_file_data['Q2'])
@@ -506,33 +506,26 @@ def process_elevation_at_timestamp (data_at_timestamp):
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return data_at_timestamp
-    
+
+
 # []
 '''
 Get grid indices
 '''
-def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_data_files, sampled_time_stamps, x_clip, y_clip, j_nevada, i_nevada, j_anchor, i_anchor, remove_nevada = True):
+def get_grid_indices_given_data_at_timestamp (data_at_timestamp, x_clip, y_clip, \
+                                              j_nevada, i_nevada, j_anchor, i_anchor, 
+                                              remove_nevada = True):
     process = psutil.Process(os.getpid())
     print('=========================================================================')
     module_start_time = timer()
     module_initial_memory = process.memory_info().rss
-    print('MODULE Name: "get_grid_indices_all"')
+    print('MODULE Name: "get_grid_indices_given_data_at_timestamp"')
     print('\nProcess in the module(): {}'.format(process))
     
-    print('\nGetting all the grid indices from a randomly selcted file...')
-    random_ind_of_downsampled_files = random.choice(range(len(sampled_file_indices)))
-
-    #file_ind_to_read = sampled_file_indices[random_ind_of_downsampled_files]
-    data_file_to_read = sampled_data_files[random_ind_of_downsampled_files]
-    timestamp_to_read = sampled_time_stamps[random_ind_of_downsampled_files]
-    print('The selected file is: {}'.format(data_file_to_read))
-
-    # Read the data at timestamp and process elevation
-    data_at_timestamp = read_single_data_file (data_files_location, data_file_to_read, timestamp_to_read)
-    data_at_timestamp = process_elevation_at_timestamp (data_at_timestamp)
-
     # Extract relevant info from data at timestamp
     ny, nx = data_at_timestamp['ny'], data_at_timestamp['nx']
+    
+    data_at_timestamp = process_elevation_at_timestamp (data_at_timestamp)
     HGT_UPD = data_at_timestamp['HGT_UPD']
 
     # Initialize grid indices
@@ -575,6 +568,36 @@ def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_dat
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return grid_indices_all, grid_indices_valid, grid_indices_all_flat, grid_indices_valid_flat
+
+
+# []
+'''
+Get grid indices
+'''
+def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_data_files, sampled_time_stamps, x_clip, y_clip, j_nevada, i_nevada, j_anchor, i_anchor, remove_nevada = True):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "get_grid_indices_all"')
+    print('\nProcess in the module(): {}'.format(process))
+    
+    print('\nGetting all the grid indices from a randomly selcted file...')
+    random_ind_of_downsampled_files = random.choice(range(len(sampled_file_indices)))
+
+    #file_ind_to_read = sampled_file_indices[random_ind_of_downsampled_files]
+    data_file_to_read = sampled_data_files[random_ind_of_downsampled_files]
+    timestamp_to_read = sampled_time_stamps[random_ind_of_downsampled_files]
+    print('The selected file is: {}'.format(data_file_to_read))
+
+    # Read the data at timestamp and process elevation
+    data_at_timestamp = read_single_data_file (data_files_location, data_file_to_read, timestamp_to_read)
+
+    #print('=========================================================================')
+    return get_grid_indices_given_data_at_timestamp (\
+                                              data_at_timestamp, x_clip, y_clip, \
+                                              j_nevada, i_nevada, j_anchor, i_anchor, \
+                                              remove_nevada)
 
 
 # []
