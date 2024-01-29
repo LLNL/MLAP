@@ -68,6 +68,55 @@ from TrainModel_Helper import *
 from Analyze_Helper import *
 
 
+# In[ ]:
+
+
+# []
+'''
+To move this to helper function. Need to tackel the path
+'''
+def scale_predict_plot(FM_label_type, model, model_name, scaler_type, X_gt, y_gt,                        analysis_data_loc, analysis_scatter_file_name,                        max_data_size_scatter, fig_size_x, fig_size_y,                        font_size, x_lim,                        analysis_cm_file_name,
+                       normalize_cm, \
+                        class_labels, \
+                       j_indices, i_indices,\
+                       analysis_fuel_map_file_name):
+    
+    ### Scale Features
+    print ('Data scaler type: {}'.format(scaler_type))
+    scaler = define_scaler (scaler_type)
+    scaler.fit(X_gt)
+    X_gt_scaled = scaler.transform(X_gt)
+
+    ### Prediction and Evaluation with Trained Model
+    labels_pred = predict(model, X_gt_scaled, "Data at TimeStamp")
+
+    accuracy = get_accuracy_score(model, FM_label_type,                                        X_gt_scaled, y_gt, labels_pred,                                       "Data at TimeStamp")
+
+    if (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
+        conf_mat = get_confusion_matrix (FM_label_type, y_gt, labels_pred,                                           "Data at TimeStamp", class_labels)
+        get_classification_report (FM_label_type, y_gt, labels_pred,                               "Data at TimeStamp", class_labels)
+    else:
+        conf_mat = None
+        print('Confusion Matrix is not suitable for label_type: {}'.format(FM_label_type))
+
+
+    if (FM_label_type == 'Binary'):
+        average_precision_train = average_precision_score(y_gt, labels_pred)
+        print('Average precision-recall score for Train Data: {0:0.2f}'.format(
+              average_precision_train))
+
+
+    ### Plot Scatter or Confusion Matrix
+    if (FM_label_type == 'Regression'):
+        plot_scatter_regression (y_gt.to_numpy(), labels_pred, accuracy, model_name,                                 analysis_data_loc, analysis_scatter_file_name,                                 max_data_size_scatter, fig_size_x, fig_size_y,                                 font_size, x_lim)
+    else:
+        plot_confusion_matrix (conf_mat, accuracy, model_name,                                analysis_data_loc, analysis_cm_file_name,                                fig_size_x, fig_size_y,                                font_size,                               normalize_cm,                                class_labels)
+
+
+    ### Plot Ground Truth and Prediction At the Desired Time Stamp
+    plot_fm (y_gt, labels_pred, j_indices, i_indices, FM_label_type,              analysis_data_loc, analysis_fuel_map_file_name, class_labels)
+
+
 # # Global Start Time and Memory
 
 # In[ ]:
@@ -86,7 +135,7 @@ global_initial_memory = process.memory_info().rss
 
 
 json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_015.json'
-json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_001.json'
+json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_002.json'
 json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Train/json_train_model_003.json'
 json_file_analyze      = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Analyze/json_analyze_001.json'
 
@@ -239,6 +288,7 @@ FM_labels = json_content_prep_data['FM_labels']
 
 FM_label_type = FM_labels['label_type']
 
+class_labels = None
 if (FM_label_type == 'Binary'):
     FM_binary_threshold = FM_labels['FM_binary_threshold']
     class_labels = range(2)
@@ -325,7 +375,10 @@ font_size  = analysis['font_size']
 if (FM_label_type == 'Regression'):
     max_data_size_scatter = analysis['max_data_size_scatter']
     x_lim      = analysis['x_lim']
+    normalize_cm = False
 else:
+    max_data_size_scatter = None
+    x_lim      = None
     normalize_cm = analysis['normalize_cm']
 
 
@@ -539,41 +592,11 @@ j_indices = prepared_data['identity']['j_ind']
 i_indices = prepared_data['identity']['i_ind']
 
 
-### Scale Features
-print ('Data scaler type: {}'.format(scaler_type))
-scaler = define_scaler (scaler_type)
-scaler.fit(X_gt)
-X_gt_scaled = scaler.transform(X_gt)
-
-### Prediction and Evaluation with Trained Model
-labels_pred = predict(model, X_gt_scaled, "Data at TimeStamp")
-
-accuracy = get_accuracy_score(model, FM_label_type,                                    X_gt_scaled, y_gt, labels_pred,                                   "Data at TimeStamp")
-
-if (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
-    conf_mat = get_confusion_matrix (FM_label_type, y_gt, labels_pred,                                       "Data at TimeStamp", class_labels)
-    get_classification_report (FM_label_type, y_gt, labels_pred,                           "Data at TimeStamp", class_labels)
-else:
-    conf_mat = None
-    print('Confusion Matrix is not suitable for label_type: {}'.format(FM_label_type))
-
-
-if (FM_label_type == 'Binary'):
-    average_precision_train = average_precision_score(y_gt, labels_pred)
-    print('Average precision-recall score for Train Data: {0:0.2f}'.format(
-          average_precision_train))
-    
-
-### Plot Scatter or Confusion Matrix
-if (FM_label_type == 'Regression'):
-    class_labels = None
-    plot_scatter_regression (y_gt.to_numpy(), labels_pred, accuracy, model_name,                             analysis_data_loc, analysis_scatter_file_name,                             max_data_size_scatter, fig_size_x, fig_size_y,                             font_size, x_lim)
-else:
-    plot_confusion_matrix (conf_mat, accuracy, model_name,                            analysis_data_loc, analysis_cm_file_name,                            fig_size_x, fig_size_y,                            font_size,                           normalize_cm,                            class_labels)
-    
-
-### Plot Ground Truth and Prediction At the Desired Time Stamp
-plot_fm (y_gt, labels_pred, j_indices, i_indices, FM_label_type,          analysis_data_loc, analysis_fuel_map_file_name, class_labels)
+scale_predict_plot(FM_label_type, model, model_name, scaler_type, X_gt, y_gt,                        analysis_data_loc, analysis_scatter_file_name,                        max_data_size_scatter, fig_size_x, fig_size_y,                        font_size, x_lim,                        analysis_cm_file_name,
+                       normalize_cm, \
+                        class_labels, \
+                       j_indices, i_indices,\
+                       analysis_fuel_map_file_name)
 
 
 # # Global End Time and Memory
@@ -588,10 +611,4 @@ print('Total memory consumed: {:.3f} MB'.format(global_memory_consumed/(1024*102
 print('Total computing time: {:.3f} s'.format(global_end_time - global_start_time))
 print('=========================================================================')
 print("SUCCESS: Done Training and Testing of Model")
-
-
-# In[ ]:
-
-
-
 

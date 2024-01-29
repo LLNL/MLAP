@@ -30,6 +30,7 @@ from sklearn.metrics import accuracy_score, confusion_matrix, average_precision_
 #from sklearn.metrics import plot_confusion_matrix
 from sklearn.metrics import precision_recall_curve, classification_report
 
+
 # []
 '''
 Get year, month, day, hour from timestamp
@@ -134,7 +135,3 @@ def get_history_time_stamps_all_data_types (time_region_info, max_history_to_con
     return time_region_info
     
     
-# []
-'''
-
-'''
