@@ -186,7 +186,7 @@ def plot_confusion_matrix (conf_mat, accuracy, model_name, \
                            plot_loc, fig_name, \
                            fig_size_x, fig_size_y, \
                            font_size,\
-                           normalize_cm):
+                           normalize_cm, class_labels):
     
     if normalize_cm:
         num_format = '{:.3f}'
@@ -206,6 +206,8 @@ def plot_confusion_matrix (conf_mat, accuracy, model_name, \
     plt.xlabel('Prediction', fontsize = font_size)
     plt.title('Model: {}, Accuracy: {:.3f}'.format(model_name, accuracy), fontsize = font_size)
 
+    plt.xticks(class_labels)
+    plt.yticks(class_labels)
     plt.tick_params(axis='both', which='major', labelsize=font_size, labelbottom = False, bottom=False, top = False, labeltop=True)
     for (i, j), z in np.ndenumerate(conf_mat):
         ax.text(j, i, num_format.format(z), fontsize = font_size, ha='center', va='center')
