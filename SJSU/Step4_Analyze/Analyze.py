@@ -199,6 +199,27 @@ max_history_to_consider = json_content_extract_data['data_set_defn']['max_histor
 history_interval = json_content_extract_data['data_set_defn']['history_interval']
 
 
+# ## Nevada Data
+
+# In[ ]:
+
+
+nevada_data = json_content_extract_data['nevada_data']
+remove_nevada = nevada_data['remove_nevada']
+j_nevada, i_nevada = nevada_data['j_nevada'], nevada_data['i_nevada']
+j_anchor, i_anchor = nevada_data['j_anchor'], nevada_data['i_anchor']
+
+
+# ## Clip Data for Train/Test
+
+# In[ ]:
+
+
+clip_data_train_test = json_content_extract_data['clip_data_train_test']
+x_clip_train_test = clip_data_train_test['x_clip']
+y_clip_train_test = clip_data_train_test['y_clip']
+
+
 # ## Define Label, FM Threshold etc.
 
 # In[ ]:
@@ -372,6 +393,44 @@ labels_ind_in_nc_file = features_labels['labels_ind_in_nc_file']
 
 
 data_read_SJSU = read_SJSU_data_desired_times (time_region_info, data_files_location)
+
+
+# # Create DataFrame of Data at Desired Time Stamps
+
+# ### Get Grid Indices
+
+# In[ ]:
+
+
+data_at_timestamp = data_read_SJSU[list(data_read_SJSU.keys())[0]]
+#data_at_timestamp
+
+
+# In[ ]:
+
+
+grid_indices_all, grid_indices_valid, grid_indices_all_flat, grid_indices_valid_flat =     get_grid_indices_given_data_at_timestamp (data_at_timestamp,                                               x_clip_train_test, y_clip_train_test,                                               j_nevada, i_nevada, j_anchor, i_anchor, 
+                                              remove_nevada)
+
+
+# In[ ]:
+
+
+grid_indices_valid_reconst, grid_indices_valid_bool, valid_grid_ind_to_coord =                 reconstruct_valid_grid_indices (grid_indices_valid_flat, data_at_timestamp)
+
+
+# ### Now Create DataFrames at Desired Time Stamps
+
+# In[ ]:
+
+
+df_dict = dict()
+for count_ref_time, item_ref_time in enumerate(time_region_info['SJSU']):
+    timestamp_ref = [item_ref_time['RefTime']]
+    timestamps_hist = item_ref_time['HistTime']
+    #print(timestamp_ref, timestamps_hist)
+    df_dict[item_ref_time['RefTime']] = create_dataframe_FM_atm_at_timestamp (                                       timestamp_ref, timestamps_hist, data_read_SJSU,                                        history_interval,                                        grid_indices_valid_flat, valid_grid_ind_to_coord)
+    
 
 
 # # Generate seed for the random number generator

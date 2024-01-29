@@ -1282,7 +1282,132 @@ def create_dataframe_FM_atm_data (data_at_sampled_times_and_grids, data_at_times
     print('=========================================================================')
     
     return df
+
+
+# []
+'''
+Create DataFrame of FM and Historical Data For a Desired Time Stamp. Also Extract Time and Grid Info.
+'''
+def create_dataframe_FM_atm_at_timestamp (sampled_time_stamps, hist_stamps, data_read_SJSU, \
+                                       history_interval, \
+                                       grid_indices_valid_flat, valid_grid_ind_to_coord):
     
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "create_dataframe_FM_atm_at_timestamp"')
+    print('\nProcess in the module(): {}'.format(process))
+    
+    ## Define the Sizes to Contain Sampled Data
+    num_sampled_times  = 1
+    num_sampled_points = len(grid_indices_valid_flat)
+    num_data_points    = num_sampled_times*num_sampled_points
+    num_hist_indices   = len(hist_stamps)
+
+    FM_time_ind  = np.zeros((num_data_points, 1), int)
+    FM_ts        = np.zeros((num_data_points, 1), '<U13') #list()
+    his_time_ind = np.zeros((num_data_points, num_hist_indices), int)
+
+    grid_ind     = np.zeros((num_data_points, 1), int)
+    j_ind        = np.zeros((num_data_points, 1), int)
+    i_ind        = np.zeros((num_data_points, 1), int)
+
+    FM_10hr      = np.zeros((num_data_points, 1), float)
+    FM_100hr     = np.zeros((num_data_points, 1), float)
+
+    HGT          = np.zeros((num_data_points, 1), float)
+
+    U10_hist     = np.zeros((num_data_points, num_hist_indices), float)
+    V10_hist     = np.zeros((num_data_points, num_hist_indices), float)
+    T2_hist      = np.zeros((num_data_points, num_hist_indices), float)
+    RH_hist      = np.zeros((num_data_points, num_hist_indices), float)
+    PRECIP_hist  = np.zeros((num_data_points, num_hist_indices), float)
+    SWDOWN_hist  = np.zeros((num_data_points, num_hist_indices), float)
+
+    ## Fill in The Data Arrays
+    for sampled_time_count, sampled_time_stamp in enumerate(sampled_time_stamps):
+        #print('sampled_time_stamp: ', sampled_time_stamp)
+
+        for sampled_grid_point_count in range(num_sampled_points):
+            data_point_count = sampled_time_count*num_sampled_points + sampled_grid_point_count
+
+            # Grid Identifier
+            grid_index = grid_indices_valid_flat[data_point_count]
+            j_loc      = valid_grid_ind_to_coord[grid_index][0]
+            i_loc      = valid_grid_ind_to_coord[grid_index][1]
+            #print(sampled_time_count, sampled_grid_point_count, data_point_count)
+
+            # Time Indices
+            #FM_time_ind [ data_point_count] = sampled_time_ind
+            FM_ts [       data_point_count] = sampled_time_stamps [sampled_time_count]
+            #his_time_ind [data_point_count] = hist_indices
+
+            # Grid Indices
+            grid_ind [    data_point_count] = grid_index
+            j_ind [       data_point_count] = j_loc
+            i_ind [       data_point_count] = i_loc
+
+            # FM for Labels
+            FM_10hr [ data_point_count] = data_read_SJSU[sampled_time_stamp]['FM_10hr' ][j_loc][i_loc]
+            FM_100hr [data_point_count] = data_read_SJSU[sampled_time_stamp]['FM_100hr'][j_loc][i_loc]
+
+            # Height for Features
+            HGT [data_point_count] = data_read_SJSU[sampled_time_stamp]['HGT'][j_loc][i_loc]
+
+
+            # History Data for Features
+            for hist_ind_count, hist_stamp in enumerate(hist_stamps):
+                U10_hist[data_point_count][hist_ind_count] = data_read_SJSU[hist_stamp]['U10'][j_loc][i_loc]
+                V10_hist[data_point_count][hist_ind_count] = data_read_SJSU[hist_stamp]['V10'][j_loc][i_loc]
+                T2_hist[data_point_count][hist_ind_count] = data_read_SJSU[hist_stamp]['T2'][j_loc][i_loc]
+                RH_hist[data_point_count][hist_ind_count] = data_read_SJSU[hist_stamp]['RH'][j_loc][i_loc]
+                PRECIP_hist[data_point_count][hist_ind_count] = data_read_SJSU[hist_stamp]['PRECIP'][j_loc][i_loc]
+                SWDOWN_hist[data_point_count][hist_ind_count] = data_read_SJSU[hist_stamp]['SWDOWN'][j_loc][i_loc]
+
+
+    ## Create DataFrame
+    df = pd.DataFrame()
+    #df['FM_time_ind'] = FM_time_ind.flatten()
+    df['FM_ts'] = FM_ts.flatten()
+    #df['his_time_ind'] = list(his_time_ind)
+
+    df['grid_ind'] = grid_ind
+    df['j_ind'] = j_ind
+    df['i_ind'] = i_ind
+
+    df['FM_10hr'] = FM_10hr
+    df['FM_100hr'] = FM_100hr
+
+    df['HGT'] = HGT
+
+
+    num_hist_indices = len(hist_stamps)
+    for hist_ind_count in range(num_hist_indices):
+        df['U10[-{}hr]'.format((num_hist_indices-hist_ind_count)*history_interval)] =\
+                                        U10_hist[:,hist_ind_count]
+        df['V10[-{}hr]'.format((num_hist_indices-hist_ind_count)*history_interval)]=\
+                                        V10_hist[:,hist_ind_count]
+        df['T2[-{}hr]'.format((num_hist_indices-hist_ind_count)*history_interval)] =\
+                                        T2_hist[:,hist_ind_count]
+        df['RH[-{}hr]'.format((num_hist_indices-hist_ind_count)*history_interval)] =\
+                                        RH_hist[:,hist_ind_count]
+        df['PREC[-{}hr]'.format((num_hist_indices-hist_ind_count)*history_interval)] =\
+                                        PRECIP_hist[:,hist_ind_count]
+        df['SWDOWN[-{}hr]'.format((num_hist_indices-hist_ind_count)*history_interval)] =\
+                                        SWDOWN_hist[:,hist_ind_count]
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
+    print('=========================================================================')
+    
+    return df
+
+
 # []
 '''
 Create DataFrame of FM and Historical Data. Also Extract Time and Grid Info.

@@ -111,7 +111,7 @@ def get_history_time_stamps (ref_timestamp, max_history_to_consider, history_int
         hist_time = ref_time - timedelta(hours = hist)
         hist_timestamp = hist_time.isoformat('_', 'hours')
         #print(hist, hist_time, hist_timestamp)
-        hist_timestamps.append(hist_timestamp)
+        hist_timestamps.insert(0, hist_timestamp)
         hist += history_interval
         
     #'========================================================================='    
@@ -133,3 +133,8 @@ def get_history_time_stamps_all_data_types (time_region_info, max_history_to_con
     #'========================================================================='    
     return time_region_info
     
+    
+# []
+'''
+
+'''
