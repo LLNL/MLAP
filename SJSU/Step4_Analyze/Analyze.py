@@ -86,7 +86,7 @@ global_initial_memory = process.memory_info().rss
 
 
 json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_015.json'
-json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_001.json'
+json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_003.json'
 json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Train/json_train_model_003.json'
 json_file_analyze      = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Analyze/json_analyze_001.json'
 
@@ -241,8 +241,10 @@ FM_label_type = FM_labels['label_type']
 
 if (FM_label_type == 'Binary'):
     FM_binary_threshold = FM_labels['FM_binary_threshold']
+    class_labels = range(2)
 if (FM_label_type == 'MultiClass'):
     FM_MC_levels = FM_labels['FM_MC_levels']
+    class_labels = range(len(FM_MC_levels) -1)
 
 
 # In[ ]:
@@ -267,7 +269,7 @@ features_to_use = json_content_prep_data['features']['features_to_use']
 model_count = json_content_train_model['models']['model_count']
 scaler_type = json_content_train_model['models']['scaler_type']
 model_name = json_content_train_model['models']['model_name'] # ['RF', SVM', 'MLP']
-model_params = json_content_train_model['models']['params']
+#model_params = json_content_train_model['models']['params']
 
 
 # ## Define Analysis Inputs
@@ -498,46 +500,74 @@ print ('The model loaded is: {} \n'.format(model))
 print ('Model params: \n {}'.format(model.get_params()))
 
 
+# # Load the Prepared Data at All Desired Time Stamps and Scale Them
+
+# In[ ]:
+
+
+analysis_data_loc = analysis_data_locations_all_types['SJSU'][timestamp_count]
+prepared_data_file_name = '{}-{}.pkl'.format(analysis_name, timestamp)
+
+analysis_scatter_file_name = '{}-{}_scatter_entire.png'.format(analysis_name, timestamp)
+analysis_cm_file_name = '{}-{}_cm_entire.png'.format(analysis_name, timestamp)
+
+with open(os.path.join(analysis_data_loc, prepared_data_file_name), 'rb') as file_handle:
+    prepared_data = pickle.load(file_handle)
+print('Read prepared data from "{}" at "{}"'.format(prepared_data_file_name, analysis_data_loc))
+
+### Deal with Features
+features_to_use = prepared_data['features'].keys()
+#features_to_use
+
+### Deal with Labels
+if (FM_label_type == 'Regression'):
+    labels_to_use = ['FM_{}hr'.format(FM_hr)]
+elif (FM_label_type == 'Binary'):
+    labels_to_use = ['FM_{}hr_bin'.format(FM_hr)]
+elif (FM_label_type == 'MultiClass'):
+    labels_to_use = ['FM_{}hr_MC'.format(FM_hr)]
+else:
+    raise ValueError('Invalid "label_type": {} in "FM_labels".                     \nValid types are: "Regression", "MultiClass", and "Binary"'.format(                                                                            FM_label_type))
+#labels_to_use
+
+### Extract Features and Labels from Prepared Data
+X_gt     = prepared_data['features'][features_to_use]
+y_gt     = prepared_data['labels'][labels_to_use]
+
+
+### Scale Features
+print ('Data scaler type: {}'.format(scaler_type))
+scaler = define_scaler (scaler_type)
+scaler.fit(X_gt)
+X_gt_scaled = scaler.transform(X_gt)
+
+### Prediction and Evaluation with Trained Model
+labels_pred = predict(model, X_gt_scaled, "Data at TimeStamp")
+
+accuracy = get_accuracy_score(model, FM_label_type,                                    X_gt_scaled, y_gt, labels_pred,                                   "Data at TimeStamp")
+
+if (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
+    conf_mat = get_confusion_matrix (FM_label_type, y_gt, labels_pred,                                       "Data at TimeStamp", class_labels)
+    get_classification_report (FM_label_type, y_gt, labels_pred,                           "Data at TimeStamp", class_labels)
+else:
+    conf_mat = None
+    print('Confusion Matrix is not suitable for label_type: {}'.format(FM_label_type))
+
+
+if (FM_label_type == 'Binary'):
+    average_precision_train = average_precision_score(y_gt, labels_pred)
+    print('Average precision-recall score for Train Data: {0:0.2f}'.format(
+          average_precision_train))
+    
+
+### Plot Scatter or Confusion Matrix
+if (FM_label_type == 'Regression'):
+    plot_scatter_regression (y_gt.to_numpy(), labels_pred, accuracy, model_name,                             analysis_data_loc, analysis_scatter_file_name,                             max_data_size_scatter, fig_size_x, fig_size_y,                             font_size, x_lim)
+else:
+    plot_confusion_matrix (conf_mat, accuracy, model_name,                            analysis_data_loc, analysis_cm_file_name,                            fig_size_x, fig_size_y,                            font_size,                           normalize_cm,                            class_labels)
+
+
 # # Prediction with Trained Model
-
-# ## Prediction on Fire Data
-
-# In[ ]:
-
-
-t1 = time.time()
-labels_pred = model.predict(X_fire_scaled)
-print ("Prediction Time:", round(time.time()-t1, 3), "s")
-
-
-# In[ ]:
-
-
-if (label_type == 'bin' or 'label_type' == 'MC'):
-    accuracy = accuracy_score(labels_pred, y_fire)
-else:
-    accuracy = model.score(X_fire_scaled, y_fire)
-conf_mat = None
-
-
-# In[ ]:
-
-
-if (label_type == 'bin'):
-    conf_mat = confusion_matrix(y_fire, labels_pred, labels = [0, 1])
-    print('Classification Report: \n')
-    print(classification_report(y_fire, labels_pred, labels=[0, 1]))
-    average_precision = average_precision_score(y_fire, labels_pred)
-    print('Average precision-recall score: {0:0.2f}'.format(
-          average_precision))
-elif (label_type == 'MC'):
-    conf_mat = confusion_matrix(y_fire, labels_pred, labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-else:
-    print('Confusion Mat is not suitable for label_type: {}'.format(label_type))
-
-print('Accuracy Score: {}'.format(accuracy))
-print('Confusion Matrix: \n{}'.format(conf_mat))
-
 
 # ## Plot Ground Truth and Prediction of Fire Data
 
