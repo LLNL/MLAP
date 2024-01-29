@@ -396,7 +396,87 @@ def read_single_data_file (data_files_location, data_file_to_read, timestamp_to_
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return data_at_timestamp
- 
+
+
+#[]
+'''
+Read a single data file
+'''
+def read_single_data_file_lightweight (data_files_location, data_file_to_read, timestamp_to_read):
+    #process = psutil.Process(os.getpid())
+    #print('=========================================================================')
+    #module_start_time = timer()
+    #module_initial_memory = process.memory_info().rss
+    #print('MODULE Name: "read_single_data_file"')
+    #print('\nProcess in the module(): {}'.format(process))
+    
+    #print('\nReading data contained in the selcted file: {}...'.format(data_file_to_read))
+    data_at_timestamp = {}
+    
+    year = data_file_to_read.split('_')[1].split('-')[0]
+    dfm_file_data = xr.open_dataset(path.join(data_files_location, year, data_file_to_read))
+    
+    #data_at_timestamp['TimeStamp' ] = timestamp_to_read
+    #data_at_timestamp['ny'        ] = dfm_file_data.dims['south_north']
+    #data_at_timestamp['nx'        ] = dfm_file_data.dims['west_east']
+    data_at_timestamp['HGT'       ] = np.array(dfm_file_data['HGT'])
+    data_at_timestamp['T2'        ] = np.array(dfm_file_data['T2'])
+    #data_at_timestamp['Q2'        ] = np.array(dfm_file_data['Q2'])
+    data_at_timestamp['RH'        ] = np.array(dfm_file_data['RH'])
+    data_at_timestamp['PRECIP'    ] = np.array(dfm_file_data['PRECIP'])
+    #data_at_timestamp['PSFC'      ] = np.array(dfm_file_data['PSFC'])
+    data_at_timestamp['U10'       ] = np.array(dfm_file_data['U10'])
+    data_at_timestamp['V10'       ] = np.array(dfm_file_data['V10'])
+    data_at_timestamp['SWDOWN'    ] = np.array(dfm_file_data['SWDOWN'])
+    #data_at_timestamp['FMC_1hr'   ] = np.array(dfm_file_data['FMC_GC'])[:, :, 0]
+    data_at_timestamp['FM_10hr'  ] = np.array(dfm_file_data['FMC_GC'])[:, :, 1]
+    data_at_timestamp['FM_100hr' ] = np.array(dfm_file_data['FMC_GC'])[:, :, 2]
+    #data_at_timestamp['FMC_1000hr'] = np.array(dfm_file_data['FMC_GC'])[:, :, 3]
+    
+    #module_final_memory = process.memory_info().rss
+    #module_end_time = timer()
+    #module_memory_consumed = module_final_memory - module_initial_memory
+    #module_compute_time = module_end_time - module_start_time
+    #print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    #print('Module computing time: {:.3f} s'.format(module_compute_time))
+    #print('=========================================================================')
+    return data_at_timestamp
+
+
+#[]
+'''
+Read SJSU data at desired ref and historical times
+'''
+def read_SJSU_data_desired_times (time_region_info, data_files_location):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "read_SJSU_data_desired_times"')
+    print('\nProcess in the module(): {}'.format(process))
+    
+    data_read_SJSU = dict()
+    for count_ref_time, item_ref_time in enumerate(time_region_info['SJSU']):
+        timestamps_to_read = [item_ref_time['RefTime']]
+        for hist_timestamp in item_ref_time['HistTime']:
+            timestamps_to_read.append(hist_timestamp)
+        for timestamp in timestamps_to_read:
+            data_file_to_read = 'wrf_%s.nc'%(timestamp)
+            #print(data_file_to_read)
+            data_read_SJSU[timestamp] = read_single_data_file_lightweight (\
+                                                               data_files_location, \
+                                                               data_file_to_read, \
+                                                               timestamp)
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = module_final_memory - module_initial_memory
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
+    print('=========================================================================')
+    return data_read_SJSU
+
 #[]
 '''
 process elevation from data read from a single file

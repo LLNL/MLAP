@@ -307,6 +307,7 @@ else:
 # In[ ]:
 
 
+data_files_location = json_content_extract_data['paths']['data_files_location']
 trained_model_base_loc = json_content_train_model['paths']['trained_model_base_loc']
 analysis_data_base_loc = json_content_analyze['paths']['analysis_data_base_loc']
 
@@ -354,6 +355,23 @@ analysis_data_locations_all_types = get_analysis_data_locations_all_types (     
 
 time_region_info = get_history_time_stamps_all_data_types (time_region_info,                                                            max_history_to_consider,                                                            history_interval)
 #time_region_info
+
+
+# # Read the Data At All Desired Time Stamps
+
+# In[ ]:
+
+
+features_labels = json_content_extract_data['features_labels']
+features_to_read = features_labels['features_to_read']
+labels_to_read = features_labels['labels_to_read']
+labels_ind_in_nc_file = features_labels['labels_ind_in_nc_file']
+
+
+# In[ ]:
+
+
+data_read_SJSU = read_SJSU_data_desired_times (time_region_info, data_files_location)
 
 
 # # Generate seed for the random number generator
