@@ -21,11 +21,14 @@ from timeit import default_timer as timer
 '''
 Get keys from the extracted data 
 '''
-def get_keys_from_extracted_data (df_extracted):
+def get_keys_from_extracted_data (df_extracted, train_test = True):
     keys_all = df_extracted.keys()
     
     # Keys for identity
-    keys_identity = ['FM_time_ind', 'FM_ts', 'his_time_ind', 'grid_ind', 'j_ind', 'i_ind']
+    if train_test:
+        keys_identity = ['FM_time_ind', 'FM_ts', 'his_time_ind', 'grid_ind', 'j_ind', 'i_ind']
+    else:
+        keys_identity = ['FM_ts', 'grid_ind', 'j_ind', 'i_ind']
 
     # Keys for potential labels
     keys_FM = ['FM_10hr', 'FM_100hr']
@@ -45,7 +48,7 @@ def get_keys_from_extracted_data (df_extracted):
         UMag10_key = 'UMag10' + U10_key[3:]
         keys_UMag10.append(UMag10_key)
                      
-    print('=========================================================================')
+    #print('=========================================================================')
     return keys_identity, keys_FM, keys_U10, keys_V10, keys_UMag10, \
                             keys_T2, keys_RH, keys_PREC, keys_SW, keys_HGT
 
@@ -64,7 +67,48 @@ def define_binary_and_MC_FM_labels (keys_FM):
         keys_FM_MC.append(FM_key_MC)
     
     return keys_FM_Binary, keys_FM_MC
+
+
+# []
+'''
+Define groups of Keys (Labels)
+'''
+def define_labels(FM_label_type, keys_FM, keys_FM_Binary, keys_FM_MC):
+    if (FM_label_type == 'Regression'):
+        keys_labels = keys_FM
+    elif (FM_label_type == 'Binary'):
+        keys_labels = keys_FM + keys_FM_Binary
+    elif (FM_label_type == 'MultiClass'):
+        keys_labels = keys_FM + keys_FM_MC
+    else:
+        raise ValueError('Invalid "label_type": {} in "FM_labels". \
+                        \nValid types are: "Regression", "MultiClass", and "Binary"'.format(\
+                                                                                FM_label_type))
+    return keys_labels
+
+
+# []
+'''
+Define groups of Keys (Features)
+'''
+def define_features(keys_UMag10, keys_T2, keys_RH, keys_PREC, keys_SW, \
+                   features_to_use):
+
+    keys_features = []
+    if 'UMag10' in features_to_use:
+        keys_features += keys_UMag10 
+    if 'T2' in features_to_use:
+        keys_features += keys_T2
+    if 'RH' in features_to_use:
+        keys_features += keys_RH 
+    if 'PREC' in features_to_use:
+        keys_features += keys_PREC
+    if 'SW' in features_to_use:
+        keys_features += keys_SW
         
+    return keys_features
+
+
 # []
 '''
 Compute UMag from U and V

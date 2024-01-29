@@ -270,31 +270,14 @@ keys_FM_Binary, keys_FM_MC = define_binary_and_MC_FM_labels (keys_FM)
 # In[ ]:
 
 
-if (FM_label_type == 'Regression'):
-    keys_labels = keys_FM
-elif (FM_label_type == 'Binary'):
-    keys_labels = keys_FM + keys_FM_Binary
-elif (FM_label_type == 'MultiClass'):
-    keys_labels = keys_FM + keys_FM_MC
-else:
-    raise ValueError('Invalid "label_type": {} in "FM_labels".                     \nValid types are: "Regression", "MultiClass", and "Binary"'.format(                                                                            FM_label_type))
+keys_labels = define_labels(FM_label_type, keys_FM, keys_FM_Binary, keys_FM_MC)
 
 
 # In[ ]:
 
 
 features_to_use = json_content_prep_data['features']['features_to_use']
-keys_features = []
-if 'UMag10' in features_to_use:
-    keys_features += keys_UMag10 
-if 'T2' in features_to_use:
-    keys_features += keys_T2
-if 'RH' in features_to_use:
-    keys_features += keys_RH 
-if 'PREC' in features_to_use:
-    keys_features += keys_PREC
-if 'SW' in features_to_use:
-    keys_features += keys_SW
+keys_features  = define_features(keys_UMag10, keys_T2, keys_RH, keys_PREC, keys_SW,                    features_to_use)
 
 
 # In[ ]:
