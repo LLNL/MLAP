@@ -216,6 +216,69 @@ def plot_confusion_matrix (conf_mat, accuracy, model_name, \
     
     plt.savefig(cm_plot_path, bbox_inches='tight')
     
+
+    
+# [] 
+def plot_fm (y_gt, labels_pred, j_indices, i_indices, FM_label_type, analysis_data_loc, analysis_fuel_map_file_name, class_labels = None):
+    ny, nx = (480, 396)
+    ground_truth = y_gt.to_numpy()
+    
+    if FM_label_type == 'Regression':
+        ground_truth_mat = np.full((ny,nx), np.nan)
+        pred_mat = np.full_like(ground_truth_mat, np.nan )
+        error_mat = np.full_like(ground_truth_mat, np.nan)
+    else:
+        ground_truth_mat = np.ones((ny,nx), int)*(-1)
+        pred_mat = np.ones_like(ground_truth_mat, int)*(-np.nan)
+        error_mat = np.ones_like(ground_truth_mat, int)*(-np.nan)
+        
+        
+    for j_loc, i_loc, gt_val, pred_val in zip (j_indices, i_indices, ground_truth, labels_pred):
+        ground_truth_mat[j_loc][i_loc] = gt_val
+        pred_mat[        j_loc][i_loc] = pred_val
+        if (FM_label_type == 'Binary' or 'FM_label_type' == 'MultiClass'):
+            error_mat[       j_loc][i_loc] = (gt_val == pred_val)
+        else:
+            error_mat[       j_loc][i_loc] = 100.0*(pred_val/gt_val - 1.0)
+            
+    
+    cmap_name = 'viridis'
+
+    if (FM_label_type == 'Binary' or 'FM_label_type' == 'MultiClass'):
+        cont_levels = class_labels
+        cont_levels_err = [0, 1]
+    else:
+        cont_levels = np.linspace(0, 0.1, 21)
+        cont_levels_err = np.linspace(-75.0, 75.0, 21)
+
+    fig, ax = plt.subplots(1, 3, figsize=(12, 3))
+
+    x_ind, y_ind = np.meshgrid(range(nx), range(ny))
+
+    cont = ax[0].contourf(x_ind, y_ind, ground_truth_mat, levels = cont_levels, cmap=cmap_name, extend='both')
+    plt.colorbar(cont)
+    ax[0].set_title('Ground Truth')
+    ax[0].set_xticks([])
+    ax[0].set_yticks([])
+
+    cont = ax[1].contourf(x_ind, y_ind, pred_mat, levels = cont_levels, cmap=cmap_name, extend='both')
+    plt.colorbar(cont)
+    ax[1].set_title('Prediction')
+    ax[1].set_xticks([])
+    ax[1].set_yticks([])
+
+    cont = ax[2].contourf(x_ind, y_ind, error_mat, levels = cont_levels_err, cmap=cmap_name, extend='both')
+    plt.colorbar(cont)
+    if (FM_label_type == 'Binary' or 'FM_label_type' == 'MultiClass'):
+        ax[2].set_title('Correct Match')
+    else:
+        ax[2].set_title('Percentage Error')
+    ax[2].set_xticks([])
+    ax[2].set_yticks([])
+
+    filename = os.path.join(analysis_data_loc, analysis_fuel_map_file_name)
+    plt.savefig(filename, bbox_inches='tight')
+
     
 # []
 '''

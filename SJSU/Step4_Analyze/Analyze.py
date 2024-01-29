@@ -86,7 +86,7 @@ global_initial_memory = process.memory_info().rss
 
 
 json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_015.json'
-json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_003.json'
+json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_001.json'
 json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Train/json_train_model_003.json'
 json_file_analyze      = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Analyze/json_analyze_001.json'
 
@@ -511,6 +511,8 @@ prepared_data_file_name = '{}-{}.pkl'.format(analysis_name, timestamp)
 analysis_scatter_file_name = '{}-{}_scatter_entire.png'.format(analysis_name, timestamp)
 analysis_cm_file_name = '{}-{}_cm_entire.png'.format(analysis_name, timestamp)
 
+analysis_fuel_map_file_name = '{}-{}_fm_entire.png'.format(analysis_name, timestamp)
+
 with open(os.path.join(analysis_data_loc, prepared_data_file_name), 'rb') as file_handle:
     prepared_data = pickle.load(file_handle)
 print('Read prepared data from "{}" at "{}"'.format(prepared_data_file_name, analysis_data_loc))
@@ -533,6 +535,8 @@ else:
 ### Extract Features and Labels from Prepared Data
 X_gt     = prepared_data['features'][features_to_use]
 y_gt     = prepared_data['labels'][labels_to_use]
+j_indices = prepared_data['identity']['j_ind']
+i_indices = prepared_data['identity']['i_ind']
 
 
 ### Scale Features
@@ -562,89 +566,14 @@ if (FM_label_type == 'Binary'):
 
 ### Plot Scatter or Confusion Matrix
 if (FM_label_type == 'Regression'):
+    class_labels = None
     plot_scatter_regression (y_gt.to_numpy(), labels_pred, accuracy, model_name,                             analysis_data_loc, analysis_scatter_file_name,                             max_data_size_scatter, fig_size_x, fig_size_y,                             font_size, x_lim)
 else:
     plot_confusion_matrix (conf_mat, accuracy, model_name,                            analysis_data_loc, analysis_cm_file_name,                            fig_size_x, fig_size_y,                            font_size,                           normalize_cm,                            class_labels)
+    
 
-
-# # Prediction with Trained Model
-
-# ## Plot Ground Truth and Prediction of Fire Data
-
-# In[ ]:
-
-
-ny, nx = (480, 396)
-j_indices = idy_fire['j_ind']
-i_indices = idy_fire['i_ind']
-ground_truth = y_fire
-
-
-# In[ ]:
-
-
-if label_type == 'Regr':
-    ground_truth_mat = np.full((ny,nx), np.nan)
-    pred_mat = np.full_like(ground_truth_mat, np.nan )
-    error_mat = np.full_like(ground_truth_mat, np.nan)
-else:
-    ground_truth_mat = np.ones((ny,nx), int)*(-1)
-    pred_mat = np.ones_like(ground_truth_mat, int)*(-1)
-    error_mat = np.ones_like(ground_truth_mat, int)*(-1)
-
-
-# In[ ]:
-
-
-for j_loc, i_loc, gt_val, pred_val in zip (j_indices, i_indices, ground_truth, labels_pred):
-    ground_truth_mat[j_loc][i_loc] = gt_val
-    pred_mat[        j_loc][i_loc] = pred_val
-    if (label_type == 'bin' or 'label_type' == 'MC'):
-        error_mat[       j_loc][i_loc] = (gt_val == pred_val)
-    else:
-        error_mat[       j_loc][i_loc] = 100.0*(pred_val/gt_val - 1.0)
-
-
-# In[ ]:
-
-
-#error_mat
-
-
-# In[ ]:
-
-
-cmap_name = input_json_data['plot_options']['cmap_name']
-cont_levels = input_json_data['plot_options']['cont_levels']
-cont_levels = np.linspace(0, 0.28, 21)
-cont_levels_err = np.linspace(-75.0, 75.0, 21)
-fig, ax = plt.subplots(1, 3, figsize=(12, 3))
-
-x_ind, y_ind = np.meshgrid(range(nx), range(ny))
-
-cont = ax[0].contourf(x_ind, y_ind, ground_truth_mat, levels = cont_levels, cmap=cmap_name, extend='both')
-plt.colorbar(cont)
-ax[0].set_title('Ground Truth')
-ax[0].set_xticks([])
-ax[0].set_yticks([])
-
-cont = ax[1].contourf(x_ind, y_ind, pred_mat, levels = cont_levels, cmap=cmap_name, extend='both')
-plt.colorbar(cont)
-ax[1].set_title('Prediction')
-ax[1].set_xticks([])
-ax[1].set_yticks([])
-
-cont = ax[2].contourf(x_ind, y_ind, error_mat, levels = cont_levels_err, cmap=cmap_name, extend='both')
-plt.colorbar(cont)
-ax[2].set_title('Correct Match')
-ax[2].set_xticks([])
-ax[2].set_yticks([])
-
-filename = trained_model_name.split('.')[0] + '_{}_Fire.png'.format(fire_name)
-filedir = analysis_loc
-os.system('mkdir -p %s'%filedir)
-
-plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
+### Plot Ground Truth and Prediction At the Desired Time Stamp
+plot_fm (y_gt, labels_pred, j_indices, i_indices, FM_label_type,          analysis_data_loc, analysis_fuel_map_file_name, class_labels)
 
 
 # # Global End Time and Memory
@@ -659,4 +588,10 @@ print('Total memory consumed: {:.3f} MB'.format(global_memory_consumed/(1024*102
 print('Total computing time: {:.3f} s'.format(global_end_time - global_start_time))
 print('=========================================================================')
 print("SUCCESS: Done Training and Testing of Model")
+
+
+# In[ ]:
+
+
+
 
