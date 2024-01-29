@@ -35,10 +35,11 @@ import time
 # In[ ]:
 
 
-#from sklearn.svm import SVC
+#from sklearn.svm import SVC, SVR
+#from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 #from sklearn.neural_network import MLPClassifier, MLPRegressor
 
-#from sklearn.preprocessing import StandardScaler, MinMaxScaler
+#from sklearn.preprocessing import StandardScaler, MinMaxScaler, MaxAbsScaler, RobustScaler
 #from sklearn.model_selection import train_test_split
 
 from sklearn.metrics import accuracy_score, confusion_matrix, average_precision_score
@@ -84,10 +85,10 @@ global_initial_memory = process.memory_info().rss
 # In[ ]:
 
 
-json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/01_WRF_Nelson_Data_Extracted/InputJsonFiles/json_extract_data_005.json'
-json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/02_TrainTest_Data_Prepared/InputJsonFiles/json_prep_data_label_000.json'
-json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03_Trained_Models/InputJsonFiles/json_train_model_002.json'
-json_file_analyze      = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/04_Analysis/InputJsonFiles/json_analyze_000.json'
+json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_015.json'
+json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_001.json'
+json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Train/json_train_model_003.json'
+json_file_analyze      = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Analyze/json_analyze_001.json'
 
 
 # ### Input file name when using python script on command line
@@ -247,9 +248,19 @@ model_params = json_content_train_model['models']['params']
 # In[ ]:
 
 
+analysis_count = json_content_analyze['analysis_count']
+
+
+# ### Paths
+
+# In[ ]:
+
+
 analysis_data_paths = json_content_analyze['paths']
 analysis_data_desired = json_content_analyze['analysis_data_desired']
 
+
+# ### Data Types of Interest
 
 # In[ ]:
 
@@ -263,6 +274,23 @@ analysis_data_defined = [analysis_data_elem                          for analysi
 print ('Analysis desired to be performed on the following data sets:\n {}'.format(                                                            analysis_data_desired))
 
 print ('Time and Region Info available for these data sets out of those desired:\n {}'                                                    .format(analysis_data_defined))
+
+
+# ### Analysis Plots Prefernces
+
+# In[ ]:
+
+
+analysis = json_content_train_model['evaluation']
+fig_size_x = analysis['fig_size_x']
+fig_size_y = analysis['fig_size_y']
+font_size  = analysis['font_size']
+
+if (FM_label_type == 'Regression'):
+    max_data_size_scatter = analysis['max_data_size_scatter']
+    x_lim      = analysis['x_lim']
+else:
+    normalize_cm = analysis['normalize_cm']
 
 
 # # Paths and File Names
@@ -290,9 +318,55 @@ raw_data_paths = json_content_analyze['paths']['raw_data']
 trained_model_name = 'dataset_%03d_label_%03d_%s_model_%03d_%s'%(data_set_count,                                                         label_count, FM_label_type,                                                         model_count, model_name)
 
 trained_model_loc = os.path.join(trained_model_base_loc, trained_model_name)
-os.system('mkdir -p %s'%trained_model_loc)
 
 trained_model_file_name = '{}.pkl'.format(trained_model_name)
+
+
+# #### DataSet, Label, Model, and TimeStamp Specific (Analysis Data)
+
+# In[ ]:
+
+
+analysis_name = 'dataset_%03d_label_%03d_%s_model_%03d_%s_analysis_%03d'%(                                                        data_set_count,                                                         label_count, FM_label_type,                                                         model_count, model_name,                                                        analysis_count)
+
+analysis_loc = os.path.join(analysis_data_base_loc, analysis_name)
+os.system('mkdir -p %s'%analysis_loc)
+
+
+# In[ ]:
+
+
+time_region_info = get_time_region_info (analysis_data_defined, json_content_analyze)
+
+
+# In[ ]:
+
+
+#time_region_info
+
+
+# In[ ]:
+
+
+analysis_data_locations_all_types = dict()
+for analysis_data_type in time_region_info.keys():
+    #print('\nTime Info for {}:'.format(analysis_data_type))
+    
+    analysis_data_locations = []
+    for count_ref_time, item_ref_time in enumerate(time_region_info[analysis_data_type]):
+        #print ('... Reference Time {}: {}'.format(count_ref_time + 1, item_ref_time['RefTime']))
+        analysis_data_loc = os.path.join(analysis_loc,                                          analysis_data_type,
+                                         item_ref_time['RefTime'])
+        analysis_data_locations.append(analysis_data_loc)
+        os.system('mkdir -p %s'%analysis_data_loc)
+    
+    analysis_data_locations_all_types[analysis_data_type] = analysis_data_locations
+
+
+# In[ ]:
+
+
+#analysis_data_locations_all_types
 
 
 # #### Features for Fire Data
@@ -333,8 +407,6 @@ print ('The model loaded is: {} \n'.format(model))
 print ('Model params: \n {}'.format(model.get_params()))
 
 
-# # Extract SJSU, HRRR and RRM Data for Analysis
-
 # In[ ]:
 
 
@@ -350,7 +422,7 @@ time_region_info = get_history_time_stamps_all_data_types (                     
 # In[ ]:
 
 
-#time_region_info
+time_region_info
 
 
 # ## HRRR Data
@@ -390,6 +462,12 @@ year, month, day, hour = split_timestamp (desired_time)
 
 
 #year, month, day, hour
+
+
+# In[ ]:
+
+
+
 
 
 # # Prediction with Trained Model

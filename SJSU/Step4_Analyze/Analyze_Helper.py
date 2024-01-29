@@ -62,12 +62,12 @@ def get_time_region_info (analysis_data_defined, json_content_analyze):
     for analysis_data_type in time_region_info.keys():
         print('\nTime and Region Info for {}:'.format(analysis_data_type))
         for count_ref_time, item_ref_time in enumerate(time_region_info[analysis_data_type]):
-            print ('... Reference Time {}: {}'.format(count_ref_time, item_ref_time['RefTime']))
+            print ('... Reference Time {}: {}'.format(count_ref_time + 1, item_ref_time['RefTime']))
 
             for count_regions, (x_clip, y_clip) in enumerate(\
                 zip (item_ref_time['regions_x_indices'], item_ref_time['regions_y_indices'])):
                 print ('... ... Region {}:, x_clip: {}, y_clip: {}'.format(\
-                                count_regions, x_clip, y_clip))
+                                count_regions + 1, x_clip, y_clip))
             
     #'========================================================================='    
     return time_region_info
