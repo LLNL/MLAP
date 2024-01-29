@@ -326,7 +326,7 @@ trained_model_name = 'dataset_%03d_label_%03d_%s_model_%03d_%s'%(data_set_count,
 
 trained_model_loc = os.path.join(trained_model_base_loc, trained_model_name)
 
-trained_model_file_name = '{}.pkl'.format(trained_model_name)
+trained_model_file_name = '{}_model.pkl'.format(trained_model_name)
 
 
 # #### DataSet, Label, Model, and TimeStamp Specific (Analysis Data)
@@ -356,14 +356,16 @@ time_region_info = get_history_time_stamps_all_data_types (time_region_info,    
 #time_region_info
 
 
-# # ML Model
+# # Generate seed for the random number generator
 
 # In[ ]:
 
 
-print ('FM label type: {}'.format(FM_label_type))
-print ('ML model considered: {}'.format(model_name))
+seed = generate_seed()
+random_state = init_random_generator(seed)
 
+
+# # ML Model
 
 # ## Load the Model
 
@@ -373,76 +375,8 @@ print ('ML model considered: {}'.format(model_name))
 trained_model_file = os.path.join(trained_model_loc, trained_model_file_name)
 model = pickle.load(open(trained_model_file, 'rb'))
 print ('\nLoaded the ML model file at: {}\n'.format(trained_model_file))
-
-
-# In[ ]:
-
-
 print ('The model loaded is: {} \n'.format(model))
 print ('Model params: \n {}'.format(model.get_params()))
-
-
-# In[ ]:
-
-
-time_region_info = get_time_region_info (analysis_data_defined, json_content_analyze)
-
-
-# In[ ]:
-
-
-time_region_info = get_history_time_stamps_all_data_types (                            time_region_info, max_history_to_consider, history_interval)
-
-
-# In[ ]:
-
-
-time_region_info
-
-
-# ## HRRR Data
-
-# In[ ]:
-
-
-analysis_data_type = 'HRRR'
-
-
-# In[ ]:
-
-
-raw_data_path = raw_data_paths[analysis_data_type]
-raw_data_path
-
-
-# In[ ]:
-
-
-qoi = 'ugrd10m'
-
-
-# In[ ]:
-
-
-desired_time = '2020-09-04_00'
-
-
-# In[ ]:
-
-
-year, month, day, hour = split_timestamp (desired_time)
-
-
-# In[ ]:
-
-
-#year, month, day, hour
-
-
-# In[ ]:
-
-
-
 
 
 # # Prediction with Trained Model
