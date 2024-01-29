@@ -251,6 +251,12 @@ if (FM_label_type == 'MultiClass'):
 FM_hr = json_content_prep_data['qoi_to_plot']['FM_hr']
 
 
+# In[ ]:
+
+
+features_to_use = json_content_prep_data['features']['features_to_use']
+
+
 # ## Define ML Model and Params etc.
 
 # ### Model Definition 
@@ -378,7 +384,7 @@ time_region_info = get_history_time_stamps_all_data_types (time_region_info,    
 #time_region_info
 
 
-# # Read the Data At All Desired Time Stamps
+# # Read the Data at All Desired Time Stamps
 
 # In[ ]:
 
@@ -431,6 +437,42 @@ for count_ref_time, item_ref_time in enumerate(time_region_info['SJSU']):
     #print(timestamp_ref, timestamps_hist)
     df_dict[item_ref_time['RefTime']] = create_dataframe_FM_atm_at_timestamp (                                       timestamp_ref, timestamps_hist, data_read_SJSU,                                        history_interval,                                        grid_indices_valid_flat, valid_grid_ind_to_coord)
     
+
+
+# # Prepare Data at All Desired Time Stamps for Prediction
+
+# In[ ]:
+
+
+for timestamp_count, timestamp in enumerate(df_dict.keys()):
+    df_at_timestamp = df_dict[timestamp]
+    
+    ### Get Column Names in the DataFrame
+    keys_identity, keys_FM,     keys_U10, keys_V10, keys_UMag10,     keys_T2, keys_RH, keys_PREC, keys_SW,                                 keys_HGT = get_keys_from_extracted_data (df_at_timestamp,                                                                         train_test = False)
+    
+    keys_FM_Binary, keys_FM_MC = define_binary_and_MC_FM_labels (keys_FM)
+    
+    ### Define Labels and Features 
+    keys_labels = define_labels(FM_label_type, keys_FM, keys_FM_Binary, keys_FM_MC)
+    keys_features  = define_features(keys_UMag10, keys_T2, keys_RH, keys_PREC, keys_SW,                        features_to_use)
+    
+    ### Compute New Columns or Remove Some
+    df_at_timestamp_prep = compute_wind_mag (df_at_timestamp, keys_U10, keys_V10, keys_UMag10)
+    df_at_timestamp_prep = drop_wind_components (df_at_timestamp_prep, keys_U10, keys_V10)
+    if FM_label_type == 'Binary':
+        df_at_timestamp_prep = compute_binary_FM_labels(df_at_timestamp_prep,                                               keys_FM, keys_FM_Binary, FM_binary_threshold)
+    if FM_label_type == 'MultiClass':
+        df_at_timestamp_prep = compute_MC_FM_labels(df_at_timestamp_prep,                                           keys_FM, keys_FM_MC, FM_MC_levels)
+        
+    ### Split Data into Identity, Features, and Labels
+    df_at_timestamp_prep = split_data_into_groups (df_at_timestamp_prep,                                        keys_identity, keys_labels, keys_features)
+    
+    ### Save the Prepared Data
+    analysis_data_loc = analysis_data_locations_all_types['SJSU'][timestamp_count]
+    prepared_data_file_name = '{}-{}.pkl'.format(analysis_name, timestamp)
+    with open(os.path.join(analysis_data_loc, prepared_data_file_name), 'wb') as file_handle:
+        pickle.dump(df_at_timestamp_prep, file_handle)
+    print('Wrote prepared data in "{}" at "{}"'.format(prepared_data_file_name, analysis_data_loc))
 
 
 # # Generate seed for the random number generator
