@@ -9,7 +9,7 @@
 
 # ## Standard Packages
 
-# In[ ]:
+# In[1]:
 
 
 import os
@@ -32,7 +32,7 @@ import time
 
 # ## Scikit-Learn
 
-# In[ ]:
+# In[2]:
 
 
 #from sklearn.svm import SVC, SVR
@@ -49,7 +49,7 @@ from sklearn.metrics import precision_recall_curve, classification_report
 
 # ## User-Defined Functions
 
-# In[ ]:
+# In[3]:
 
 
 current_running_file_dir = sys.path[0]
@@ -59,7 +59,7 @@ sys.path.insert(0, os.path.join(current_running_file_par, 'Step2_PrepareData'))
 sys.path.insert(0, os.path.join(current_running_file_par, 'Step3_TrainModel'))
 
 
-# In[ ]:
+# In[4]:
 
 
 from Extract_DFM_Data_Helper import *
@@ -68,7 +68,7 @@ from TrainModel_Helper import *
 from Analyze_Helper import *
 
 
-# In[ ]:
+# In[5]:
 
 
 # []
@@ -119,7 +119,7 @@ def scale_predict_plot(FM_label_type, model, model_name, scaler_type, X_gt, y_gt
 
 # # Global Start Time and Memory
 
-# In[ ]:
+# In[6]:
 
 
 global_start_time = timer()
@@ -131,18 +131,18 @@ global_initial_memory = process.memory_info().rss
 
 # ### Input file name when using jupyter notebook
 
-# In[ ]:
+# In[7]:
 
 
 json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_015.json'
-json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_002.json'
+json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_001.json'
 json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Train/json_train_model_003.json'
 json_file_analyze      = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Analyze/json_analyze_001.json'
 
 
 # ### Input file name when using python script on command line
 
-# In[ ]:
+# In[8]:
 
 
 #json_file_extract_data = sys.argv[1]
@@ -153,20 +153,20 @@ json_file_analyze      = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/An
 
 # ### Load the JSON file for extracting data
 
-# In[ ]:
+# In[9]:
 
 
 print('Loading the JSON file for extracting data: \n {}'.format(json_file_extract_data))
 
 
-# In[ ]:
+# In[10]:
 
 
 with open(json_file_extract_data) as json_file_handle:
     json_content_extract_data = json.load(json_file_handle)
 
 
-# In[ ]:
+# In[11]:
 
 
 #json_content_extract_data
@@ -174,20 +174,20 @@ with open(json_file_extract_data) as json_file_handle:
 
 # ### Load the JSON file for preparing data
 
-# In[ ]:
+# In[12]:
 
 
 print('Loading the JSON file for preparing data: \n {}'.format(json_file_prep_data))
 
 
-# In[ ]:
+# In[13]:
 
 
 with open(json_file_prep_data) as json_file_handle:
     json_content_prep_data = json.load(json_file_handle)
 
 
-# In[ ]:
+# In[14]:
 
 
 #json_content_prep_data
@@ -195,20 +195,20 @@ with open(json_file_prep_data) as json_file_handle:
 
 # ### Load the JSON file for training model
 
-# In[ ]:
+# In[15]:
 
 
 print('Loading the JSON file for training model: \n {}'.format(json_file_train_model))
 
 
-# In[ ]:
+# In[16]:
 
 
 with open(json_file_train_model) as json_file_handle:
     json_content_train_model = json.load(json_file_handle)
 
 
-# In[ ]:
+# In[17]:
 
 
 #json_content_train_model
@@ -216,20 +216,20 @@ with open(json_file_train_model) as json_file_handle:
 
 # ### Load the JSON file for analysis
 
-# In[ ]:
+# In[18]:
 
 
 print('Loading the JSON file for analysis: \n {}'.format(json_file_analyze))
 
 
-# In[ ]:
+# In[19]:
 
 
 with open(json_file_analyze) as json_file_handle:
     json_content_analyze = json.load(json_file_handle)
 
 
-# In[ ]:
+# In[20]:
 
 
 #json_content_analyze
@@ -239,7 +239,7 @@ with open(json_file_analyze) as json_file_handle:
 
 # ## DataSet Defintion
 
-# In[ ]:
+# In[21]:
 
 
 # The current data set params
@@ -250,7 +250,7 @@ history_interval = json_content_extract_data['data_set_defn']['history_interval'
 
 # ## Nevada Data
 
-# In[ ]:
+# In[22]:
 
 
 nevada_data = json_content_extract_data['nevada_data']
@@ -261,7 +261,7 @@ j_anchor, i_anchor = nevada_data['j_anchor'], nevada_data['i_anchor']
 
 # ## Clip Data for Train/Test
 
-# In[ ]:
+# In[23]:
 
 
 clip_data_train_test = json_content_extract_data['clip_data_train_test']
@@ -271,19 +271,19 @@ y_clip_train_test = clip_data_train_test['y_clip']
 
 # ## Define Label, FM Threshold etc.
 
-# In[ ]:
+# In[24]:
 
 
 label_count = json_content_prep_data['label_defn']['label_count']
 
 
-# In[ ]:
+# In[25]:
 
 
 FM_labels = json_content_prep_data['FM_labels']
 
 
-# In[ ]:
+# In[26]:
 
 
 FM_label_type = FM_labels['label_type']
@@ -297,13 +297,13 @@ if (FM_label_type == 'MultiClass'):
     class_labels = range(len(FM_MC_levels) -1)
 
 
-# In[ ]:
+# In[27]:
 
 
 FM_hr = json_content_prep_data['qoi_to_plot']['FM_hr']
 
 
-# In[ ]:
+# In[28]:
 
 
 features_to_use = json_content_prep_data['features']['features_to_use']
@@ -313,7 +313,7 @@ features_to_use = json_content_prep_data['features']['features_to_use']
 
 # ### Model Definition 
 
-# In[ ]:
+# In[29]:
 
 
 model_count = json_content_train_model['models']['model_count']
@@ -324,7 +324,7 @@ model_name = json_content_train_model['models']['model_name'] # ['RF', SVM', 'ML
 
 # ## Define Analysis Inputs
 
-# In[ ]:
+# In[30]:
 
 
 analysis_count = json_content_analyze['analysis_count']
@@ -332,7 +332,7 @@ analysis_count = json_content_analyze['analysis_count']
 
 # ### Paths
 
-# In[ ]:
+# In[31]:
 
 
 analysis_data_paths = json_content_analyze['paths']
@@ -341,13 +341,13 @@ analysis_data_desired = json_content_analyze['analysis_data_desired']
 
 # ### Data Types, Time Stamps and Regions of Interest
 
-# In[ ]:
+# In[32]:
 
 
 analysis_data_defined = [analysis_data_elem                          for analysis_data_elem in analysis_data_desired                          if analysis_data_elem in json_content_analyze]
 
 
-# In[ ]:
+# In[33]:
 
 
 print ('Analysis desired to be performed on the following data sets:\n {}'.format(                                                            analysis_data_desired))
@@ -355,7 +355,7 @@ print ('Analysis desired to be performed on the following data sets:\n {}'.forma
 print ('Time and Region Info available for these data sets out of those desired:\n {}'                                                    .format(analysis_data_defined))
 
 
-# In[ ]:
+# In[34]:
 
 
 time_region_info = get_time_region_info (analysis_data_defined, json_content_analyze)
@@ -364,7 +364,7 @@ time_region_info = get_time_region_info (analysis_data_defined, json_content_ana
 
 # ### Analysis Plots Prefernces
 
-# In[ ]:
+# In[35]:
 
 
 analysis = json_content_train_model['evaluation']
@@ -386,7 +386,7 @@ else:
 
 # #### Global
 
-# In[ ]:
+# In[36]:
 
 
 data_files_location = json_content_extract_data['paths']['data_files_location']
@@ -394,7 +394,7 @@ trained_model_base_loc = json_content_train_model['paths']['trained_model_base_l
 analysis_data_base_loc = json_content_analyze['paths']['analysis_data_base_loc']
 
 
-# In[ ]:
+# In[37]:
 
 
 raw_data_paths = json_content_analyze['paths']['raw_data']
@@ -402,7 +402,7 @@ raw_data_paths = json_content_analyze['paths']['raw_data']
 
 # #### DataSet, Label, and Model Specific (Trained Model)
 
-# In[ ]:
+# In[38]:
 
 
 trained_model_name = 'dataset_%03d_label_%03d_%s_model_%03d_%s'%(data_set_count,                                                         label_count, FM_label_type,                                                         model_count, model_name)
@@ -414,7 +414,7 @@ trained_model_file_name = '{}_model.pkl'.format(trained_model_name)
 
 # #### DataSet, Label, Model, and TimeStamp Specific (Analysis Data)
 
-# In[ ]:
+# In[39]:
 
 
 analysis_name = 'dataset_%03d_label_%03d_%s_model_%03d_%s_analysis_%03d'%(                                                        data_set_count,                                                         label_count, FM_label_type,                                                         model_count, model_name,                                                        analysis_count)
@@ -423,7 +423,7 @@ analysis_loc = os.path.join(analysis_data_base_loc, analysis_name)
 os.system('mkdir -p %s'%analysis_loc)
 
 
-# In[ ]:
+# In[40]:
 
 
 analysis_data_locations_all_types = get_analysis_data_locations_all_types (                                                    time_region_info, analysis_loc)
@@ -432,7 +432,7 @@ analysis_data_locations_all_types = get_analysis_data_locations_all_types (     
 
 # # Get History Time Stamps for All Desired Time Stamps
 
-# In[ ]:
+# In[41]:
 
 
 time_region_info = get_history_time_stamps_all_data_types (time_region_info,                                                            max_history_to_consider,                                                            history_interval)
@@ -441,7 +441,7 @@ time_region_info = get_history_time_stamps_all_data_types (time_region_info,    
 
 # # Read the Data at All Desired Time Stamps
 
-# In[ ]:
+# In[42]:
 
 
 features_labels = json_content_extract_data['features_labels']
@@ -450,7 +450,7 @@ labels_to_read = features_labels['labels_to_read']
 labels_ind_in_nc_file = features_labels['labels_ind_in_nc_file']
 
 
-# In[ ]:
+# In[43]:
 
 
 data_read_SJSU = read_SJSU_data_desired_times (time_region_info, data_files_location)
@@ -460,21 +460,21 @@ data_read_SJSU = read_SJSU_data_desired_times (time_region_info, data_files_loca
 
 # ### Get Grid Indices
 
-# In[ ]:
+# In[44]:
 
 
 data_at_timestamp = data_read_SJSU[list(data_read_SJSU.keys())[0]]
 #data_at_timestamp
 
 
-# In[ ]:
+# In[45]:
 
 
 grid_indices_all, grid_indices_valid, grid_indices_all_flat, grid_indices_valid_flat =     get_grid_indices_given_data_at_timestamp (data_at_timestamp,                                               x_clip_train_test, y_clip_train_test,                                               j_nevada, i_nevada, j_anchor, i_anchor, 
                                               remove_nevada)
 
 
-# In[ ]:
+# In[46]:
 
 
 grid_indices_valid_reconst, grid_indices_valid_bool, valid_grid_ind_to_coord =                 reconstruct_valid_grid_indices (grid_indices_valid_flat, data_at_timestamp)
@@ -482,7 +482,7 @@ grid_indices_valid_reconst, grid_indices_valid_bool, valid_grid_ind_to_coord =  
 
 # ### Now Create DataFrames at Desired Time Stamps
 
-# In[ ]:
+# In[47]:
 
 
 df_dict = dict()
@@ -496,7 +496,7 @@ for count_ref_time, item_ref_time in enumerate(time_region_info['SJSU']):
 
 # # Prepare Data at All Desired Time Stamps for Prediction
 
-# In[ ]:
+# In[48]:
 
 
 for timestamp_count, timestamp in enumerate(df_dict.keys()):
@@ -532,7 +532,7 @@ for timestamp_count, timestamp in enumerate(df_dict.keys()):
 
 # # Generate seed for the random number generator
 
-# In[ ]:
+# In[49]:
 
 
 seed = generate_seed()
@@ -543,7 +543,7 @@ random_state = init_random_generator(seed)
 
 # ## Load the Model
 
-# In[ ]:
+# In[50]:
 
 
 trained_model_file = os.path.join(trained_model_loc, trained_model_file_name)
@@ -555,53 +555,96 @@ print ('Model params: \n {}'.format(model.get_params()))
 
 # # Load the Prepared Data at All Desired Time Stamps and Scale Them
 
-# In[ ]:
+# In[51]:
 
 
-analysis_data_loc = analysis_data_locations_all_types['SJSU'][timestamp_count]
-prepared_data_file_name = '{}-{}.pkl'.format(analysis_name, timestamp)
-
-analysis_scatter_file_name = '{}-{}_scatter_entire.png'.format(analysis_name, timestamp)
-analysis_cm_file_name = '{}-{}_cm_entire.png'.format(analysis_name, timestamp)
-
-analysis_fuel_map_file_name = '{}-{}_fm_entire.png'.format(analysis_name, timestamp)
-
-with open(os.path.join(analysis_data_loc, prepared_data_file_name), 'rb') as file_handle:
-    prepared_data = pickle.load(file_handle)
-print('Read prepared data from "{}" at "{}"'.format(prepared_data_file_name, analysis_data_loc))
-
-### Deal with Features
-features_to_use = prepared_data['features'].keys()
-#features_to_use
-
-### Deal with Labels
-if (FM_label_type == 'Regression'):
-    labels_to_use = ['FM_{}hr'.format(FM_hr)]
-elif (FM_label_type == 'Binary'):
-    labels_to_use = ['FM_{}hr_bin'.format(FM_hr)]
-elif (FM_label_type == 'MultiClass'):
-    labels_to_use = ['FM_{}hr_MC'.format(FM_hr)]
-else:
-    raise ValueError('Invalid "label_type": {} in "FM_labels".                     \nValid types are: "Regression", "MultiClass", and "Binary"'.format(                                                                            FM_label_type))
-#labels_to_use
-
-### Extract Features and Labels from Prepared Data
-X_gt     = prepared_data['features'][features_to_use]
-y_gt     = prepared_data['labels'][labels_to_use]
-j_indices = prepared_data['identity']['j_ind']
-i_indices = prepared_data['identity']['i_ind']
+#time_region_info
 
 
-scale_predict_plot(FM_label_type, model, model_name, scaler_type, X_gt, y_gt,                        analysis_data_loc, analysis_scatter_file_name,                        max_data_size_scatter, fig_size_x, fig_size_y,                        font_size, x_lim,                        analysis_cm_file_name,
-                       normalize_cm, \
-                        class_labels, \
-                       j_indices, i_indices,\
-                       analysis_fuel_map_file_name)
+# In[52]:
+
+
+for timestamp_count, timestamp in enumerate(df_dict.keys()):
+    analysis_data_loc = analysis_data_locations_all_types['SJSU'][timestamp_count]
+    prepared_data_file_name = '{}-{}.pkl'.format(analysis_name, timestamp)
+
+    analysis_scatter_file_name = '{}-{}_scatter_entire.png'.format(analysis_name, timestamp)
+    analysis_cm_file_name = '{}-{}_cm_entire.png'.format(analysis_name, timestamp)
+
+    analysis_fuel_map_file_name = '{}-{}_fm_entire.png'.format(analysis_name, timestamp)
+
+    with open(os.path.join(analysis_data_loc, prepared_data_file_name), 'rb') as file_handle:
+        prepared_data = pickle.load(file_handle)
+    print('Read prepared data from "{}" at "{}"'.format(prepared_data_file_name, analysis_data_loc))
+
+    ### Deal with Features
+    features_to_use = prepared_data['features'].keys()
+    #features_to_use
+
+    ### Deal with Labels
+    if (FM_label_type == 'Regression'):
+        labels_to_use = ['FM_{}hr'.format(FM_hr)]
+    elif (FM_label_type == 'Binary'):
+        labels_to_use = ['FM_{}hr_bin'.format(FM_hr)]
+    elif (FM_label_type == 'MultiClass'):
+        labels_to_use = ['FM_{}hr_MC'.format(FM_hr)]
+    else:
+        raise ValueError('Invalid "label_type": {} in "FM_labels".                         \nValid types are: "Regression", "MultiClass", and "Binary"'.format(                                                                                FM_label_type))
+    #labels_to_use
+
+    ### Extract Features and Labels from Prepared Data
+    X_gt     = prepared_data['features'][features_to_use]
+    y_gt     = prepared_data['labels'][labels_to_use]
+    j_indices = prepared_data['identity']['j_ind']
+    i_indices = prepared_data['identity']['i_ind']
+
+
+    scale_predict_plot(FM_label_type, model, model_name, scaler_type, X_gt, y_gt,                            analysis_data_loc, analysis_scatter_file_name,                            max_data_size_scatter, fig_size_x, fig_size_y,                            font_size, x_lim,                            analysis_cm_file_name,
+                           normalize_cm, \
+                            class_labels, \
+                           j_indices, i_indices,\
+                           analysis_fuel_map_file_name)
+
+
+    ### Now deal with each region for the desired time stamp
+    item_ref_time = time_region_info['SJSU'][timestamp_count]
+    for count_regions, (x_clip, y_clip) in enumerate(        zip (item_ref_time['regions_x_indices'], item_ref_time['regions_y_indices'])):
+        print ('... ... Region {}:, x_clip: {}, y_clip: {}'.format(                        count_regions + 1, x_clip, y_clip))
+        region = 'region_%03d'%(count_regions + 1)
+        analysis_scatter_file_name = '{}-{}_scatter_region_{}.png'.format(analysis_name,                                                                 timestamp, region)
+        analysis_cm_file_name = '{}-{}_cm_region_{}.png'.format(analysis_name,                                                                  timestamp, region)
+        analysis_fuel_map_file_name = '{}-{}_fm_region_{}.png'.format(analysis_name,                                                                  timestamp, region)
+
+        X_gt     = prepared_data['features'][features_to_use][(prepared_data['identity']['j_ind'] > y_clip[0]) &
+                           (prepared_data['identity']['j_ind'] < y_clip[1]) &
+                           (prepared_data['identity']['i_ind'] > x_clip[0]) &
+                           (prepared_data['identity']['i_ind'] < x_clip[1])]
+
+        y_gt     = prepared_data['labels'][labels_to_use][(prepared_data['identity']['j_ind'] > y_clip[0]) &
+                           (prepared_data['identity']['j_ind'] < y_clip[1]) &
+                           (prepared_data['identity']['i_ind'] > x_clip[0]) &
+                           (prepared_data['identity']['i_ind'] < x_clip[1])]
+
+        j_indices = prepared_data['identity'][(prepared_data['identity']['j_ind'] > y_clip[0]) &
+                           (prepared_data['identity']['j_ind'] < y_clip[1]) &
+                           (prepared_data['identity']['i_ind'] > x_clip[0]) &
+                           (prepared_data['identity']['i_ind'] < x_clip[1])]['j_ind']
+        i_indices = prepared_data['identity'][(prepared_data['identity']['j_ind'] > y_clip[0]) &
+                               (prepared_data['identity']['j_ind'] < y_clip[1]) &
+                               (prepared_data['identity']['i_ind'] > x_clip[0]) &
+                               (prepared_data['identity']['i_ind'] < x_clip[1])]['i_ind']
+
+        if (len(X_gt) > 0):
+            scale_predict_plot(FM_label_type, model, model_name, scaler_type, X_gt, y_gt,                                analysis_data_loc, analysis_scatter_file_name,                                max_data_size_scatter, fig_size_x, fig_size_y,                                font_size, x_lim,                                analysis_cm_file_name,
+                               normalize_cm, \
+                                class_labels, \
+                               j_indices, i_indices,\
+                               analysis_fuel_map_file_name)
 
 
 # # Global End Time and Memory
 
-# In[ ]:
+# In[53]:
 
 
 global_final_memory = process.memory_info().rss
