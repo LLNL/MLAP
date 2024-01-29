@@ -72,6 +72,32 @@ def get_time_region_info (analysis_data_defined, json_content_analyze):
     #'========================================================================='    
     return time_region_info
 
+
+# []
+'''
+Get the locations of analysis data for all types and time stamps
+'''
+def get_analysis_data_locations_all_types (time_region_info, analysis_loc):
+    analysis_data_locations_all_types = dict()
+    
+    for analysis_data_type in time_region_info.keys():
+        #print('\nTime Info for {}:'.format(analysis_data_type))
+
+        analysis_data_locations = []
+        for count_ref_time, item_ref_time in enumerate(time_region_info[analysis_data_type]):
+            #print ('... Reference Time {}: {}'.format(count_ref_time + 1, item_ref_time['RefTime']))
+            analysis_data_loc = os.path.join(analysis_loc, \
+                                             analysis_data_type,
+                                             item_ref_time['RefTime'])
+            analysis_data_locations.append(analysis_data_loc)
+            os.system('mkdir -p %s'%analysis_data_loc)
+
+        analysis_data_locations_all_types[analysis_data_type] = analysis_data_locations
+    
+    #'========================================================================='    
+    return analysis_data_locations_all_types
+
+
 # []
 '''
 Get history time stamps corresponding to a reference time

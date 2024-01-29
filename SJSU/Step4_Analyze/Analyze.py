@@ -260,7 +260,7 @@ analysis_data_paths = json_content_analyze['paths']
 analysis_data_desired = json_content_analyze['analysis_data_desired']
 
 
-# ### Data Types of Interest
+# ### Data Types, Time Stamps and Regions of Interest
 
 # In[ ]:
 
@@ -274,6 +274,13 @@ analysis_data_defined = [analysis_data_elem                          for analysi
 print ('Analysis desired to be performed on the following data sets:\n {}'.format(                                                            analysis_data_desired))
 
 print ('Time and Region Info available for these data sets out of those desired:\n {}'                                                    .format(analysis_data_defined))
+
+
+# In[ ]:
+
+
+time_region_info = get_time_region_info (analysis_data_defined, json_content_analyze)
+#time_region_info
 
 
 # ### Analysis Plots Prefernces
@@ -336,49 +343,8 @@ os.system('mkdir -p %s'%analysis_loc)
 # In[ ]:
 
 
-time_region_info = get_time_region_info (analysis_data_defined, json_content_analyze)
-
-
-# In[ ]:
-
-
-#time_region_info
-
-
-# In[ ]:
-
-
-analysis_data_locations_all_types = dict()
-for analysis_data_type in time_region_info.keys():
-    #print('\nTime Info for {}:'.format(analysis_data_type))
-    
-    analysis_data_locations = []
-    for count_ref_time, item_ref_time in enumerate(time_region_info[analysis_data_type]):
-        #print ('... Reference Time {}: {}'.format(count_ref_time + 1, item_ref_time['RefTime']))
-        analysis_data_loc = os.path.join(analysis_loc,                                          analysis_data_type,
-                                         item_ref_time['RefTime'])
-        analysis_data_locations.append(analysis_data_loc)
-        os.system('mkdir -p %s'%analysis_data_loc)
-    
-    analysis_data_locations_all_types[analysis_data_type] = analysis_data_locations
-
-
-# In[ ]:
-
-
+analysis_data_locations_all_types = get_analysis_data_locations_all_types (                                                    time_region_info, analysis_loc)
 #analysis_data_locations_all_types
-
-
-# #### Features for Fire Data
-
-# In[ ]:
-
-
-'''
-scaler = MinMaxScaler()
-scaler.fit(X_fire)
-X_fire_scaled = scaler.transform(X_fire)
-'''
 
 
 # # ML Model
