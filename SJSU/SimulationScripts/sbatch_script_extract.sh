@@ -3,7 +3,7 @@
 #SBATCH -N 1
 #SBATCH --partition=quartz
 #SBATCH -t 24:00:00
-#SBATCH -A gsmisc
+#SBATCH -A cr4ns
 #SBATCH -p pbatch
 ##SBATCH --mail-type=ALL
 #SBATCH --export=ALL
