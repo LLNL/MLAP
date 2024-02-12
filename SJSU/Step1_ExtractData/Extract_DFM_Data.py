@@ -591,3 +591,9 @@ tabulated_data.to_csv(os.path.join(extracted_data_loc, tab_data_file_name), inde
 print("SUCCESS: Done Extraction of Data")
 print('=========================================================================')
 
+
+# In[ ]:
+
+
+
+
