@@ -486,7 +486,7 @@ labels_ind_in_nc_file = features_labels['labels_ind_in_nc_file']
 # In[ ]:
 
 
-data_at_sampled_times_and_grids =     read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file,                                          features_to_read, valid_grid_ind_to_coord,                                          time_grid_indices_set_dict,                                          data_files_location, data_files_list,                                          'array')
+data_at_sampled_times_and_grids, read_data_memory, read_data_time =     read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file,                                          features_to_read, valid_grid_ind_to_coord,                                          time_grid_indices_set_dict,                                          data_files_location, data_files_list,                                          'array')
 
 
 # In[ ]:
@@ -527,7 +527,28 @@ df.to_pickle(os.path.join(extracted_data_loc, extracted_data_file_name))
 #df_from_pickle.head(5)
 
 
-# # Save Other Relevant Info in A CSV File
+# # Global End Time and Memory
+
+# In[ ]:
+
+
+global_final_memory = process.memory_info().rss
+global_end_time = timer()
+global_memory_consumed = (global_final_memory - global_initial_memory)/(1024*1024)
+global_compute_time = global_end_time - global_start_time
+print('Total memory consumed: {:.3f} MB'.format(global_memory_consumed))
+print('Total computing time: {:.3f} s'.format(global_compute_time))
+print('=========================================================================')
+
+
+# # Save Other Relevant Info in a CSV File
+
+# In[ ]:
+
+
+print('Saving relevant info in a CSV file')
+print('=========================================================================')
+
 
 # In[ ]:
 
@@ -553,23 +574,20 @@ data_for_csv = { 'max_hist':    [max_history_to_consider],
                  'rows_feature_mat':           [grid_indices_selected.shape[0] * \
                                                 grid_indices_selected.shape[1]],
                  'cols_feature_mat':           [len(history_file_indices[0]) * \
-                                                (len(features_to_read) - 1)]
+                                                (len(features_to_read) - 1)],
+                 'read_data_memory':           [read_data_memory], 
+                 'read_data_time':             [read_data_time],
+                 'global_memory':              [global_memory_consumed], 
+                 'global_time':                [global_compute_time]
 }
 tabulated_data = pd.DataFrame(data_for_csv)
 tabulated_data.to_csv(os.path.join(extracted_data_loc, tab_data_file_name), index = False)
 #tabulated_data
 
 
-# # Global End Time and Memory
-
 # In[ ]:
 
 
-global_final_memory = process.memory_info().rss
-global_end_time = timer()
-global_memory_consumed = global_final_memory - global_initial_memory
-print('Total memory consumed: {:.3f} MB'.format(global_memory_consumed/(1024*1024)))
-print('Total computing time: {:.3f} s'.format(global_end_time - global_start_time))
-print('=========================================================================')
 print("SUCCESS: Done Extraction of Data")
+print('=========================================================================')
 

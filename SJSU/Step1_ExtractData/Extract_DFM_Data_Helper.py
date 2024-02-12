@@ -62,9 +62,9 @@ def get_data_file_names(data_files_dir):
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return file_list
@@ -96,9 +96,9 @@ def get_fire_time_indices (fire_time_stamps, data_files_list):
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')    
     return fire_time_indices
@@ -130,9 +130,9 @@ def remove_data_around_fire (fire_time_indices, data_files_list):
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('{} data files remaining after removing data around fires'.format(len(data_files_list)))
     print('=========================================================================')    
@@ -210,9 +210,9 @@ def downsample_data_files (data_files_list, percent_files_to_use, max_history_to
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return sampled_file_indices, sampled_data_files
@@ -240,9 +240,9 @@ def get_history_file_indices (sampled_file_indices, max_history_to_consider, his
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')    
     return history_file_indices
@@ -271,9 +271,9 @@ def get_datetime_for_data_files (sampled_data_files):
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return sampled_time_stamps, sampled_datetime
@@ -300,9 +300,9 @@ def create_df_sampled_time (sampled_file_indices, sampled_data_files, sampled_ti
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return df_sampled_time
@@ -347,9 +347,9 @@ def plot_sampled_datetime (df_sampled_time, extracted_data_loc, xlim = None, yli
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     
@@ -390,9 +390,9 @@ def read_single_data_file (data_files_location, data_file_to_read, timestamp_to_
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return data_at_timestamp
@@ -470,9 +470,9 @@ def read_SJSU_data_desired_times (time_region_info, data_files_location):
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return data_read_SJSU
@@ -500,9 +500,9 @@ def process_elevation_at_timestamp (data_at_timestamp):
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return data_at_timestamp
@@ -562,9 +562,9 @@ def get_grid_indices_given_data_at_timestamp (data_at_timestamp, x_clip, y_clip,
    
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return grid_indices_all, grid_indices_valid, grid_indices_all_flat, grid_indices_valid_flat
@@ -593,7 +593,13 @@ def get_grid_indices_all (data_files_location, sampled_file_indices, sampled_dat
     # Read the data at timestamp and process elevation
     data_at_timestamp = read_single_data_file (data_files_location, data_file_to_read, timestamp_to_read)
 
-    #print('=========================================================================')
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
+    print('=========================================================================')  
     return get_grid_indices_given_data_at_timestamp (\
                                               data_at_timestamp, x_clip, y_clip, \
                                               j_nevada, i_nevada, j_anchor, i_anchor, \
@@ -630,9 +636,9 @@ def reconstruct_valid_grid_indices (grid_indices_valid_flat, data_at_timestamp):
         
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')    
     return grid_indices_valid_reconst, grid_indices_valid_bool, valid_grid_ind_to_coord
@@ -688,9 +694,9 @@ def plot_contours_of_indices (data_at_timestamp, grid_indices_all, grid_indices_
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
 
@@ -744,9 +750,9 @@ def plot_contours_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_l
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
 
@@ -801,9 +807,9 @@ def plot_contours_at_timestamp2 (data_at_timestamp, timestamp_to_read, qoi_to_pl
         
         module_final_memory = process.memory_info().rss
         module_end_time = timer()
-        module_memory_consumed = module_final_memory - module_initial_memory
+        module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
         module_compute_time = module_end_time - module_start_time
-        print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+        print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
         print('Module computing time: {:.3f} s'.format(module_compute_time))
         print('=========================================================================')
         
@@ -843,9 +849,9 @@ def plot_pdf_at_timestamp (data_at_timestamp, qoi_to_plot, extracted_data_loc):
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     
@@ -884,9 +890,9 @@ def sample_grid_indices (sampled_file_indices, percent_grid_points_to_use, grid_
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return grid_indices_selected, j_indices_selected, i_indices_selected
@@ -930,9 +936,9 @@ def plot_sampled_grid_points (grid_indices_selected, extracted_data_loc):
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
 
@@ -974,9 +980,9 @@ def plot_sampled_grid_points_3D (j_indices_selected, i_indices_selected, extract
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
 
@@ -1023,9 +1029,9 @@ def create_time_grid_indices_map (sampled_file_indices, history_file_indices, gr
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     return time_grid_indices_list_dict, time_grid_indices_list_count, time_grid_indices_set_dict, time_grid_indices_set_count
@@ -1163,12 +1169,12 @@ def read_data_at_sampled_times_and_grids (labels_to_read, labels_ind_in_nc_file,
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
-    return data_at_sampled_times_and_grids
+    return data_at_sampled_times_and_grids, module_memory_consumed, module_compute_time
 
 # []
 '''
@@ -1275,9 +1281,9 @@ def create_dataframe_FM_atm_data (data_at_sampled_times_and_grids, data_at_times
             
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     
@@ -1399,9 +1405,9 @@ def create_dataframe_FM_atm_at_timestamp (sampled_time_stamps, hist_stamps, data
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
-    module_memory_consumed = module_final_memory - module_initial_memory
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
     module_compute_time = module_end_time - module_start_time
-    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed/(1024*1024)))
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
     print('Module computing time: {:.3f} s'.format(module_compute_time))
     print('=========================================================================')
     
