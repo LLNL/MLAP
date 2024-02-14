@@ -62,17 +62,12 @@ def get_keys_from_extracted_data (df_extracted, train_test = True):
     # Keys for features
     keys_U10 = [key for key in keys_all if 'U10' in key]
     keys_V10 = [key for key in keys_all if 'V10' in key]
+    keys_UMag10 = [key for key in keys_all if 'UMag10' in key]
     keys_T2 = [key for key in keys_all if 'T2' in key]
     keys_RH = [key for key in keys_all if 'RH' in key]
     keys_PREC = [key for key in keys_all if 'PREC' in key]
     keys_SW = [key for key in keys_all if 'SW' in key]
     keys_HGT = [key for key in keys_all if 'HGT' in key]
-    
-    keys_UMag10 = []
-    for U10_key, V10_key in zip(keys_U10, keys_V10):
-        assert U10_key[3:] == V10_key[3:]
-        UMag10_key = 'UMag10' + U10_key[3:]
-        keys_UMag10.append(UMag10_key)
                      
     #print('=========================================================================')
     return keys_identity, keys_FM, keys_U10, keys_V10, keys_UMag10, \

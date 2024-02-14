@@ -73,8 +73,8 @@ global_initial_memory = process.memory_info().rss
 # In[ ]:
 
 
-json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_039.json'
-json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_001.json'
+json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_040.json'
+json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_002.json'
 
 
 # ### Input file name when using python script on command line
@@ -137,6 +137,13 @@ with open(json_file_prep_data) as json_file_handle:
 
 # The current data set params
 data_set_count = json_content_extract_data['data_set_defn']['data_set_count']
+
+
+# In[ ]:
+
+
+features_labels = json_content_extract_data['features_labels']
+features_to_read = features_labels['features_to_read']
 
 
 # ## Define Label, FM Threshold etc.
@@ -224,33 +231,6 @@ df_tt_extracted = load_extracted_data (extracted_data_loc, extracted_data_file_n
 #df_tt_extracted
 
 
-# ## Load The Fire Data Saved in Pickle File
-
-# In[ ]:
-
-
-'''
-fire_data_file_handle = open(os.path.join(fire_data_loc, fire_data_file_name), 'rb')
-fire_data_extracted = pickle.load(fire_data_file_handle)
-fire_data_file_handle.close()
-print('Read fire data from "{}" at "{}"'.format(fire_data_file_name, fire_data_loc))
-'''
-
-
-# In[ ]:
-
-
-#fire_data_extracted['Woosley'].head(5)
-
-
-# ## Ensure The Train/test and Fire Data Have the Same Keys
-
-# In[ ]:
-
-
-#df_tt_extracted.keys() == fire_data_extracted['Woosley'].keys()
-
-
 # # Get Column Names in the Train and Test Data
 
 # In[ ]:
@@ -294,21 +274,14 @@ keys_features  = define_features(keys_UMag10, keys_T2, keys_RH, keys_PREC, keys_
 # In[ ]:
 
 
-df_tt_prep = compute_wind_mag (df_tt_extracted, keys_U10, keys_V10, keys_UMag10)
-
-'''
-fire_data_prep = dict()
-for fire_name in fire_data_extracted.keys():
-    fire_data_prep[fire_name] = compute_wind_mag (fire_data_extracted[fire_name], 
-                                                  keys_U10, keys_V10, keys_UMag10)
-'''
+if ('UMag10' in features_to_read):
+    df_tt_prep = compute_wind_mag (df_tt_extracted, keys_U10, keys_V10, keys_UMag10)
 
 
 # In[ ]:
 
 
 #df_tt_prep[keys_U10 + keys_V10 + keys_UMag10]
-#fire_data_prep['Woosley'][keys_U10 + keys_V10 + keys_UMag10]
 
 
 # ## Drop Wind Components
@@ -316,20 +289,14 @@ for fire_name in fire_data_extracted.keys():
 # In[ ]:
 
 
-df_tt_prep = drop_wind_components (df_tt_prep, keys_U10, keys_V10)
-
-'''
-for fire_name in fire_data_prep.keys():
-    fire_data_prep[fire_name] = drop_wind_components (\
-                                        fire_data_prep[fire_name], keys_U10, keys_V10)
-'''
+if ('UMag10' in features_to_read):
+    df_tt_prep = drop_wind_components (df_tt_prep, keys_U10, keys_V10)
 
 
 # In[ ]:
 
 
 #df_tt_prep[keys_UMag10]
-#fire_data_prep['Woosley'][keys_UMag10]
 
 
 # ## Compute Binary FM Labels
@@ -339,25 +306,18 @@ for fire_name in fire_data_prep.keys():
 
 if FM_label_type == 'Binary':
     df_tt_prep = compute_binary_FM_labels(df_tt_prep,                                           keys_FM, keys_FM_Binary, FM_binary_threshold)
-'''
-for fire_name in fire_data_prep.keys():
-    fire_data_prep[fire_name] = compute_binary_FM_labels (fire_data_prep[fire_name], \
-                                      keys_FM, keys_FM_Binary, FM_binary_threshold)
-'''
 
 
 # In[ ]:
 
 
 #len(df_tt_prep.keys())
-#len(fire_data_prep['Woosley'].keys())
 
 
 # In[ ]:
 
 
 #df_tt_prep[keys_FM + keys_FM_Binary][985:995]
-#fire_data_prep['Woosley'][keys_FM +keys_FM_Binary]
 
 
 # ## Compute MC FM Labels
@@ -367,18 +327,12 @@ for fire_name in fire_data_prep.keys():
 
 if FM_label_type == 'MultiClass':
     df_tt_prep = compute_MC_FM_labels(df_tt_prep,                                       keys_FM, keys_FM_MC, FM_MC_levels)
-'''
-for fire_name in fire_data_prep.keys():
-    fire_data_prep[fire_name] = compute_MC_FM_labels (fire_data_prep[fire_name], \
-                                      keys_FM, keys_FM_MC, FM_MC_levels)
-'''
 
 
 # In[ ]:
 
 
 #df_tt_prep[keys_FM + keys_FM_MC]
-#fire_data_prep['Woosley'][keys_FM + keys_FM_MC]
 
 
 # # Plot FM Labels
@@ -401,11 +355,6 @@ plot_FM_labels (df_tt_prep, FM_label_type, FM_hr,                 prepared_data_
 
 
 data_tt_prep = split_data_into_groups (df_tt_prep,                                        keys_identity, keys_labels, keys_features)
-'''
-data_tt_prep, data_fire_prep = split_data_into_groups (\
-                                            df_tt_prep, fire_data_prep, \
-                                            keys_identity, keys_labels, keys_features)
-'''
 
 
 # # Save The Prepared Data
@@ -413,10 +362,6 @@ data_tt_prep, data_fire_prep = split_data_into_groups (\
 # In[ ]:
 
 
-'''
-prepared_data = {'tt': data_tt_prep,
-                 'fire': data_fire_prep}
-'''
 prepared_data = data_tt_prep
 with open(os.path.join(prepared_data_loc, prepared_data_file_name), 'wb') as file_handle:
     pickle.dump(prepared_data, file_handle)
@@ -429,7 +374,7 @@ print('Wrote prepared data in "{}" at "{}"'.format(prepared_data_file_name, prep
 
 
 with open(os.path.join(prepared_data_loc, prepared_data_file_name), 'rb') as file_handle:
-    prepared_data = pickle.load(file_handle)
+    prepared_data_read = pickle.load(file_handle)
 print('Read prepared data from "{}" at "{}"'.format(prepared_data_file_name, prepared_data_loc))
 
 
@@ -443,6 +388,12 @@ print('Read prepared data from "{}" at "{}"'.format(prepared_data_file_name, pre
 
 
 #prepared_data_read['labels'].head(5)
+
+
+# In[ ]:
+
+
+#prepared_data_read['labels'][prepared_data_read['labels']['FM_10hr_bin'] == 1]
 
 
 # In[ ]:
