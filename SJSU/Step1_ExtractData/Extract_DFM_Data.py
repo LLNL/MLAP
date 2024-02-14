@@ -553,6 +553,11 @@ print('=========================================================================
 # In[ ]:
 
 
+if ('UMag10' in features_to_read and     'U10' not in features_to_read and     'V10' not in features_to_read):
+    num_features = len(history_file_indices[0]) * (len(features_to_read)    )
+else:
+    num_features = len(history_file_indices[0]) * (len(features_to_read) - 1)
+    
 data_for_csv = { 'max_hist':    [max_history_to_consider],
                  'hist_interval':           [history_interval],
                  'num_hist':           [len(history_file_indices[0])],
@@ -573,8 +578,7 @@ data_for_csv = { 'max_hist':    [max_history_to_consider],
                                                 grid_indices_selected.shape[1]],
                  'rows_feature_mat':           [grid_indices_selected.shape[0] * \
                                                 grid_indices_selected.shape[1]],
-                 'cols_feature_mat':           [len(history_file_indices[0]) * \
-                                                (len(features_to_read) - 1)],
+                 'cols_feature_mat':           [num_features],
                  'read_data_memory':           [read_data_memory], 
                  'read_data_time':             [read_data_time],
                  'global_memory':              [global_memory_consumed], 
@@ -590,10 +594,4 @@ tabulated_data.to_csv(os.path.join(extracted_data_loc, tab_data_file_name), inde
 
 print("SUCCESS: Done Extraction of Data")
 print('=========================================================================')
-
-
-# In[ ]:
-
-
-
 
