@@ -73,7 +73,7 @@ global_initial_memory = process.memory_info().rss
 # In[ ]:
 
 
-json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_005.json'
+json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_039.json'
 json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_001.json'
 
 
@@ -215,7 +215,7 @@ random_state = init_random_generator(seed)
 # In[ ]:
 
 
-df_tt_extracted = pd.read_pickle(os.path.join(extracted_data_loc, extracted_data_file_name))
+df_tt_extracted = load_extracted_data (extracted_data_loc, extracted_data_file_name)
 
 
 # In[ ]:

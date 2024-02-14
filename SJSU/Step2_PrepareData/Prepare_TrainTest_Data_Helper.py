@@ -17,6 +17,32 @@ from mpl_toolkits import mplot3d
 from datetime import date, datetime, timedelta, time
 from timeit import default_timer as timer
 
+
+# []
+'''
+Load the extracted data
+'''
+def load_extracted_data (extracted_data_loc, extracted_data_file_name):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "load_extracted_data"')
+    print('\nProcess in the module(): {}'.format(process))
+    
+    print('\nLoading exracted data from file:\n ... {} \n ... at: {}\n'.format(\
+                                                   extracted_data_file_name, extracted_data_loc))
+    df_tt_extracted = pd.read_pickle(os.path.join(extracted_data_loc, extracted_data_file_name))
+    
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
+    print('=========================================================================')
+    return df_tt_extracted
+
 # []
 '''
 Get keys from the extracted data 
