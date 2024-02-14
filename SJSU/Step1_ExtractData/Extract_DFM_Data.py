@@ -104,6 +104,15 @@ max_history_to_consider = data_set_defn['max_history_to_consider'] # n_history i
 history_interval        = data_set_defn['history_interval']
 
 
+# In[ ]:
+
+
+features_labels = json_content_extract_data['features_labels']
+features_to_read = features_labels['features_to_read']
+labels_to_read = features_labels['labels_to_read']
+labels_ind_in_nc_file = features_labels['labels_ind_in_nc_file']
+
+
 # ## Flags, Other Params etc.
 
 # ### Nevada Data
@@ -467,15 +476,6 @@ time_grid_indices_list_dict, time_grid_indices_list_count, time_grid_indices_set
 
 
 # # Read Data at Sampled Time and Grid Indices
-
-# In[ ]:
-
-
-features_labels = json_content_extract_data['features_labels']
-features_to_read = features_labels['features_to_read']
-labels_to_read = features_labels['labels_to_read']
-labels_ind_in_nc_file = features_labels['labels_ind_in_nc_file']
-
 
 # In[ ]:
 
