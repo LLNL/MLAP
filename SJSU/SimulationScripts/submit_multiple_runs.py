@@ -25,7 +25,8 @@ action = "Extract" # "Extract", "Prep", "Train", "Analyze"
 # In[ ]:
 
 
-test_command = True
+print_command = True
+submit_job    = False
 
 
 # In[ ]:
@@ -76,9 +77,15 @@ json_train_base = os.path.join(sim_dir, 'InputJson/Train/json_train_model')
 
 
 #json_extract_counts = [0]
-json_extract_counts = range(39, 59)
+json_extract_counts = list (set (range(41, 59)) - set([43, 47]))
 json_prep_counts = [2] #[1, 2, 3]
-json_train_counts = [3, 5, 1, 2]
+json_train_counts = [3, 5]
+
+
+# In[ ]:
+
+
+json_extract_counts
 
 
 # ## Generate and Execute `command`
@@ -94,9 +101,9 @@ for data_count in json_extract_counts:
                                                       sbatch_script_extract,
                                                       python_script_extract,
                                                       json_extract)
-        if (test_command):
-            print(sbatch_submit_command, '\n')
-        else:
+        if (print_command):
+            print('\n', sbatch_submit_command)
+        if (submit_job):
             os.system(sbatch_submit_command)
         continue
         
@@ -109,9 +116,9 @@ for data_count in json_extract_counts:
                                                       python_script_prep,
                                                       json_extract,
                                                       json_prep)
-            if (test_command):
-                print(sbatch_submit_command, '\n')
-            else:
+            if (print_command):
+                print('\n', sbatch_submit_command)
+            if (submit_job):
                 os.system(sbatch_submit_command)
             continue
             
@@ -125,8 +132,8 @@ for data_count in json_extract_counts:
                                                       json_extract,
                                                       json_prep,
                                                       json_train)
-            if (test_command):
-                print(sbatch_submit_command, '\n')
-            else:
+            if (print_command):
+                print('\n', sbatch_submit_command)
+            if (submit_job):
                 os.system(sbatch_submit_command)
 
