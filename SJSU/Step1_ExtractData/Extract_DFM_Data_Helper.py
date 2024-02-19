@@ -1078,7 +1078,7 @@ def read_data_at_time_grid_as_array (labels_to_read, labels_ind_in_nc_file, \
     #print('=========================================================================')
     #print('MODULE Name: ""')
     data_at_time_and_grid = np.empty((len(features_to_read) + len(labels_to_read), ), \
-                                         dtype = np.float32)
+                                         dtype = np.float16)
     
     j_ind_to_read, i_ind_to_read = valid_grid_ind_to_coord[grid_ind_to_read]
     
