@@ -2,7 +2,7 @@
 # coding: utf-8
 
 
-
+### ==== === Standard === === === === === === === ===
 import os
 import sys
 import os.path as path
@@ -20,15 +20,22 @@ from datetime import date, datetime, timedelta, time
 from timeit import default_timer as timer
 import time
 
+### ==== === Models === === === === === === === ===
 from sklearn.linear_model import LinearRegression
 from sklearn.svm import SVC, SVR
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 from sklearn.neural_network import MLPClassifier, MLPRegressor
 from sklearn.ensemble import GradientBoostingRegressor, GradientBoostingClassifier
 
+### ==== === Preprocessors === === === === === === === ===
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, MaxAbsScaler, RobustScaler
 from sklearn.model_selection import train_test_split
 
+### ==== === Metrics === === === === === === === ===
+### ==== === Regression === === === === === === === ===
+from sklearn.metrics import r2_score, explained_variance_score, mean_squared_error
+from sklearn.metrics import max_error, mean_absolute_error, median_absolute_error
+### ==== === Classification === === === === === === === ===
 from sklearn.metrics import accuracy_score, confusion_matrix, average_precision_score
 #from sklearn.metrics import plot_confusion_matrix
 from sklearn.metrics import precision_recall_curve, classification_report
@@ -100,24 +107,30 @@ def predict(model, features_gt, data_identifier):
     print ('Prediction Time for {} is {} s'.format(\
                         data_identifier, round(time.time()-t1, 3)))
     
-    return labels_pred
+    return np.reshape(labels_pred, (len(labels_pred), 1))
 
 
 # []
 '''
-Get Accuracy Score
+Get Metrics
 '''
-def get_accuracy_score (model, FM_label_type, features_gt, labels_gt, labels_pred, \
-                        data_identifier):
+def get_metrics_regression (labels_gt, labels_pred, data_identifier):
     
-    if (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
-        accuracy = accuracy_score(labels_pred, labels_gt)
-    else:
-        accuracy = model.score(features_gt, labels_gt)
+    r2_scr = r2_score (labels_gt, labels_pred)
+    ev_scr = explained_variance_score (labels_gt, labels_pred)
+    mse = mean_squared_error (labels_gt, labels_pred)
+    rmse = np.sqrt (mse)
+    max_err = max_error (labels_gt, labels_pred)
+    mae = mean_absolute_error (labels_gt, labels_pred)
+    medae = median_absolute_error (labels_gt, labels_pred)
     
-    print ('Accuracy for {} is: {}'.format(data_identifier, accuracy))
-    return accuracy
+    print ('Metrics for {}:\n \
+            ... R2: {:.4f}, EV: {:.4f}, MSE: {:.4f}, RMSE: {:.4f}, \n \
+            ... Max_Err : {:.4f}, MAE: {:.4f}, MedAE: {:.4f}'.format(data_identifier, \
+                                                         r2_scr, ev_scr, mse, rmse, \
+                                                         max_err, mae, medae))
 
+    return r2_scr, ev_scr, mse, rmse, max_err, mae, medae
 
 # []
 '''
@@ -147,7 +160,9 @@ def get_classification_report (FM_label_type, labels_gt, labels_pred, \
 '''
 Plot Scatter for Rgeression
 '''
-def plot_scatter_regression (labels_gt, labels_pred, accuracy, model_name, \
+def plot_scatter_regression (labels_gt, labels_pred, \
+                             r2_scr, rmse, mae, \
+                             model_name, \
                              plot_loc, fig_name, \
                              max_data_size_scatter, fig_size_x, fig_size_y, \
                              font_size, x_lim):
@@ -169,7 +184,8 @@ def plot_scatter_regression (labels_gt, labels_pred, accuracy, model_name, \
     plt.plot(labels_gt_range, labels_gt_range, '--r')
     plt.xlabel('Ground Truth', fontsize = font_size)
     plt.ylabel('Prediction', fontsize = font_size)
-    plt.title('Model: {}, Accuracy: {:.3f}'.format(model_name, accuracy), fontsize = font_size)
+    plt.title('Model: {}, R2: {:.3f}, RMSE: {:.3f}, MAE: {:.4f}'.format(model_name, \
+                                                          r2_scr, rmse, mae), fontsize = font_size)
     plt.xlim(x_lim)
     plt.ylim(x_lim)
     plt.yticks(fontsize = font_size, rotation = 0)

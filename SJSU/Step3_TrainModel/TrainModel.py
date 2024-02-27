@@ -30,23 +30,6 @@ from timeit import default_timer as timer
 import time
 
 
-# ## Scikit-Learn
-
-# In[ ]:
-
-
-from sklearn.svm import SVC, SVR
-from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
-from sklearn.neural_network import MLPClassifier, MLPRegressor
-
-from sklearn.preprocessing import StandardScaler, MinMaxScaler, MaxAbsScaler, RobustScaler
-from sklearn.model_selection import train_test_split
-
-from sklearn.metrics import accuracy_score, confusion_matrix, average_precision_score
-#from sklearn.metrics import plot_confusion_matrix
-from sklearn.metrics import precision_recall_curve, classification_report
-
-
 # ## User-Defined Functions
 
 # In[ ]:
@@ -532,7 +515,8 @@ labels_pred_train = predict(model, features_train, "Train Data")
 # In[ ]:
 
 
-accuracy_train = get_accuracy_score(model, FM_label_type,                                    features_train, labels_train, labels_pred_train,                                   "Train Data")
+if (FM_label_type == 'Regression'):
+    r2_score_train, ev_score_train, mse_train, rmse_train,     max_err_train, mae_train, medae_train = get_metrics_regression (                                            labels_train, labels_pred_train, "Train Data")
 
 
 # In[ ]:
@@ -561,7 +545,7 @@ if (FM_label_type == 'Binary'):
 
 
 if (FM_label_type == 'Regression'):
-    plot_scatter_regression (labels_train, labels_pred_train, accuracy_train, model_name,                             trained_model_loc, train_data_scatter_file_name,                             max_data_size_scatter, fig_size_x, fig_size_y,                             font_size, x_lim)
+    plot_scatter_regression (labels_train, labels_pred_train,                              r2_score_train, rmse_train, mae_train,                              model_name,                             trained_model_loc, train_data_scatter_file_name,                             max_data_size_scatter, fig_size_x, fig_size_y,                             font_size, x_lim)
 else:
     plot_confusion_matrix (conf_mat_train, accuracy_train, model_name,                            trained_model_loc, train_data_cm_file_name,                            fig_size_x, fig_size_y,                            font_size,                           normalize_cm, class_labels)
 
@@ -590,7 +574,8 @@ labels_pred_test = predict(model, features_test, "Test Data")
 # In[ ]:
 
 
-accuracy_test = get_accuracy_score(model, FM_label_type,                                    features_test, labels_test, labels_pred_test,                                   "Test Data")
+if (FM_label_type == 'Regression'):
+    r2_score_test, ev_score_test, mse_test, rmse_test,     max_err_test, mae_test, medae_test = get_metrics_regression (                                            labels_test, labels_pred_test, "Test Data")
 
 
 # In[ ]:
@@ -619,7 +604,7 @@ if (FM_label_type == 'Binary'):
 
 
 if (FM_label_type == 'Regression'):
-    plot_scatter_regression (labels_test, labels_pred_test, accuracy_test, model_name,                             trained_model_loc, test_data_scatter_file_name,                             max_data_size_scatter, fig_size_x, fig_size_y,                             font_size, x_lim)
+    plot_scatter_regression (labels_test, labels_pred_test,                              r2_score_test, rmse_test, mae_test,                              model_name,                             trained_model_loc, test_data_scatter_file_name,                             max_data_size_scatter, fig_size_x, fig_size_y,                             font_size, x_lim)
 else:
     plot_confusion_matrix (conf_mat_test, accuracy_test, model_name,                            trained_model_loc, test_data_cm_file_name,                            fig_size_x, fig_size_y,                            font_size,                           normalize_cm, class_labels)
 
@@ -629,9 +614,22 @@ else:
 # In[ ]:
 
 
-data_for_csv = { 'accuracy_train':    [accuracy_train],
-                 'accuracy_test':     [accuracy_test]        
-               }
+if (FM_label_type == 'Regression'):
+    data_for_csv = {'r2_score_train': [r2_score_train],
+                    'ev_score_train': [ev_score_train] ,
+                    'mse_train':      [mse_train],
+                    'rmse_train':     [rmse_train],
+                    'max_err_train':  [max_err_train],
+                    'mae_train':      [mae_train],
+                    'medae_train':    [medae_train],
+                    'r2_score_test':  [r2_score_test],
+                    'ev_score_test':  [ev_score_test],
+                    'mse_test':       [mse_test],
+                    'rmse_test':      [rmse_test],
+                    'max_err_test':   [max_err_test],
+                    'mae_test':       [mae_test],
+                    'medae_test':     [medae_test]
+                   }
 
 
 # In[ ]:
