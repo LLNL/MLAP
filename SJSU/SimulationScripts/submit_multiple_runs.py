@@ -19,13 +19,15 @@ import os.path as path
 # In[ ]:
 
 
-action = "Extract" # "Extract", "Prep", "Train", "Analyze"
+action = "Prep" # "Extract", "Prep", "Train", "Analyze"
 
 
 # In[ ]:
 
 
-print_command = True
+print_interactive_command = True
+print_sbatch_command = False
+run_interactively = False
 submit_job    = False
 
 
@@ -76,19 +78,38 @@ json_train_base = os.path.join(sim_dir, 'InputJson/Train/json_train_model')
 # In[ ]:
 
 
-#json_extract_counts = [0]
-json_extract_counts = range(59, 79)
-json_prep_counts = [2] #[1, 2, 3]
+#json_extract_counts = [39, 40]
+json_extract_counts = range(39, 68)
+json_prep_counts = [1, 2, 4] #[1, 2, 3]
 json_train_counts = [3, 5]
+
+
+# ## Generate and Execute `command`
+
+# In[ ]:
+
+
+def get_commands (exempt_flag, sbatch_script, base_command):
+    run_command = 'python {}'.format(base_command)
+    sbatch_submit_command = 'sbatch {} {} {}'.format(                                exempt_flag, sbatch_script, base_command)
+    
+    return run_command, sbatch_submit_command
+    
 
 
 # In[ ]:
 
 
-json_extract_counts
+def print_and_execute (print_interactive_command, print_sbatch_command,                        run_interactively, submit_job,                        run_command, sbatch_submit_command):
+    if (print_interactive_command):
+        print('\n', run_command)
+    if (print_sbatch_command):
+        print('\n', sbatch_submit_command)
+    if (run_interactively):
+        os.system (run_command)
+    if (submit_job):
+        os.system (sbatch_submit_command)
 
-
-# ## Generate and Execute `command`
 
 # In[ ]:
 
@@ -97,43 +118,32 @@ for data_count in json_extract_counts:
     json_extract = '%s_%03d.json'%(json_extract_base, data_count)
     #print(json_extract)
     if (action == 'Extract'):
-        sbatch_submit_command = 'sbatch {} {} {} {}'.format(                                                      exempt_flag,
-                                                      sbatch_script_extract,
-                                                      python_script_extract,
-                                                      json_extract)
-        if (print_command):
-            print('\n', sbatch_submit_command)
-        if (submit_job):
-            os.system(sbatch_submit_command)
+        base_command = '{} {}'.format(python_script_extract,
+                                      json_extract)
+        run_command, sbatch_submit_command = get_commands (                                    exempt_flag, sbatch_script_extract, base_command)
+        print_and_execute (print_interactive_command, print_sbatch_command,                            run_interactively, submit_job,                            run_command, sbatch_submit_command)
         continue
         
     for label_count in json_prep_counts:
         json_prep    = '%s_%03d.json'%(json_prep_base, label_count)
         #print(json_prep)
         if (action == "Prep"):
-            sbatch_submit_command = 'sbatch {} {} {} {} {}'.format(                                                      exempt_flag,
-                                                      sbatch_script_prep,
-                                                      python_script_prep,
-                                                      json_extract,
-                                                      json_prep)
-            if (print_command):
-                print('\n', sbatch_submit_command)
-            if (submit_job):
-                os.system(sbatch_submit_command)
+            base_command = '{} {} {}'.format(python_script_prep,
+                                             json_extract,
+                                             json_prep)
+            run_command, sbatch_submit_command = get_commands (                                        exempt_flag, sbatch_script_prep, base_command)
+            print_and_execute (print_interactive_command, print_sbatch_command,                                run_interactively, submit_job,                                run_command, sbatch_submit_command)
             continue
             
         for train_count in json_train_counts:
             json_train   = '%s_%03d.json'%(json_train_base, train_count)
             #print(json_train)
             if (action == "Train"):
-                sbatch_submit_command = 'sbatch {} {} {} {} {} {}'.format(                                                      exempt_flag,
-                                                      sbatch_script_train,
-                                                      python_script_train,
-                                                      json_extract,
-                                                      json_prep,
-                                                      json_train)
-            if (print_command):
-                print('\n', sbatch_submit_command)
-            if (submit_job):
-                os.system(sbatch_submit_command)
+                base_command = '{} {} {} {}'.format(python_script_train,
+                                                    json_extract,
+                                                    json_prep,
+                                                    json_train)
+                run_command, sbatch_submit_command = get_commands (                                        exempt_flag, sbatch_script_train, base_command)
+                print_and_execute (print_interactive_command, print_sbatch_command,                                    run_interactively, submit_job,                                    run_command, sbatch_submit_command)
+                continue
 
