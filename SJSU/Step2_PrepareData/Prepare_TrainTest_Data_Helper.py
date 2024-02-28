@@ -213,7 +213,7 @@ def plot_FM_labels (df, FM_label_type, FM_hr, \
     os.system('mkdir -p %s'%filedir)
 
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
-    plt.show()
+    #plt.show()
     
     
 # []
