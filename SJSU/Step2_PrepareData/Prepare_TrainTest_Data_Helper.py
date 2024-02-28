@@ -135,6 +135,7 @@ def define_features(keys_UMag10, keys_T2, keys_RH, keys_PREC, keys_SW, \
 Compute UMag from U and V
 '''
 def compute_wind_mag (df_extracted, keys_U10, keys_V10, keys_UMag10):
+    print ('Computing wind magnitude from wind components')
     for U10_key, V10_key, UMag_key in zip(keys_U10, keys_V10, keys_UMag10):
         assert U10_key[3:] == V10_key[3:]
         df_extracted[UMag_key] = (df_extracted[U10_key]**2 + df_extracted[V10_key]**2)**(0.5)
@@ -146,6 +147,7 @@ def compute_wind_mag (df_extracted, keys_U10, keys_V10, keys_UMag10):
 Drop wind components U, and v
 '''
 def drop_wind_components (df_extracted, keys_U10, keys_V10):
+    print ('Dropping wind components')
     df_extracted = df_extracted.drop(keys_U10 + keys_V10, axis = 'columns')
     return df_extracted
 
@@ -155,6 +157,7 @@ def drop_wind_components (df_extracted, keys_U10, keys_V10):
 Compute binary FM labels
 '''
 def compute_binary_FM_labels(df, keys_FM, keys_FM_Binary, FM_binary_threshold):
+    print ('Computing Binary FM labels')
     for FM_key, FM_key_binary in zip(keys_FM, keys_FM_Binary):
         # If FM > threshold_FM_fire_risk, then no risk, i.e., 0. Otherwise fire risk or 1
         df[FM_key_binary] = np.where(df[FM_key] > FM_binary_threshold , 0, 1)
@@ -166,6 +169,7 @@ def compute_binary_FM_labels(df, keys_FM, keys_FM_Binary, FM_binary_threshold):
 Compute MC FM labels
 '''
 def compute_MC_FM_labels(df, keys_FM, keys_FM_MC, FM_levels):
+    print ('Computing MultiClass FM labels')
     for FM_key, FM_key_MC in zip(keys_FM, keys_FM_MC):
         conditions = []
         labels = []

@@ -73,8 +73,8 @@ global_initial_memory = process.memory_info().rss
 # In[ ]:
 
 
-json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_040.json'
-json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_002.json'
+json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_039.json'
+json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_004.json'
 
 
 # ### Input file name when using python script on command line
@@ -222,7 +222,7 @@ random_state = init_random_generator(seed)
 # In[ ]:
 
 
-df_tt_extracted = load_extracted_data (extracted_data_loc, extracted_data_file_name)
+df_tt_prep = load_extracted_data (extracted_data_loc, extracted_data_file_name)
 
 
 # In[ ]:
@@ -236,7 +236,13 @@ df_tt_extracted = load_extracted_data (extracted_data_loc, extracted_data_file_n
 # In[ ]:
 
 
-keys_identity, keys_FM, keys_U10, keys_V10, keys_UMag10, keys_T2, keys_RH, keys_PREC, keys_SW,                             keys_HGT = get_keys_from_extracted_data (df_tt_extracted)
+keys_identity, keys_FM, keys_U10, keys_V10, keys_UMag10, keys_T2, keys_RH, keys_PREC, keys_SW,                             keys_HGT = get_keys_from_extracted_data (df_tt_prep)
+
+
+# In[ ]:
+
+
+#keys_U10, keys_V10, keys_UMag10
 
 
 # In[ ]:
@@ -274,14 +280,21 @@ keys_features  = define_features(keys_UMag10, keys_T2, keys_RH, keys_PREC, keys_
 # In[ ]:
 
 
-if ('UMag10' in features_to_read):
-    df_tt_prep = compute_wind_mag (df_tt_extracted, keys_U10, keys_V10, keys_UMag10)
+#features_to_read
+
+
+# In[ ]:
+
+
+if ('UMag10' not in features_to_read):
+    df_tt_prep = compute_wind_mag (df_tt_prep, keys_U10, keys_V10, keys_UMag10)
 
 
 # In[ ]:
 
 
 #df_tt_prep[keys_U10 + keys_V10 + keys_UMag10]
+#df_tt_prep
 
 
 # ## Drop Wind Components
@@ -289,7 +302,7 @@ if ('UMag10' in features_to_read):
 # In[ ]:
 
 
-if ('UMag10' in features_to_read):
+if ('UMag10' not in features_to_read):
     df_tt_prep = drop_wind_components (df_tt_prep, keys_U10, keys_V10)
 
 
