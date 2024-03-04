@@ -42,11 +42,9 @@ sys.path.insert(0, os.path.join(current_running_file_par, 'Step1_ExtractData'))
 # In[ ]:
 
 
-'''
-print('current_running_file_dir:', current_running_file_dir)
-print('current_running_file_par:', current_running_file_par)
-print('PATH: ', sys.path)
-'''
+#print('current_running_file_dir:', current_running_file_dir)
+#print('current_running_file_par:', current_running_file_par)
+#print('PATH: ', sys.path)
 
 
 # In[ ]:
@@ -228,7 +226,27 @@ df_tt_prep = load_extracted_data (extracted_data_loc, extracted_data_file_name)
 # In[ ]:
 
 
-#df_tt_extracted
+#df_tt_prep.keys()
+
+
+# In[ ]:
+
+
+#df_tt_prep['PRECIP[-8hr]']
+
+
+# ## Reduce The Size of Extracted Train/Test Data
+
+# In[ ]:
+
+
+df_tt_prep = reduce_data_size (df_tt_prep)
+
+
+# In[ ]:
+
+
+#df_tt_prep.dtypes
 
 
 # # Get Column Names in the Train and Test Data

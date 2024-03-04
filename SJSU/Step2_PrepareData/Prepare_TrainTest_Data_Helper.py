@@ -45,6 +45,26 @@ def load_extracted_data (extracted_data_loc, extracted_data_file_name):
 
 # []
 '''
+Reduce the size of extracted train/test data
+'''
+def reduce_data_size (df):
+    print ('Reducing data size (float64 to float16, int64 to int32)')
+    for key in df.keys():
+        data_type = df[key].dtypes
+        #print('key: {}, data_type: {}'.format(key, data_type))
+        if (data_type == 'int64'):
+            df = df.astype({key: 'int32'})
+            #print('... Changing data type to int32')
+
+        if (data_type == 'float64'):
+            df = df.astype({key: 'float16'})
+            #print('... Changing data type to float16')
+            
+    return df
+
+
+# []
+'''
 Get keys from the extracted data 
 '''
 def get_keys_from_extracted_data (df_extracted, train_test = True):
