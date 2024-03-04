@@ -73,8 +73,8 @@ global_initial_memory = process.memory_info().rss
 # In[ ]:
 
 
-json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_039.json'
-json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_004.json'
+json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_000.json'
+json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_001.json'
 
 
 # ### Input file name when using python script on command line
@@ -262,8 +262,8 @@ keys_labels = define_labels(FM_label_type, keys_FM, keys_FM_Binary, keys_FM_MC)
 # In[ ]:
 
 
-features_to_use = json_content_prep_data['features']['features_to_use']
-keys_features  = define_features(keys_UMag10, keys_T2, keys_RH, keys_PREC, keys_SW,                    features_to_use)
+qois_to_use = json_content_prep_data['features']['qois_to_use']
+keys_features  = define_features(keys_UMag10, keys_T2, keys_RH, keys_PREC, keys_SW,                    qois_to_use)
 
 
 # In[ ]:
@@ -413,6 +413,12 @@ print('Read prepared data from "{}" at "{}"'.format(prepared_data_file_name, pre
 
 
 #prepared_data_read['features'].head(5)
+
+
+# In[ ]:
+
+
+#prepared_data_read['features']['UMag10[-8hr]']
 
 
 # # Global End Time and Memory
