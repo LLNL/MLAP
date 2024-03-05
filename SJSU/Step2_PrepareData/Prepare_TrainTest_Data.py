@@ -220,7 +220,7 @@ random_state = init_random_generator(seed)
 # In[ ]:
 
 
-df_tt_prep = load_extracted_data (extracted_data_loc, extracted_data_file_name)
+df_tt_prep = load_pickled_data (extracted_data_loc, extracted_data_file_name)
 
 
 # In[ ]:
@@ -404,8 +404,14 @@ print('Wrote prepared data in "{}" at "{}"'.format(prepared_data_file_name, prep
 # In[ ]:
 
 
-with open(os.path.join(prepared_data_loc, prepared_data_file_name), 'rb') as file_handle:
-    prepared_data_read = pickle.load(file_handle)
+prepared_data_read = load_pickled_data (prepared_data_loc, prepared_data_file_name)
+
+
+# In[ ]:
+
+
+#with open(os.path.join(prepared_data_loc, prepared_data_file_name), 'rb') as file_handle:
+ #   prepared_data_read = pickle.load(file_handle)
 print('Read prepared data from "{}" at "{}"'.format(prepared_data_file_name, prepared_data_loc))
 
 
