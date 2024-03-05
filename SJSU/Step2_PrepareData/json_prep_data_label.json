@@ -15,5 +15,8 @@
 			     },
 	"qoi_to_plot":	     {
 				"FM_hr": 10
+			     },
+        "prune_data":	     {
+				"FM_10hr": [0.00001, 0.3]
 			     }
 }

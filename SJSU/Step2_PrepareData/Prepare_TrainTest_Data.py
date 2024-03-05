@@ -169,6 +169,12 @@ if (FM_label_type == 'MultiClass'):
     FM_MC_levels = FM_labels['FM_MC_levels']
 
 
+# In[ ]:
+
+
+prune_data = json_content_prep_data['prune_data']
+
+
 # ## Paths and File Names
 
 # #### Global
@@ -233,6 +239,20 @@ df_tt_prep = load_pickled_data (extracted_data_loc, extracted_data_file_name)
 
 
 #df_tt_prep['PRECIP[-8hr]']
+
+
+# In[ ]:
+
+
+#len(df_tt_prep)
+
+
+# ## Prune Extracted Data
+
+# In[ ]:
+
+
+df_tt_prep = prune_desired_data (df_tt_prep, prune_data)
 
 
 # ## Reduce The Size of Extracted Train/Test Data

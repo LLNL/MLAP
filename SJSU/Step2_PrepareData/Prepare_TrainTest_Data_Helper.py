@@ -43,6 +43,19 @@ def load_pickled_data (data_loc, data_file_name):
     print('=========================================================================')
     return data_loaded
 
+
+'''
+Prune the desired data
+'''
+def prune_desired_data (df, prune_data):
+    for qoi in prune_data:
+        #print(prune_data[qoi])
+        df = df[(df[qoi] >= prune_data[qoi][0]) & (df[qoi] <= prune_data[qoi][1])]
+        #print(len(df))
+
+    return df
+
+
 # []
 '''
 Reduce the size of extracted train/test data
