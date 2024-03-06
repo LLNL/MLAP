@@ -43,6 +43,20 @@ from sklearn.metrics import precision_recall_curve, classification_report
 
 # []
 '''
+Define features to use
+'''
+def define_features_to_use (features_in_prep_data, qois_for_training):
+    features_to_use = []
+    for qoi in qois_for_training:
+        keys_qoi = [key for key in features_in_prep_data if qoi in key]
+        #print(keys_qoi)
+        features_to_use += keys_qoi
+    
+    return features_to_use
+    
+
+# []
+'''
 Define scaler for data (train/test as well as analysis [SJSU, HRRR, RRM])
 '''
 def define_scaler (scaler_type):
@@ -165,7 +179,7 @@ def plot_scatter_regression (labels_gt, labels_pred, \
                              model_name, \
                              plot_loc, fig_name, \
                              max_data_size_scatter, fig_size_x, fig_size_y, \
-                             font_size, x_lim):
+                             font_size, x_lim, label_log):
     
     labels_gt_range = [labels_gt.min(), labels_gt.max()]
     data_indices = range(len(labels_gt))
@@ -180,8 +194,12 @@ def plot_scatter_regression (labels_gt, labels_pred, \
 
     plt.figure(figsize = (fig_size_x, fig_size_y))
 
-    plt.scatter(labels_gt[data_ind_subset], labels_pred[data_ind_subset])
-    plt.plot(labels_gt_range, labels_gt_range, '--r')
+    if label_log:
+        plt.scatter(np.exp(labels_gt[data_ind_subset]), np.exp(labels_pred[data_ind_subset]))
+        plt.plot(np.exp(labels_gt_range), np.exp(labels_gt_range), '--r')
+    else:
+        plt.scatter(labels_gt[data_ind_subset], labels_pred[data_ind_subset])
+        plt.plot(labels_gt_range, labels_gt_range, '--r')
     plt.xlabel('Ground Truth', fontsize = font_size)
     plt.ylabel('Prediction', fontsize = font_size)
     plt.title('Model: {}, R2: {:.3f}, RMSE: {:.3f}, MAE: {:.4f}'.format(model_name, \

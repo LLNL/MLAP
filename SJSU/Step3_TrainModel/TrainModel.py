@@ -210,6 +210,21 @@ model_name  = json_content_train_model['models']['model_name'] # ['RF', SVM', 'M
 model_params = json_content_train_model['models']['params']
 
 
+# ### Features/Labels Options
+
+# In[ ]:
+
+
+qois_for_training = json_content_train_model['features_labels']['qois_for_training']
+label_log = json_content_train_model['features_labels']['label_log']
+
+
+# In[ ]:
+
+
+#qois_for_training
+
+
 # ### Evaluation
 
 # In[ ]:
@@ -304,7 +319,14 @@ if train_from_scratch:
 
 
 if train_from_scratch:
-    features_to_use = prepared_data['features'].keys()
+    features_in_prep_data = prepared_data['features'].keys()
+    features_to_use = define_features_to_use (features_in_prep_data, qois_for_training)
+
+
+# In[ ]:
+
+
+#features_in_prep_data
 
 
 # In[ ]:
@@ -359,6 +381,12 @@ if train_from_scratch:
 #X_tt, y_tt
 
 
+# In[ ]:
+
+
+#X_tt.dtypes, y_tt.dtypes
+
+
 # ## Scale Features
 
 # In[ ]:
@@ -377,6 +405,21 @@ if train_from_scratch:
 #X_tt_scaled
 
 
+# ## Modify Labels
+
+# In[ ]:
+
+
+if (FM_label_type == 'Regression' and label_log):
+    y_tt = np.log(y_tt)
+
+
+# In[ ]:
+
+
+#plt.hist(y_tt)
+
+
 # #### Clarify if train/test split should be performed after or before scaling
 
 # ## Train /Test Split
@@ -393,6 +436,12 @@ if train_from_scratch:
 
 
 #type(labels_test)
+
+
+# In[ ]:
+
+
+#plt.hist(labels_train), plt.hist(labels_test)
 
 
 # # ML Model
@@ -516,7 +565,7 @@ if (FM_label_type == 'Binary'):
 
 
 if (FM_label_type == 'Regression'):
-    plot_scatter_regression (labels_train, labels_pred_train,                              r2_score_train, rmse_train, mae_train,                              model_name,                             trained_model_loc, train_data_scatter_file_name,                             max_data_size_scatter, fig_size_x, fig_size_y,                             font_size, x_lim)
+    plot_scatter_regression (labels_train, labels_pred_train,                              r2_score_train, rmse_train, mae_train,                              model_name,                             trained_model_loc, train_data_scatter_file_name,                             max_data_size_scatter, fig_size_x, fig_size_y,                             font_size, x_lim, label_log)
 else:
     plot_confusion_matrix (conf_mat_train, accuracy_train, model_name,                            trained_model_loc, train_data_cm_file_name,                            fig_size_x, fig_size_y,                            font_size,                           normalize_cm, class_labels)
 
@@ -575,7 +624,7 @@ if (FM_label_type == 'Binary'):
 
 
 if (FM_label_type == 'Regression'):
-    plot_scatter_regression (labels_test, labels_pred_test,                              r2_score_test, rmse_test, mae_test,                              model_name,                             trained_model_loc, test_data_scatter_file_name,                             max_data_size_scatter, fig_size_x, fig_size_y,                             font_size, x_lim)
+    plot_scatter_regression (labels_test, labels_pred_test,                              r2_score_test, rmse_test, mae_test,                              model_name,                             trained_model_loc, test_data_scatter_file_name,                             max_data_size_scatter, fig_size_x, fig_size_y,                             font_size, x_lim, label_log)
 else:
     plot_confusion_matrix (conf_mat_test, accuracy_test, model_name,                            trained_model_loc, test_data_cm_file_name,                            fig_size_x, fig_size_y,                            font_size,                           normalize_cm, class_labels)
 
