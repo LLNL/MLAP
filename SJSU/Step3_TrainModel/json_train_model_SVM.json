@@ -25,12 +25,16 @@
 						"max_iter": -1
 					  }
 			     },
-	"evaluation":        {
-                                "max_data_size_scatter": 800,
-                                "fig_size_x": 15,
-                                "fig_size_y": 15,
-                                "font_size": 20,
-                                "x_lim": [0, 0.55],
+	"features_labels":   {
+				"qois_for_training": ["UMag10", "T2", "RH", "PREC", "SW"],
+				"label_log": false
+			     },
+	"evaluation":	     {
+				"max_data_size_scatter": 800,
+				"fig_size_x": 15,
+				"fig_size_y": 15,
+				"font_size": 20,
+				"x_lim": [0, 0.55],
                                 "normalize_cm": true
-                             }
+			     }
 }

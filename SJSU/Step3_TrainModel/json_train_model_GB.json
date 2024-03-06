@@ -14,6 +14,10 @@
 				"model_name": "GB",
 				"params": {}
 			     },
+	"features_labels":   {
+				"qois_for_training": ["UMag10", "T2", "RH", "PREC", "SW"],
+				"label_log": false
+			     },
 	"evaluation":	     {
 				"max_data_size_scatter": 800,
 				"fig_size_x": 15,
