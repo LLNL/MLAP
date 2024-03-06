@@ -187,6 +187,21 @@ def drop_wind_components (df_extracted, keys_U10, keys_V10):
 
 # []
 '''
+Compute VPD
+'''
+def compute_VPD (df_tt_prep, keys_T2, keys_RH):
+    print ('Computing Vapor Pressure Deficit (VPD) from T2 and RH')
+    keys_VPD = []
+    for T2_key, RH_key in zip(keys_T2, keys_RH):
+        assert T2_key[2:] == RH_key[2:]
+        VPD_key = 'VPD{}'.format(T2_key[2:])
+        keys_VPD.append(VPD_key)
+        df_tt_prep[VPD_key] = df_tt_prep[T2_key]*0.0
+    
+    return df_tt_prep, keys_VPD
+
+# []
+'''
 Compute binary FM labels
 '''
 def compute_binary_FM_labels(df, keys_FM, keys_FM_Binary, FM_binary_threshold):

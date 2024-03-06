@@ -172,6 +172,13 @@ if (FM_label_type == 'MultiClass'):
 # In[ ]:
 
 
+qois_to_use = json_content_prep_data['features']['qois_to_use']
+qois_derived = json_content_prep_data['features']['qois_derived']
+
+
+# In[ ]:
+
+
 prune_data = json_content_prep_data['prune_data']
 
 
@@ -300,14 +307,13 @@ keys_labels = define_labels(FM_label_type, keys_FM, keys_FM_Binary, keys_FM_MC)
 # In[ ]:
 
 
-qois_to_use = json_content_prep_data['features']['qois_to_use']
-keys_features  = define_features(keys_UMag10, keys_T2, keys_RH, keys_PREC, keys_SW,                    qois_to_use)
+#keys_FM_MC
 
 
 # In[ ]:
 
 
-#keys_features
+keys_features  = define_features(keys_UMag10, keys_T2, keys_RH, keys_PREC, keys_SW,                    qois_to_use)
 
 
 # 
@@ -348,6 +354,28 @@ if ('UMag10' not in features_to_read):
 
 
 #df_tt_prep[keys_UMag10]
+
+
+# ## Compute VPD
+
+# In[ ]:
+
+
+if 'VPD' in qois_derived:
+    df_tt_prep, keys_VPD = compute_VPD (df_tt_prep, keys_T2, keys_RH)
+    keys_features += keys_VPD
+
+
+# In[ ]:
+
+
+#keys_VPD
+
+
+# In[ ]:
+
+
+#df_tt_prep[keys_VPD + keys_T2 + keys_RH]
 
 
 # ## Compute Binary FM Labels
@@ -438,7 +466,7 @@ print('Read prepared data from "{}" at "{}"'.format(prepared_data_file_name, pre
 # In[ ]:
 
 
-#prepared_data_read['identity'].head(5)
+#prepared_data_read['identity'].
 
 
 # In[ ]:
@@ -456,7 +484,7 @@ print('Read prepared data from "{}" at "{}"'.format(prepared_data_file_name, pre
 # In[ ]:
 
 
-#prepared_data_read['features'].head(5)
+#prepared_data_read['features'].dtypes
 
 
 # In[ ]:
