@@ -19,7 +19,7 @@ import os.path as path
 # In[ ]:
 
 
-action = "Train" # "Extract", "Prep", "Train", "Analyze"
+action = "Prep" # "Extract", "Prep", "Train", "Analyze"
 
 
 # In[ ]:
@@ -34,7 +34,7 @@ submit_job    = False
 # In[ ]:
 
 
-exempt_flag = '--qos=exempt'
+exempt_flag = ''#'--qos=exempt'
 
 
 # ## Simulation Directory
@@ -78,9 +78,9 @@ json_train_base = os.path.join(sim_dir, 'InputJson/Train/json_train_model')
 # In[ ]:
 
 
-#json_extract_counts = [39, 40]
+#json_extract_counts = [39]
 json_extract_counts = range(39, 68)
-json_prep_counts = [1] #[1, 2, 3]
+json_prep_counts = [5] #[1, 2, 3]
 #json_prep_counts = [1, 2, 4] #[1, 2, 3]
 json_train_counts = [3]
 
