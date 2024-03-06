@@ -65,8 +65,8 @@ global_initial_memory = process.memory_info().rss
 # In[ ]:
 
 
-json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_015.json'
-json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_001.json'
+json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_000.json'
+json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_005.json'
 json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Train/json_train_model_003.json'
 
 
@@ -448,35 +448,6 @@ if train_from_scratch:
     print ("\nTraining Time: {} s".format(training_time))
 
 
-# ## Save the Model
-
-# In[ ]:
-
-
-if train_from_scratch:
-    trained_model_file = os.path.join(trained_model_loc, trained_model_file_name)
-    pickle.dump(model, open(trained_model_file, 'wb'))
-    print ('\nSaved the ML model file at: {}\n'.format(trained_model_file))
-
-
-# ## Save Train/Test Data
-
-# In[ ]:
-
-
-if train_from_scratch and save_train_data:
-    pickle.dump(features_train, open(os.path.join(                        trained_model_loc, train_data_features_file_name), 'wb'))
-    pickle.dump(labels_train, open(os.path.join(                        trained_model_loc, train_data_labels_file_name), 'wb'))
-
-
-# In[ ]:
-
-
-if train_from_scratch and save_test_data:
-    pickle.dump(features_test, open(os.path.join(                        trained_model_loc, test_data_features_file_name), 'wb'))
-    pickle.dump(labels_test, open(os.path.join(                        trained_model_loc, test_data_labels_file_name), 'wb'))
-
-
 # # Prediction with Trained Model
 
 # ### Load the ML Model
@@ -659,6 +630,35 @@ model_eval_df.to_pickle(os.path.join(trained_model_loc, model_eval_file_name))
 
 #df_from_pickle = pd.read_pickle(os.path.join(trained_model_loc, model_eval_file+'.pkl'))
 #df_from_pickle
+
+
+# ## Save Train/Test Data
+
+# In[ ]:
+
+
+if train_from_scratch and save_train_data:
+    pickle.dump(features_train, open(os.path.join(                        trained_model_loc, train_data_features_file_name), 'wb'))
+    pickle.dump(labels_train, open(os.path.join(                        trained_model_loc, train_data_labels_file_name), 'wb'))
+
+
+# In[ ]:
+
+
+if train_from_scratch and save_test_data:
+    pickle.dump(features_test, open(os.path.join(                        trained_model_loc, test_data_features_file_name), 'wb'))
+    pickle.dump(labels_test, open(os.path.join(                        trained_model_loc, test_data_labels_file_name), 'wb'))
+
+
+# ## Save the Model
+
+# In[ ]:
+
+
+if train_from_scratch:
+    trained_model_file = os.path.join(trained_model_loc, trained_model_file_name)
+    pickle.dump(model, open(trained_model_file, 'wb'))
+    print ('\nSaved the ML model file at: {}\n'.format(trained_model_file))
 
 
 # # Global End Time and Memory
