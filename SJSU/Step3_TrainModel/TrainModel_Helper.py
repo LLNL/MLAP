@@ -124,10 +124,12 @@ def predict(model, features_gt, data_identifier):
     return np.reshape(labels_pred, (len(labels_pred), 1))
 
 
+# []
 '''
 Compute error and percent error
 '''
 def compute_errors (labels_gt, labels_pred):
+    print ('Computing errors with ground truth and predicted labels')
     labels_error = labels_pred - labels_gt
     labels_error_abs = abs (labels_error)
     labels_pc_err = (labels_pred/labels_gt - 1.0)*100
@@ -136,17 +138,30 @@ def compute_errors (labels_gt, labels_pred):
     return labels_error, labels_error_abs, labels_pc_err, labels_pc_err_abs
 
 
+# []
 '''
 Compute 90th and 95th percentile of error and percent error
+Get the best 90 and 95 percent of ground truth and error
 '''
-def compute_p90_p95_errors (labels_error_abs, labels_pc_err_abs):
-    labels_error_abs_p90 = np.percentile(labels_error_abs, 90, axis=0)
-    labels_error_abs_p95 = np.percentile(labels_error_abs, 95, axis=0)
-    labels_pc_err_abs_p90 = np.percentile(labels_pc_err_abs, 90, axis=0)
-    labels_pc_err_abs_p95 = np.percentile(labels_pc_err_abs, 95, axis=0)
+def compute_best_90_95_labels (labels_gt, labels_pred, labels_error):
+    print ('Computing 90-th and 95-th percentiles of error')
+    labels_error_p90 = np.percentile(labels_error, 90, axis=0)[0]
+    labels_error_p95 = np.percentile(labels_error, 95, axis=0)[0]
     
-    return labels_error_abs_p90, labels_error_abs_p95, \
-            labels_pc_err_abs_p90, labels_pc_err_abs_p95
+    labels_gt_best90 = labels_gt[np.where(labels_error < labels_error_p90)]
+    labels_pred_best90 = labels_pred[np.where(labels_error < labels_error_p90)]
+    labels_gt_best95 = labels_gt[np.where(labels_error < labels_error_p95)]
+    labels_pred_best95 = labels_pred[np.where(labels_error < labels_error_p95)]
+    
+    print('P90: {}, P95: {}'.format(labels_error_p90, labels_error_p95))
+    print('Data SIZE:- Orig: {}, Best 90%: {}, Best 95%: {}'.format(len(labels_gt),\
+                                                                    len(labels_gt_best90),\
+                                                                    len(labels_gt_best95)))
+
+    return labels_error_p90, labels_error_p95, \
+           labels_gt_best90, labels_pred_best90, \
+           labels_gt_best95, labels_pred_best95
+
 
 
 # []

@@ -541,7 +541,7 @@ labels_error, labels_error_abs, labels_pc_err, labels_pc_err_abs =              
 # In[ ]:
 
 
-labels_error_abs_p90, labels_error_abs_p95, labels_pc_err_abs_p90, labels_pc_err_abs_p95 =                             compute_p90_p95_errors (labels_error_abs, labels_pc_err_abs)
+labels_error_p90, labels_error_p95, labels_gt_best90, labels_pred_best90, labels_gt_best95, labels_pred_best95 =         compute_best_90_95_labels (labels_train, labels_pred_train, labels_error_abs)
 
 
 # In[ ]:
@@ -600,19 +600,13 @@ if not train_from_scratch:
 # In[ ]:
 
 
-#plt.hist(labels_error_abs, bins = 30, density=False, cumulative=False)
+#plt.hist(labels_error_abs, bins = 50, density=False, cumulative=False)
 
 
 # In[ ]:
 
 
 #plt.hist(labels_error_abs, bins = 50, density=True, cumulative=True)
-
-
-# In[ ]:
-
-
-#np.percentile(labels_error_abs, 90, axis=0)
 
 
 # In[ ]:
@@ -630,7 +624,7 @@ labels_error, labels_error_abs, labels_pc_err, labels_pc_err_abs =              
 # In[ ]:
 
 
-labels_error_abs_p90, labels_error_abs_p95, labels_pc_err_abs_p90, labels_pc_err_abs_p95 =                             compute_p90_p95_errors (labels_error_abs, labels_pc_err_abs)
+labels_error_p90, labels_error_p95, labels_gt_best90, labels_pred_best90, labels_gt_best95, labels_pred_best95 =         compute_best_90_95_labels (labels_test, labels_pred_test, labels_error_abs)
 
 
 # In[ ]:
