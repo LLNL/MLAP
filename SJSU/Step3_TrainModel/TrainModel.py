@@ -535,13 +535,15 @@ labels_pred_train = predict(model, features_train, "Train Data")
 # In[ ]:
 
 
-labels_error, labels_error_abs, labels_pc_err, labels_pc_err_abs =                                         compute_errors (labels_train, labels_pred_train)
+if (FM_label_type == 'Regression'):
+    labels_error, labels_error_abs, labels_pc_err, labels_pc_err_abs =                                             compute_errors (labels_train, labels_pred_train)
 
 
 # In[ ]:
 
 
-labels_error_p90, labels_error_p95, labels_gt_best90, labels_pred_best90, labels_gt_best95, labels_pred_best95 =         compute_best_90_95_labels (labels_train, labels_pred_train, labels_error_abs)
+if (FM_label_type == 'Regression'):
+    labels_error_p90, labels_error_p95,     labels_gt_best90, labels_pred_best90,     labels_gt_best95, labels_pred_best95 =             compute_best_90_95_labels (labels_train, labels_pred_train, labels_error_abs)
 
 
 # In[ ]:
@@ -618,13 +620,15 @@ labels_pred_test = predict(model, features_test, "Test Data")
 # In[ ]:
 
 
-labels_error, labels_error_abs, labels_pc_err, labels_pc_err_abs =                                         compute_errors (labels_test, labels_pred_test)
+if (FM_label_type == 'Regression'):
+    labels_error, labels_error_abs, labels_pc_err, labels_pc_err_abs =                                             compute_errors (labels_test, labels_pred_test)
 
 
 # In[ ]:
 
 
-labels_error_p90, labels_error_p95, labels_gt_best90, labels_pred_best90, labels_gt_best95, labels_pred_best95 =         compute_best_90_95_labels (labels_test, labels_pred_test, labels_error_abs)
+if (FM_label_type == 'Regression'):
+    labels_error_p90, labels_error_p95,     labels_gt_best90, labels_pred_best90,     labels_gt_best95, labels_pred_best95 =             compute_best_90_95_labels (labels_test, labels_pred_test, labels_error_abs)
 
 
 # In[ ]:
