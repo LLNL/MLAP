@@ -397,6 +397,7 @@ if FM_label_type == 'Binary':
 
 
 #len(df_tt_prep.keys())
+#df_tt_prep[keys_FM + keys_FM_Binary].dtypes
 
 
 # In[ ]:
@@ -417,6 +418,7 @@ if FM_label_type == 'MultiClass':
 # In[ ]:
 
 
+#df_tt_prep[keys_FM + keys_FM_MC].dtypes
 #df_tt_prep[keys_FM + keys_FM_MC]
 
 

@@ -211,6 +211,7 @@ def compute_binary_FM_labels(df, keys_FM, keys_FM_Binary, FM_binary_threshold):
     for FM_key, FM_key_binary in zip(keys_FM, keys_FM_Binary):
         # If FM > threshold_FM_fire_risk, then no risk, i.e., 0. Otherwise fire risk or 1
         df[FM_key_binary] = np.where(df[FM_key] > FM_binary_threshold , 0, 1)
+        df = df.astype({FM_key_binary: 'int16'})
     
     return df
 
@@ -230,6 +231,7 @@ def compute_MC_FM_labels(df, keys_FM, keys_FM_MC, FM_levels):
             #labels.append('FM%02d'%(num_levels))
 
         df[FM_key_MC] = np.select(conditions, labels, default=labels[0])
+        df = df.astype({FM_key_MC: 'int16'})
 
     return df
 
