@@ -124,6 +124,16 @@ def predict(model, features_gt, data_identifier):
     return np.reshape(labels_pred, (len(labels_pred), 1))
 
 
+'''
+Compute error and percent error
+'''
+def compute_errors (labels_gt, labels_pred):
+    labels_error = labels_pred - labels_gt
+    labels_error_abs = abs (labels_error)
+    labels_pc_err = (labels_pred/labels_gt - 1.0)*100
+    labels_pc_err_abs = abs (labels_pc_err)
+    
+    return labels_error, labels_error_abs, labels_pc_err, labels_pc_err_abs
 
 
 # []

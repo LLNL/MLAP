@@ -66,8 +66,8 @@ global_initial_memory = process.memory_info().rss
 
 
 json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_000.json'
-json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_005.json'
-json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Train/json_train_model_003.json'
+json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_006.json'
+json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Train/json_train_model_009.json'
 
 
 # ### Input file name when using python script on command line
@@ -535,6 +535,12 @@ labels_pred_train = predict(model, features_train, "Train Data")
 # In[ ]:
 
 
+labels_error, labels_error_abs, labels_pc_err, labels_pc_err_abs =                                         compute_errors (labels_train, labels_pred_train)
+
+
+# In[ ]:
+
+
 if (FM_label_type == 'Regression'):
     r2_score_train, ev_score_train, mse_train, rmse_train,     max_err_train, mae_train, medae_train = get_metrics_regression (                                            labels_train, labels_pred_train, "Train Data")
 
@@ -588,7 +594,31 @@ if not train_from_scratch:
 # In[ ]:
 
 
+#plt.hist(labels_error_abs, bins = 30, density=False, cumulative=False)
+
+
+# In[ ]:
+
+
+#plt.hist(labels_error_abs, bins = 50, density=True, cumulative=True)
+
+
+# In[ ]:
+
+
+#np.percentile(labels_error_abs, 90, axis=0)
+
+
+# In[ ]:
+
+
 labels_pred_test = predict(model, features_test, "Test Data")
+
+
+# In[ ]:
+
+
+labels_error, labels_error_abs, labels_pc_err, labels_pc_err_abs =                                         compute_errors (labels_test, labels_pred_test)
 
 
 # In[ ]:
