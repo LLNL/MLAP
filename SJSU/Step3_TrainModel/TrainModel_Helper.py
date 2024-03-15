@@ -136,6 +136,19 @@ def compute_errors (labels_gt, labels_pred):
     return labels_error, labels_error_abs, labels_pc_err, labels_pc_err_abs
 
 
+'''
+Compute 90th and 95th percentile of error and percent error
+'''
+def compute_p90_p95_errors (labels_error_abs, labels_pc_err_abs):
+    labels_error_abs_p90 = np.percentile(labels_error_abs, 90, axis=0)
+    labels_error_abs_p95 = np.percentile(labels_error_abs, 95, axis=0)
+    labels_pc_err_abs_p90 = np.percentile(labels_pc_err_abs, 90, axis=0)
+    labels_pc_err_abs_p95 = np.percentile(labels_pc_err_abs, 95, axis=0)
+    
+    return labels_error_abs_p90, labels_error_abs_p95, \
+            labels_pc_err_abs_p90, labels_pc_err_abs_p95
+
+
 # []
 '''
 Get Metrics

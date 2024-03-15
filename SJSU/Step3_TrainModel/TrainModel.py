@@ -541,6 +541,12 @@ labels_error, labels_error_abs, labels_pc_err, labels_pc_err_abs =              
 # In[ ]:
 
 
+labels_error_abs_p90, labels_error_abs_p95, labels_pc_err_abs_p90, labels_pc_err_abs_p95 =                             compute_p90_p95_errors (labels_error_abs, labels_pc_err_abs)
+
+
+# In[ ]:
+
+
 if (FM_label_type == 'Regression'):
     r2_score_train, ev_score_train, mse_train, rmse_train,     max_err_train, mae_train, medae_train = get_metrics_regression (                                            labels_train, labels_pred_train, "Train Data")
 
@@ -619,6 +625,12 @@ labels_pred_test = predict(model, features_test, "Test Data")
 
 
 labels_error, labels_error_abs, labels_pc_err, labels_pc_err_abs =                                         compute_errors (labels_test, labels_pred_test)
+
+
+# In[ ]:
+
+
+labels_error_abs_p90, labels_error_abs_p95, labels_pc_err_abs_p90, labels_pc_err_abs_p95 =                             compute_p90_p95_errors (labels_error_abs, labels_pc_err_abs)
 
 
 # In[ ]:
