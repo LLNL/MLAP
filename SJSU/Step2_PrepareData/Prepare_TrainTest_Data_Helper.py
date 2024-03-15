@@ -145,10 +145,12 @@ def define_labels(FM_label_type, keys_FM, keys_FM_Binary, keys_FM_MC):
 '''
 Define groups of Keys (Features)
 '''
-def define_features(keys_UMag10, keys_T2, keys_RH, keys_PREC, keys_SW, \
+def define_features(keys_HGT, keys_UMag10, keys_T2, keys_RH, keys_PREC, keys_SW, \
                    qois_to_use):
 
     keys_features = []
+    if 'HGT' in qois_to_use:
+        keys_features += keys_HGT
     if 'UMag10' in qois_to_use:
         keys_features += keys_UMag10 
     if 'T2' in qois_to_use:
