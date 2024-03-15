@@ -124,6 +124,8 @@ def predict(model, features_gt, data_identifier):
     return np.reshape(labels_pred, (len(labels_pred), 1))
 
 
+
+
 # []
 '''
 Get Metrics
@@ -344,8 +346,12 @@ def create_trained_models_metrics (json_prep_base, json_prep_counts, \
             model_name = json_content_train_model['models']['model_name'] # ['RF', SVM', 'MLP']
             #print('Model Count: {}, Model Name: {}'.format(model_count, model_name))
 
-            accuracy_train = []
-            accuracy_test = []
+            r2_score_train = []
+            r2_score_test = []
+            rmse_train = []
+            rmse_test = []
+            medae_train = []
+            medae_test = []
             
             data_nomenclature = []
             temporal_data_percent = []
@@ -391,8 +397,12 @@ def create_trained_models_metrics (json_prep_base, json_prep_counts, \
 
                 eval_metric = pd.read_csv(model_metric_file).to_dict(orient='records')[0]
                 #print('Eval Metrics: {}'.format(eval_metric))
-                accuracy_train.append(eval_metric['accuracy_train'])
-                accuracy_test.append(eval_metric['accuracy_test'])
+                r2_score_train.append(eval_metric['r2_score_train'])
+                r2_score_test.append(eval_metric['r2_score_test'])
+                rmse_train.append(eval_metric['rmse_train'])
+                rmse_test.append(eval_metric['rmse_test'])
+                medae_train.append(eval_metric['medae_train'])
+                medae_test.append(eval_metric['medae_test'])
                 #print('\n')
 
             #print('label_count: {}, FM_label_type: {}, Model Count: {}, Model Name: {}'.format(
@@ -402,8 +412,12 @@ def create_trained_models_metrics (json_prep_base, json_prep_counts, \
             #print('accuracy_test: {}'.format(accuracy_test))
 
             metric_for_model['data_nomenclature'] = data_nomenclature
-            metric_for_model['accuracy_train'] = accuracy_train
-            metric_for_model['accuracy_test'] = accuracy_test
+            metric_for_model['r2_score_train'] = r2_score_train
+            metric_for_model['r2_score_test'] = r2_score_test
+            metric_for_model['rmse_train'] = rmse_train
+            metric_for_model['rmse_test'] = rmse_test
+            metric_for_model['medae_train'] = medae_train
+            metric_for_model['medae_test'] = medae_test
             
             data_defn_dict['temporal_data [%]'] = temporal_data_percent
             data_defn_dict['spatial_data [%]'] = spatial_data_percent
@@ -432,25 +446,34 @@ def create_trained_models_metrics (json_prep_base, json_prep_counts, \
 '''
 Plot metrics from trained models
 '''
-def plot_trained_models_metrics (FM_label_type, json_extract_counts, trained_models_metrics):
+def plot_trained_models_metrics (FM_label_type, json_extract_counts, trained_models_metrics, metric_name):
     
     label = FM_label_type
     ds_name = json_extract_counts
     models = list(trained_models_metrics[FM_label_type].keys())
     
     if (label == 'Regression'):
-        ylabel_text = '$R^2$'
-    else:
+        if (metric_name == 'r2_score'):
+            ylabel_text = '$R^2$'
+        elif (metric_name == 'rmse'):
+            ylabel_text = 'RMSE'
+        elif (metric_name == 'medae'):
+            ylabel_text = 'Median Abs Error'
+        else:
+            raise ValueError('Invalid "metric_name": {}. \
+                            \nValid types are: "r2_score", "RMSE", and "medae"'.format(\
+                                                                                    metric_name))
+    else: # Classification
         ylabel_text = 'Accuracy'
     
-    train_accuracy_all_models = dict()
-    test_accuracy_all_models = dict()
+    train_metric_all_models = dict()
+    test_metric_all_models = dict()
     for model in models:
-        train_accuracy_all_models[model] = trained_models_metrics[label][model]['accuracy_train']
-        test_accuracy_all_models[model] = trained_models_metrics[label][model]['accuracy_test']
+        train_metric_all_models[model] = trained_models_metrics[label][model][metric_name+'_train']
+        test_metric_all_models[model] = trained_models_metrics[label][model][metric_name+'_test']
 
-        df_train = pd.DataFrame(train_accuracy_all_models, index = ds_name)
-        df_test  = pd.DataFrame(test_accuracy_all_models, index = ds_name)
+        df_train = pd.DataFrame(train_metric_all_models, index = ds_name)
+        df_test  = pd.DataFrame(test_metric_all_models, index = ds_name)
 
     ax1 = df_train.plot.bar(rot = 0)
     ax1.set_xlabel('Data Set Name')
