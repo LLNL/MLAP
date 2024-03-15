@@ -550,7 +550,7 @@ if (FM_label_type == 'Regression'):
 
 
 if (FM_label_type == 'Regression'):
-    r2_score_train, ev_score_train, mse_train, rmse_train,     max_err_train, mae_train, medae_train = get_metrics_regression (                                            labels_train, labels_pred_train, "Train Data")
+    r2_score_train, ev_score_train, mse_train, rmse_train,     max_err_train, mae_train, medae_train =     get_metrics_plot_scatter_regression (labels_train, labels_pred_train, "Train Data",                              model_name, trained_model_loc, train_data_scatter_file_name,                              max_data_size_scatter, fig_size_x, fig_size_y,                              font_size, x_lim, label_log)
 
 
 # In[ ]:
@@ -573,14 +573,12 @@ if (FM_label_type == 'Binary'):
           average_precision_train))
 
 
-# ### Plot Scatter or Confusion Matrix
+# ### Plot  Confusion Matrix
 
 # In[ ]:
 
 
-if (FM_label_type == 'Regression'):
-    plot_scatter_regression (labels_train, labels_pred_train,                              r2_score_train, rmse_train, mae_train,                              model_name,                             trained_model_loc, train_data_scatter_file_name,                             max_data_size_scatter, fig_size_x, fig_size_y,                             font_size, x_lim, label_log)
-else:
+if (FM_label_type != 'Regression'):
     plot_confusion_matrix (conf_mat_train, accuracy_train, model_name,                            trained_model_loc, train_data_cm_file_name,                            fig_size_x, fig_size_y,                            font_size,                           normalize_cm, class_labels)
 
 
@@ -635,7 +633,7 @@ if (FM_label_type == 'Regression'):
 
 
 if (FM_label_type == 'Regression'):
-    r2_score_test, ev_score_test, mse_test, rmse_test,     max_err_test, mae_test, medae_test = get_metrics_regression (                                            labels_test, labels_pred_test, "Test Data")
+    r2_score_test, ev_score_test, mse_test, rmse_test,     max_err_test, mae_test, medae_test =     get_metrics_plot_scatter_regression (labels_test, labels_pred_test, "Test Data",                              model_name, trained_model_loc, test_data_scatter_file_name,                              max_data_size_scatter, fig_size_x, fig_size_y,                              font_size, x_lim, label_log)
 
 
 # In[ ]:
@@ -658,14 +656,12 @@ if (FM_label_type == 'Binary'):
           average_precision_test))
 
 
-# ### Plot Scatter or Confusion Matrix
+# ### Plot Confusion Matrix
 
 # In[ ]:
 
 
-if (FM_label_type == 'Regression'):
-    plot_scatter_regression (labels_test, labels_pred_test,                              r2_score_test, rmse_test, mae_test,                              model_name,                             trained_model_loc, test_data_scatter_file_name,                             max_data_size_scatter, fig_size_x, fig_size_y,                             font_size, x_lim, label_log)
-else:
+if (FM_label_type != 'Regression'):
     plot_confusion_matrix (conf_mat_test, accuracy_test, model_name,                            trained_model_loc, test_data_cm_file_name,                            fig_size_x, fig_size_y,                            font_size,                           normalize_cm, class_labels)
 
 

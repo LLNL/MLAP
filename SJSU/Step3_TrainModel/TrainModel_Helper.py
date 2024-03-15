@@ -254,6 +254,26 @@ def plot_scatter_regression (labels_gt, labels_pred, \
 
 # []
 '''
+Get metrics and plot scatter for Rgeression
+'''
+def get_metrics_plot_scatter_regression (labels_gt, labels_pred, data_identifier, \
+                             model_name, plot_loc, fig_name, \
+                             max_data_size_scatter, fig_size_x, fig_size_y, \
+                             font_size, x_lim, label_log):
+    
+    r2_score, ev_score, mse, rmse, max_err, mae, medae = get_metrics_regression (\
+                                            labels_gt, labels_pred, data_identifier)
+    
+    plot_scatter_regression (labels_gt, labels_pred, r2_score, rmse, mae, model_name, \
+                            plot_loc, fig_name, \
+                            max_data_size_scatter, fig_size_x, fig_size_y, \
+                            font_size, x_lim, label_log)
+    
+    return r2_score, ev_score, mse, rmse, max_err, mae, medae
+
+    
+# []
+'''
 Plot Confusion Matrix for Classification
 '''
 def plot_confusion_matrix (conf_mat, accuracy, model_name, \
