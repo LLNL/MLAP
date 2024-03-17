@@ -153,7 +153,7 @@ def compute_best_90_95_labels (labels_gt, labels_pred, labels_error):
     labels_gt_best95 = labels_gt[np.where(labels_error < labels_error_p95)]
     labels_pred_best95 = labels_pred[np.where(labels_error < labels_error_p95)]
     
-    print('P90: {}, P95: {}'.format(labels_error_p90, labels_error_p95))
+    print('P90: {:.4f}, P95: {:.4f}'.format(labels_error_p90, labels_error_p95))
     print('Data SIZE:- Orig: {}, Best 90%: {}, Best 95%: {}'.format(len(labels_gt),\
                                                                     len(labels_gt_best90),\
                                                                     len(labels_gt_best95)))

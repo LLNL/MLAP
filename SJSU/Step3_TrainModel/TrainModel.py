@@ -278,17 +278,24 @@ os.system('mkdir -p %s'%trained_model_loc)
 
 trained_model_file_name = '{}_model.pkl'.format(trained_model_name)
 
-train_data_features_file_name  = '{}_features_train.pkl'.format(trained_model_name)
-train_data_labels_file_name    = '{}_labels_train.pkl'.format(trained_model_name)
-train_data_scatter_file_name   = '{}_scatter_train.png'.format(trained_model_name)
-train_data_cm_file_name        = '{}_cm_train.png'.format(trained_model_name)
+train_data_features_file_name   = '{}_features_train.pkl'.format(trained_model_name)
+train_data_labels_file_name     = '{}_labels_train.pkl'.format(trained_model_name)
 
-test_data_features_file_name   = '{}_features_test.pkl'.format(trained_model_name)
-test_data_labels_file_name     = '{}_labels_test.pkl'.format(trained_model_name)
-test_data_scatter_file_name    = '{}_scatter_test.png'.format(trained_model_name)
-test_data_cm_file_name         = '{}_cm_test.png'.format(trained_model_name)
+train_data_scatter_file_name    = '{}_scatter_train.png'.format(trained_model_name)
+train_data_cm_file_name         = '{}_cm_train.png'.format(trained_model_name)
 
-model_eval_file_name           = '{}_eval.pkl'.format(trained_model_name)
+test_data_features_file_name    = '{}_features_test.pkl'.format(trained_model_name)
+test_data_labels_file_name      = '{}_labels_test.pkl'.format(trained_model_name)
+
+test_data_scatter_file_name     = '{}_scatter_test.png'.format(trained_model_name)
+test_data_scatter_file_name_p90 = '{}_scatter_test_p90.png'.format(trained_model_name)
+test_data_scatter_file_name_p95 = '{}_scatter_test_p95.png'.format(trained_model_name)
+
+test_data_cm_file_name          = '{}_cm_test.png'.format(trained_model_name)
+test_data_cm_file_name_p90      = '{}_cm_test_p90.png'.format(trained_model_name)
+test_data_cm_file_name_p95      = '{}_cm_test_p95.png'.format(trained_model_name)
+
+model_eval_file_name            = '{}_eval.pkl'.format(trained_model_name)
 
 
 # # Generate seed for the random number generator
@@ -626,7 +633,7 @@ if (FM_label_type == 'Regression'):
 
 
 if (FM_label_type == 'Regression'):
-    labels_error_p90, labels_error_p95,     labels_gt_best90, labels_pred_best90,     labels_gt_best95, labels_pred_best95 =             compute_best_90_95_labels (labels_test, labels_pred_test, labels_error_abs)
+    labels_error_p90, labels_error_p95,     labels_gt_p90, labels_pred_p90,     labels_gt_p95, labels_pred_p95 =             compute_best_90_95_labels (labels_test, labels_pred_test, labels_error_abs)
 
 
 # In[ ]:
@@ -634,6 +641,20 @@ if (FM_label_type == 'Regression'):
 
 if (FM_label_type == 'Regression'):
     r2_score_test, ev_score_test, mse_test, rmse_test,     max_err_test, mae_test, medae_test =     get_metrics_plot_scatter_regression (labels_test, labels_pred_test, "Test Data",                              model_name, trained_model_loc, test_data_scatter_file_name,                              max_data_size_scatter, fig_size_x, fig_size_y,                              font_size, x_lim, label_log)
+
+
+# In[ ]:
+
+
+if (FM_label_type == 'Regression'):
+    r2_score_test_p90, ev_score_test_p90, mse_test_p90, rmse_test_p90,     max_err_test_p90, mae_test_p90, medae_test_p90 =     get_metrics_plot_scatter_regression (labels_gt_p90, labels_pred_p90, "Test Data -p90",                              model_name, trained_model_loc, test_data_scatter_file_name_p90,                              max_data_size_scatter, fig_size_x, fig_size_y,                              font_size, x_lim, label_log)
+
+
+# In[ ]:
+
+
+if (FM_label_type == 'Regression'):
+    r2_score_test_p95, ev_score_test_p95, mse_test_p95, rmse_test_p95,     max_err_test_p95, mae_test_p95, medae_test_p95 =     get_metrics_plot_scatter_regression (labels_gt_p95, labels_pred_p95, "Test Data -p95",                              model_name, trained_model_loc, test_data_scatter_file_name_p95,                              max_data_size_scatter, fig_size_x, fig_size_y,                              font_size, x_lim, label_log)
 
 
 # In[ ]:
