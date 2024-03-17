@@ -692,35 +692,7 @@ if (FM_label_type != 'Regression'):
 
 
 if (FM_label_type == 'Regression'):
-    data_for_csv = {'r2_score_train': [reg_metrics_train['r2_score']],
-                    'ev_score_train': [reg_metrics_train['ev_score']] ,
-                    'mse_train':      [reg_metrics_train['mse']],
-                    'rmse_train':     [reg_metrics_train['rmse']],
-                    'max_err_train':  [reg_metrics_train['max_err']],
-                    'mae_train':      [reg_metrics_train['mae']],
-                    'medae_train':    [reg_metrics_train['medae']],
-                    'r2_score_test': [reg_metrics_test['r2_score']],
-                    'ev_score_test': [reg_metrics_test['ev_score']] ,
-                    'mse_test':      [reg_metrics_test['mse']],
-                    'rmse_test':     [reg_metrics_test['rmse']],
-                    'max_err_test':  [reg_metrics_test['max_err']],
-                    'mae_test':      [reg_metrics_test['mae']],
-                    'medae_test':    [reg_metrics_test['medae']],
-                    'r2_score_test_p90': [reg_metrics_test_p90['r2_score']],
-                    'ev_score_test_p90': [reg_metrics_test_p90['ev_score']] ,
-                    'mse_test_p90':      [reg_metrics_test_p90['mse']],
-                    'rmse_test_p90':     [reg_metrics_test_p90['rmse']],
-                    'max_err_test_p90':  [reg_metrics_test_p90['max_err']],
-                    'mae_test_p90':      [reg_metrics_test_p90['mae']],
-                    'medae_test_p90':    [reg_metrics_test_p90['medae']],
-                    'r2_score_test_p95': [reg_metrics_test_p95['r2_score']],
-                    'ev_score_test_p95': [reg_metrics_test_p95['ev_score']] ,
-                    'mse_test_p95':      [reg_metrics_test_p95['mse']],
-                    'rmse_test_p95':     [reg_metrics_test_p95['rmse']],
-                    'max_err_test_p95':  [reg_metrics_test_p95['max_err']],
-                    'mae_test_p95':      [reg_metrics_test_p95['mae']],
-                    'medae_test_p95':    [reg_metrics_test_p95['medae']],
-                   }
+    data_for_csv = create_train_test_metrics (reg_metrics_train, reg_metrics_test,                                               reg_metrics_test_p90, reg_metrics_test_p95)
 
 
 # In[ ]:
