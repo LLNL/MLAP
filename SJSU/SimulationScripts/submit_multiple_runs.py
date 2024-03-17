@@ -79,10 +79,10 @@ json_train_base = os.path.join(sim_dir, 'InputJson/Train/json_train_model')
 
 
 #json_extract_counts = [39]
-json_extract_counts = range(39, 48)
-json_prep_counts = [5] #[1, 2, 3]
+json_extract_counts = range(39, 68)
+json_prep_counts = [6] #[1, 2, 3]
 #json_prep_counts = [1, 2, 4] #[1, 2, 3]
-json_train_counts = [3]
+json_train_counts = [9]
 
 
 # ## Generate and Execute `command`
