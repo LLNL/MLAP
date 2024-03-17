@@ -183,8 +183,16 @@ def get_metrics_regression (labels_gt, labels_pred, data_identifier):
             ... Max_Err : {:.4f}, MAE: {:.4f}, MedAE: {:.4f}'.format(data_identifier, \
                                                          r2_scr, ev_scr, mse, rmse, \
                                                          max_err, mae, medae))
+    reg_metrics = dict()
+    reg_metrics['r2_score'] = r2_scr
+    reg_metrics['ev_score'] = ev_scr
+    reg_metrics['mse'] = mse
+    reg_metrics['rmse'] = rmse
+    reg_metrics['max_err'] = max_err
+    reg_metrics['mae'] = mae
+    reg_metrics['medae'] = medae
 
-    return r2_scr, ev_scr, mse, rmse, max_err, mae, medae
+    return reg_metrics
 
 # []
 '''
@@ -215,7 +223,7 @@ def get_classification_report (FM_label_type, labels_gt, labels_pred, \
 Plot Scatter for Rgeression
 '''
 def plot_scatter_regression (labels_gt, labels_pred, \
-                             r2_scr, rmse, mae, \
+                             reg_metrics, \
                              model_name, \
                              plot_loc, fig_name, \
                              max_data_size_scatter, fig_size_x, fig_size_y, \
@@ -243,7 +251,9 @@ def plot_scatter_regression (labels_gt, labels_pred, \
     plt.xlabel('Ground Truth', fontsize = font_size)
     plt.ylabel('Prediction', fontsize = font_size)
     plt.title('Model: {}, R2: {:.3f}, RMSE: {:.3f}, MAE: {:.4f}'.format(model_name, \
-                                                          r2_scr, rmse, mae), fontsize = font_size)
+                                                          reg_metrics['r2_score'], \
+                                                          reg_metrics['rmse'], \
+                                                          reg_metrics['mae']), fontsize = font_size)
     plt.xlim(x_lim)
     plt.ylim(x_lim)
     plt.yticks(fontsize = font_size, rotation = 0)
@@ -261,15 +271,14 @@ def get_metrics_plot_scatter_regression (labels_gt, labels_pred, data_identifier
                              max_data_size_scatter, fig_size_x, fig_size_y, \
                              font_size, x_lim, label_log):
     
-    r2_score, ev_score, mse, rmse, max_err, mae, medae = get_metrics_regression (\
-                                            labels_gt, labels_pred, data_identifier)
+    reg_metrics = get_metrics_regression (labels_gt, labels_pred, data_identifier)
     
-    plot_scatter_regression (labels_gt, labels_pred, r2_score, rmse, mae, model_name, \
+    plot_scatter_regression (labels_gt, labels_pred, reg_metrics, model_name, \
                             plot_loc, fig_name, \
                             max_data_size_scatter, fig_size_x, fig_size_y, \
                             font_size, x_lim, label_log)
     
-    return r2_score, ev_score, mse, rmse, max_err, mae, medae
+    return reg_metrics
 
     
 # []

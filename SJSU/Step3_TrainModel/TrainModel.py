@@ -557,7 +557,7 @@ if (FM_label_type == 'Regression'):
 
 
 if (FM_label_type == 'Regression'):
-    r2_score_train, ev_score_train, mse_train, rmse_train,     max_err_train, mae_train, medae_train =     get_metrics_plot_scatter_regression (labels_train, labels_pred_train, "Train Data",                              model_name, trained_model_loc, train_data_scatter_file_name,                              max_data_size_scatter, fig_size_x, fig_size_y,                              font_size, x_lim, label_log)
+    reg_metrics_train =     get_metrics_plot_scatter_regression (labels_train, labels_pred_train, "Train Data",                              model_name, trained_model_loc, train_data_scatter_file_name,                              max_data_size_scatter, fig_size_x, fig_size_y,                              font_size, x_lim, label_log)
 
 
 # In[ ]:
@@ -640,21 +640,21 @@ if (FM_label_type == 'Regression'):
 
 
 if (FM_label_type == 'Regression'):
-    r2_score_test, ev_score_test, mse_test, rmse_test,     max_err_test, mae_test, medae_test =     get_metrics_plot_scatter_regression (labels_test, labels_pred_test, "Test Data",                              model_name, trained_model_loc, test_data_scatter_file_name,                              max_data_size_scatter, fig_size_x, fig_size_y,                              font_size, x_lim, label_log)
+    reg_metrics_test =     get_metrics_plot_scatter_regression (labels_test, labels_pred_test, "Test Data",                              model_name, trained_model_loc, test_data_scatter_file_name,                              max_data_size_scatter, fig_size_x, fig_size_y,                              font_size, x_lim, label_log)
 
 
 # In[ ]:
 
 
 if (FM_label_type == 'Regression'):
-    r2_score_test_p90, ev_score_test_p90, mse_test_p90, rmse_test_p90,     max_err_test_p90, mae_test_p90, medae_test_p90 =     get_metrics_plot_scatter_regression (labels_gt_p90, labels_pred_p90, "Test Data -p90",                              model_name, trained_model_loc, test_data_scatter_file_name_p90,                              max_data_size_scatter, fig_size_x, fig_size_y,                              font_size, x_lim, label_log)
+    reg_metrics_test_p90 =     get_metrics_plot_scatter_regression (labels_gt_p90, labels_pred_p90, "Test Data -p90",                              model_name, trained_model_loc, test_data_scatter_file_name_p90,                              max_data_size_scatter, fig_size_x, fig_size_y,                              font_size, x_lim, label_log)
 
 
 # In[ ]:
 
 
 if (FM_label_type == 'Regression'):
-    r2_score_test_p95, ev_score_test_p95, mse_test_p95, rmse_test_p95,     max_err_test_p95, mae_test_p95, medae_test_p95 =     get_metrics_plot_scatter_regression (labels_gt_p95, labels_pred_p95, "Test Data -p95",                              model_name, trained_model_loc, test_data_scatter_file_name_p95,                              max_data_size_scatter, fig_size_x, fig_size_y,                              font_size, x_lim, label_log)
+    reg_metrics_test_p95 =     get_metrics_plot_scatter_regression (labels_gt_p95, labels_pred_p95, "Test Data -p95",                              model_name, trained_model_loc, test_data_scatter_file_name_p95,                              max_data_size_scatter, fig_size_x, fig_size_y,                              font_size, x_lim, label_log)
 
 
 # In[ ]:
@@ -692,20 +692,34 @@ if (FM_label_type != 'Regression'):
 
 
 if (FM_label_type == 'Regression'):
-    data_for_csv = {'r2_score_train': [r2_score_train],
-                    'ev_score_train': [ev_score_train] ,
-                    'mse_train':      [mse_train],
-                    'rmse_train':     [rmse_train],
-                    'max_err_train':  [max_err_train],
-                    'mae_train':      [mae_train],
-                    'medae_train':    [medae_train],
-                    'r2_score_test':  [r2_score_test],
-                    'ev_score_test':  [ev_score_test],
-                    'mse_test':       [mse_test],
-                    'rmse_test':      [rmse_test],
-                    'max_err_test':   [max_err_test],
-                    'mae_test':       [mae_test],
-                    'medae_test':     [medae_test]
+    data_for_csv = {'r2_score_train': [reg_metrics_train['r2_score']],
+                    'ev_score_train': [reg_metrics_train['ev_score']] ,
+                    'mse_train':      [reg_metrics_train['mse']],
+                    'rmse_train':     [reg_metrics_train['rmse']],
+                    'max_err_train':  [reg_metrics_train['max_err']],
+                    'mae_train':      [reg_metrics_train['mae']],
+                    'medae_train':    [reg_metrics_train['medae']],
+                    'r2_score_test': [reg_metrics_test['r2_score']],
+                    'ev_score_test': [reg_metrics_test['ev_score']] ,
+                    'mse_test':      [reg_metrics_test['mse']],
+                    'rmse_test':     [reg_metrics_test['rmse']],
+                    'max_err_test':  [reg_metrics_test['max_err']],
+                    'mae_test':      [reg_metrics_test['mae']],
+                    'medae_test':    [reg_metrics_test['medae']],
+                    'r2_score_test_p90': [reg_metrics_test_p90['r2_score']],
+                    'ev_score_test_p90': [reg_metrics_test_p90['ev_score']] ,
+                    'mse_test_p90':      [reg_metrics_test_p90['mse']],
+                    'rmse_test_p90':     [reg_metrics_test_p90['rmse']],
+                    'max_err_test_p90':  [reg_metrics_test_p90['max_err']],
+                    'mae_test_p90':      [reg_metrics_test_p90['mae']],
+                    'medae_test_p90':    [reg_metrics_test_p90['medae']],
+                    'r2_score_test_p95': [reg_metrics_test_p95['r2_score']],
+                    'ev_score_test_p95': [reg_metrics_test_p95['ev_score']] ,
+                    'mse_test_p95':      [reg_metrics_test_p95['mse']],
+                    'rmse_test_p95':     [reg_metrics_test_p95['rmse']],
+                    'max_err_test_p95':  [reg_metrics_test_p95['max_err']],
+                    'mae_test_p95':      [reg_metrics_test_p95['mae']],
+                    'medae_test_p95':    [reg_metrics_test_p95['medae']],
                    }
 
 
@@ -721,7 +735,7 @@ more_data_for_df = { 'conf_mat_train':    [conf_mat_train],
 
 
 model_eval_csv = pd.DataFrame(data_for_csv)
-model_eval_csv.to_csv(os.path.join(trained_model_loc,                                    model_eval_file_name.replace('pkl','csv')), index=False)
+model_eval_csv.to_csv(os.path.join(trained_model_loc,                                    model_eval_file_name.replace('pkl','csv')),                                    index=False, float_format = '%.4f')
 
 
 # In[ ]:
