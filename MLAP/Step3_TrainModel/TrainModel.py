@@ -75,9 +75,9 @@ json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Tr
 # In[ ]:
 
 
-#json_file_extract_data = sys.argv[1]
-#json_file_prep_data = sys.argv[2]
-#json_file_train_model = sys.argv[3]
+json_file_extract_data = sys.argv[1]
+json_file_prep_data = sys.argv[2]
+json_file_train_model = sys.argv[3]
 
 
 # ### Load the JSON file for extracting data
