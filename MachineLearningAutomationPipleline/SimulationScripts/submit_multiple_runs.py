@@ -19,7 +19,7 @@ import os.path as path
 # In[ ]:
 
 
-action = "Prep" # "Extract", "Prep", "Train", "Analyze"
+action = "Train" # "Extract", "Prep", "Train", "Analyze"
 
 
 # In[ ]:
@@ -82,7 +82,7 @@ json_train_base = os.path.join(sim_dir, 'InputJson/Train/json_train_model')
 json_extract_counts = range(39, 68)
 json_prep_counts = [7] #[1, 2, 3]
 #json_prep_counts = [1, 2, 4] #[1, 2, 3]
-json_train_counts = [9]
+json_train_counts = [13]
 
 
 # ## Generate and Execute `command`
