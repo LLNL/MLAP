@@ -19,7 +19,7 @@ import os.path as path
 # In[ ]:
 
 
-action = "Train" # "Extract", "Prep", "Train", "Analyze"
+action = "Prep" # "Extract", "Prep", "Train", "Analyze"
 
 
 # In[ ]:
@@ -28,7 +28,7 @@ action = "Train" # "Extract", "Prep", "Train", "Analyze"
 print_interactive_command = False
 print_sbatch_command = True
 run_interactively = False
-submit_job    = True
+submit_job    = False
 
 
 # In[ ]:
@@ -50,9 +50,9 @@ sim_dir = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI'
 # In[ ]:
 
 
-sbatch_script_extract = '/g/g92/jha3/Codes/Wildfire_ML/SJSU/SimulationScripts/sbatch_script_extract.sh'
-sbatch_script_prep = '/g/g92/jha3/Codes/Wildfire_ML/SJSU/SimulationScripts/sbatch_script_prep.sh'
-sbatch_script_train = '/g/g92/jha3/Codes/Wildfire_ML/SJSU/SimulationScripts/sbatch_script_train.sh'
+sbatch_script_extract = '/g/g92/jha3/Codes/Wildfire_ML/MachineLearningAutomationPipleline/SimulationScripts/sbatch_script_extract.sh'
+sbatch_script_prep = '/g/g92/jha3/Codes/Wildfire_ML/MachineLearningAutomationPipleline/SimulationScripts/sbatch_script_prep.sh'
+sbatch_script_train = '/g/g92/jha3/Codes/Wildfire_ML/MachineLearningAutomationPipleline/SimulationScripts/sbatch_script_train.sh'
 
 
 # ## `python` Scripts
@@ -60,9 +60,9 @@ sbatch_script_train = '/g/g92/jha3/Codes/Wildfire_ML/SJSU/SimulationScripts/sbat
 # In[ ]:
 
 
-python_script_extract = '/g/g92/jha3/Codes/Wildfire_ML/SJSU/Step1_ExtractData/Extract_DFM_Data.py'
-python_script_prep = '/g/g92/jha3/Codes/Wildfire_ML/SJSU/Step2_PrepareData/Prepare_TrainTest_Data.py'
-python_script_train = '/g/g92/jha3/Codes/Wildfire_ML/SJSU/Step3_TrainModel/TrainModel.py'
+python_script_extract = '/g/g92/jha3/Codes/Wildfire_ML/MachineLearningAutomationPipleline/Step1_ExtractData/Extract_DFM_Data.py'
+python_script_prep = '/g/g92/jha3/Codes/Wildfire_ML/MachineLearningAutomationPipleline/Step2_PrepareData/Prepare_TrainTest_Data.py'
+python_script_train = '/g/g92/jha3/Codes/Wildfire_ML/MachineLearningAutomationPipleline/Step3_TrainModel/TrainModel.py'
 
 
 # ## `json` Input Files
@@ -80,9 +80,9 @@ json_train_base = os.path.join(sim_dir, 'InputJson/Train/json_train_model')
 
 #json_extract_counts = [39]
 json_extract_counts = range(39, 68)
-json_prep_counts = [6] #[1, 2, 3]
+json_prep_counts = [7] #[1, 2, 3]
 #json_prep_counts = [1, 2, 4] #[1, 2, 3]
-json_train_counts = [8]
+json_train_counts = [9]
 
 
 # ## Generate and Execute `command`
