@@ -72,7 +72,7 @@ global_initial_memory = process.memory_info().rss
 
 
 json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_000.json'
-json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_006.json'
+json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_007.json'
 
 
 # ### Input file name when using python script on command line
@@ -375,13 +375,20 @@ if 'VPD' in qois_derived:
 # In[ ]:
 
 
-#keys_VPD
+#keys_T2_Cel, keys_VP_s, keys_VP, keys_VPD
 
 
 # In[ ]:
 
 
-#df_tt_prep[keys_HGT + keys_VPD + keys_T2 + keys_RH]
+#df_tt_prep[keys_T2 + keys_T2_Cel + keys_RH + keys_VP_s + keys_VP + keys_VPD]
+#df_tt_prep[keys_T2 +               keys_RH +                       keys_VPD]
+
+
+# In[ ]:
+
+
+#plt.hist(df_tt_prep['VPD[-6hr]'])
 
 
 # ## Compute Binary FM Labels

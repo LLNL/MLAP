@@ -193,12 +193,43 @@ Compute VPD
 '''
 def compute_VPD (df_tt_prep, keys_T2, keys_RH):
     print ('Computing Vapor Pressure Deficit (VPD) from T2 and RH')
+
+    a0 = 6.105851
+    a1 = 0.4440316
+    a2 = 0.1430341e-1
+    a3 = 0.2641412e-3
+    a4 = 0.2995057e-5
+    a5 = 0.2031998e-7
+    a6 = 0.6936113e-10
+    a7 = 0.2564861e-13
+    a8 = -0.3704404e-15
+
+    keys_T2_Cel = []
+    keys_VP_s = []
+    keys_VP = []
     keys_VPD = []
     for T2_key, RH_key in zip(keys_T2, keys_RH):
         assert T2_key[2:] == RH_key[2:]
+
+        T2_Cel_key = 'T2_Cel{}'.format(T2_key[2:])
+        VP_s_key = 'VP_s{}'.format(T2_key[2:])
+        VP_key = 'VP{}'.format(T2_key[2:])
         VPD_key = 'VPD{}'.format(T2_key[2:])
+
+        keys_T2_Cel.append(T2_Cel_key)
+        keys_VP_s.append(VP_s_key)
+        keys_VP.append(VP_key)
         keys_VPD.append(VPD_key)
-        df_tt_prep[VPD_key] = df_tt_prep[T2_key]*0.0
+
+        dtt = df_tt_prep[T2_key] - 273.16
+        e_s = a0 + dtt*(a1+dtt*(a2+dtt*(a3+dtt*(a4+dtt*(a5+dtt*(a6+dtt*(a7+a8*dtt)))))))
+        e   = e_s*df_tt_prep[RH_key]/100.00
+        VPD = e_s - e
+
+        #df_tt_prep[T2_Cel_key] =  dtt
+        #df_tt_prep[VP_s_key] = e_s
+        #df_tt_prep[VP_key] = e
+        df_tt_prep[VPD_key] = VPD
     
     return df_tt_prep, keys_VPD
 
