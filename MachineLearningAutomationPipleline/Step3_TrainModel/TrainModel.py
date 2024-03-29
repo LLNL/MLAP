@@ -66,8 +66,8 @@ global_initial_memory = process.memory_info().rss
 
 
 json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_000.json'
-json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_006.json'
-json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Train/json_train_model_009.json'
+json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_007.json'
+json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Train/json_train_model_013.json'
 
 
 # ### Input file name when using python script on command line
@@ -75,9 +75,9 @@ json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Tr
 # In[ ]:
 
 
-json_file_extract_data = sys.argv[1]
-json_file_prep_data = sys.argv[2]
-json_file_train_model = sys.argv[3]
+#json_file_extract_data = sys.argv[1]
+#json_file_prep_data = sys.argv[2]
+#json_file_train_model = sys.argv[3]
 
 
 # ### Load the JSON file for extracting data
