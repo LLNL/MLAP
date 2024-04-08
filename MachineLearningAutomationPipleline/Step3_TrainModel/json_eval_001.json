@@ -1,0 +1,17 @@
+{
+	"paths": 	     {
+				"eval_model_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03b_Eval_Models",
+				"sim_dir": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI",
+				"json_extract_base": "InputJson/Extract/json_extract_data",
+				"json_prep_base": "InputJson/Prep/json_prep_data_label",
+				"json_train_base": "InputJson/Train/json_train_model"
+			     },
+	"evaluation":	     {
+				"max_data_size_scatter": 800,
+				"fig_size_x": 15,
+				"fig_size_y": 15,
+				"font_size": 20,
+				"x_lim": [0, 0.35],
+                                "normalize_cm": true
+			     }
+}
