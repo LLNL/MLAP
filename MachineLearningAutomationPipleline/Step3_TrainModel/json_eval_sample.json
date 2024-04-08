@@ -7,9 +7,21 @@
 				"json_train_base": "InputJson/Train/json_train_model"
 			     },
 	"collection_options": {
-				"json_extract_counts": [39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 55, 56, 59, 60, 61, 62, 63, 64, 65, 66, 67], 
-				"json_prep_counts": [5],
-				"json_train_counts": [3],
+				"json_extract_counts": [60, 61], 
+				"json_prep_train_maps": [
+							 {
+							  "json_label": [6],
+							  "json_train": [3, 6, 7],
+							  "set_info": ["No HGT"],
+							  "subset_info": ["PREC, SW", "PREC", "SW"]
+							 },
+							 {
+                                                          "json_label": [6],
+                                                          "json_train": [9, 10, 11],
+							  "set_info": ["HGT"],
+                                                          "subset_info": ["PREC, SW", "PREC", "SW"]
+                                                         }
+							],
 				"FM_label_type": "Regression",
 				"metric_names": ["r2_score", "rmse", "medae"]
 			      },

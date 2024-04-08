@@ -18,6 +18,7 @@ import pandas as pd
 import csv
 import pickle
 import json
+import seaborn as sns
 from matplotlib import pyplot as plt
 from mpl_toolkits import mplot3d
 from datetime import date, datetime, timedelta, time
@@ -38,7 +39,7 @@ from TrainModel_Helper import *
 # In[ ]:
 
 
-json_file_eval_models = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Eval/json_eval_001.json'
+json_file_eval_models = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Eval/json_eval_000.json'
 
 
 # ### Input file name when using python script on command line
@@ -98,8 +99,6 @@ json_train_base = os.path.join(sim_dir, json_train_base)
 
 # # Collect Metrics of Desired Trained Models
 
-# ### Regression
-
 # In[ ]:
 
 
@@ -110,8 +109,7 @@ collection_options = json_content_eval_models['collection_options']
 
 
 json_extract_counts = collection_options['json_extract_counts']
-json_prep_counts = collection_options['json_prep_counts']
-json_train_counts = collection_options['json_train_counts']
+json_prep_train_maps = collection_options['json_prep_train_maps']
 FM_label_type = collection_options['FM_label_type']
 metric_names = collection_options['metric_names']
 
@@ -119,28 +117,60 @@ metric_names = collection_options['metric_names']
 # In[ ]:
 
 
-trained_models_metrics, data_defn = create_trained_models_metrics (                                      json_prep_base, json_prep_counts,                                       json_train_base, json_train_counts,                                       json_extract_base, json_extract_counts)
+label_train_pair, col_names = create_label_train_pair (json_prep_train_maps)
 
 
 # In[ ]:
 
 
+#label_train_pair
+
+
+# In[ ]:
+
+
+#col_names
+
+
+# In[ ]:
+
+
+'''
+trained_models_metrics, data_defn = create_trained_models_metrics (\
+                                      json_prep_base, json_prep_counts, \
+                                      json_train_base, json_train_counts, \
+                                      json_extract_base, json_extract_counts)
+'''
+
+
+# In[ ]:
+
+
+'''
 df_train_combined = pd.DataFrame()
 df_test_combined = pd.DataFrame()
 for metric_name in metric_names:
-    df_train, df_test = plot_trained_models_metrics (FM_label_type, json_extract_counts,                                                      trained_models_metrics, metric_name)
+    df_train, df_test = plot_trained_models_metrics (FM_label_type, json_extract_counts, \
+                                                     trained_models_metrics, metric_name)
     for col in df_train.columns:
         df_train = df_train.rename(columns = {col: col + '-' + metric_name})
         df_train_combined = pd.concat([df_train_combined, df_train], axis=1)  
         
         df_test = df_test.rename(columns = {col: col + '-' + metric_name})
-        df_test_combined = pd.concat([df_test_combined, df_test], axis=1) 
+        df_test_combined = pd.concat([df_test_combined, df_test], axis=1)
+'''
 
 
 # In[ ]:
 
 
-data_defn
+#df_test
+
+
+# In[ ]:
+
+
+#data_defn
 
 
 # In[ ]:
@@ -152,7 +182,7 @@ data_defn
 # In[ ]:
 
 
-df_test_combined
+#df_test_combined
 
 
 # ## Effect of Max History
@@ -298,7 +328,8 @@ for train_count_ind, train_count in enumerate(json_train_counts):
         #ax[data_count_ind, train_count_ind].set_xticks(fontsize = font_size, rotation = 0)
         #print('\n')
 
-#print('\n')      
+#print('\n')
+'''
 
 
 # In[ ]:

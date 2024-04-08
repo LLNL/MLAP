@@ -420,6 +420,29 @@ def plot_fm (y_gt, labels_pred, j_indices, i_indices, FM_label_type, analysis_da
     filename = os.path.join(analysis_data_loc, analysis_fuel_map_file_name)
     plt.savefig(filename, bbox_inches='tight')
 
+
+# []
+'''
+Create label and train pair for evaluation
+'''
+def create_label_train_pair (json_prep_train_maps):
+    label_train_pair = []
+    col_names = []
+    for item in json_prep_train_maps:
+        json_label = item ['json_label']
+        set_info = item ['set_info']
+        json_train = item ['json_train']
+        subset_info = item ['subset_info']
+
+        for label, set_text in zip(json_label, set_info):
+            #print (label, set_text)
+            for train, subset_text in zip (json_train, subset_info):
+                #print (train, subset_text)
+                label_train_pair.append((label, train))
+                col_names.append('{}, {}'.format(set_text, subset_text))
+                
+    return label_train_pair, col_names
+
     
 # []
 '''
