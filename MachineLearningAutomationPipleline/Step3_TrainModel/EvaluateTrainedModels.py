@@ -103,11 +103,16 @@ json_train_base = os.path.join(sim_dir, json_train_base)
 # In[ ]:
 
 
-#json_extract_counts = range(15, 23)
-json_extract_counts = list(range(39, 54)) + [55, 56] + list(range(59, 68))
-json_prep_counts = [5]
-json_train_counts = [3]#[3, 5, 1, 2]
-FM_label_type = "Regression"
+collection_options = json_content_eval_models['collection_options']
+
+
+# In[ ]:
+
+
+json_extract_counts = collection_options['json_extract_counts']
+json_prep_counts = collection_options['json_prep_counts']
+json_train_counts = collection_options['json_train_counts']
+FM_label_type = collection_options['FM_label_type']
 
 
 # In[ ]:

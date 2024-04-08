@@ -6,6 +6,12 @@
 				"json_prep_base": "InputJson/Prep/json_prep_data_label",
 				"json_train_base": "InputJson/Train/json_train_model"
 			     },
+	"collection_options": {
+				"json_extract_counts": [39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 55, 56, 59, 60, 61, 62, 63, 64, 65, 66, 67], 
+				"json_prep_counts": [5],
+				"json_train_counts": [3],
+				"FM_label_type": "Regression"
+			      },
 	"evaluation":	     {
 				"max_data_size_scatter": 800,
 				"fig_size_x": 15,
