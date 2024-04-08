@@ -443,7 +443,62 @@ def create_label_train_pair (json_prep_train_maps):
                 
     return label_train_pair, col_names
 
+
+# []
+'''
+Create data definition
+'''
+def create_data_definition (json_extract_base, json_extract_counts):
+    data_name = []
+    max_hist = []
+    hist_int = []
+    num_hist = []
+    num_sampled_times = []
+    num_sampled_gp = []
+    num_time_grid_to_read = []
+    rows_feature = []
+    cols_feature = []
+
+    for data_set_count in json_extract_counts:
+
+        json_extract = '%s_%03d.json'%(json_extract_base, data_set_count)
+        #print(json_extract)
+        with open(json_extract) as json_file_handle:
+            json_content_extract_data = json.load(json_file_handle)
+
+        extracted_data_base_loc = json_content_extract_data['paths']['extracted_data_base_loc']    
+        data_set_name = 'data_train_test_extracted_%03d'%(data_set_count)
+        extracted_data_loc = os.path.join(extracted_data_base_loc, data_set_name)
+        tab_data_file_name = '{}_tab_data.csv'.format(data_set_name)
+        #print (tab_data_file_name)
+        tabulated_data = pd.read_csv(os.path.join(extracted_data_loc, tab_data_file_name))
+        #print (tabulated_data)
+
+        data_name.append(data_set_count)
+        max_hist.append(tabulated_data['max_hist'][0])
+        hist_int.append(tabulated_data['hist_interval'][0])
+        num_hist.append(tabulated_data['num_hist'][0])
+        num_sampled_times.append(tabulated_data['num_sampled_times'][0])
+        num_sampled_gp.append(tabulated_data['num_sampled_grid_points'][0])
+        num_time_grid_to_read.append(tabulated_data['num_time_grid_to_read'][0])
+        rows_feature.append(tabulated_data['rows_feature_mat'][0])
+        cols_feature.append(tabulated_data['cols_feature_mat'][0])
+
+    data_defn = pd.DataFrame()
+    data_defn['data_name'] = data_name
+    data_defn['max_hist'] = max_hist
+    data_defn['hist_int'] = hist_int
+    data_defn['num_hist'] = num_hist
+    data_defn['num_sampled_times'] = num_sampled_times
+    data_defn['num_sampled_gp'] = num_sampled_gp
+    data_defn['num_time_grid_to_read'] = num_time_grid_to_read
+    data_defn['rows_feature'] = rows_feature
+    data_defn['cols_feature'] = cols_feature
     
+    #-----------------------------------------------
+    return data_defn
+    
+
 # []
 '''
 Create a dict of metrics from trained models

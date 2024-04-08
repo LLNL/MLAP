@@ -23,7 +23,8 @@
                                                          }
 							],
 				"FM_label_type": "Regression",
-				"metric_names": ["r2_score", "rmse", "medae"]
+				"metric_names": ["r2_score", "ev_score", "mse", "rmse", "max_err", "mae", "medae"],
+				"metric_on_sets": ["train", "test", "test_p95", "test_p95"]
 			      },
 	"evaluation":	     {
 				"max_data_size_scatter": 800,

@@ -112,7 +112,10 @@ json_extract_counts = collection_options['json_extract_counts']
 json_prep_train_maps = collection_options['json_prep_train_maps']
 FM_label_type = collection_options['FM_label_type']
 metric_names = collection_options['metric_names']
+metric_on_sets = collection_options['metric_on_sets']
 
+
+# ## Create label and train pair
 
 # In[ ]:
 
@@ -123,13 +126,46 @@ label_train_pair, col_names = create_label_train_pair (json_prep_train_maps)
 # In[ ]:
 
 
+#json_extract_counts
 #label_train_pair
+#col_names
+#metric_names
+#metric_on_sets
+
+
+# ## Create data definition
+
+# In[ ]:
+
+
+data_defn = create_data_definition (json_extract_base, json_extract_counts)
 
 
 # In[ ]:
 
 
-#col_names
+#data_defn
+
+
+# ## Collect evaluation metrics
+
+# In[ ]:
+
+
+metric_name = metric_names[0]
+
+
+# In[ ]:
+
+
+metric_on_set = metric_on_sets[1]
+
+
+# In[ ]:
+
+
+for (label_count, train_count), col_name in zip(label_train_pair, col_names):
+    print(label_count, train_count, col_name)
 
 
 # In[ ]:
