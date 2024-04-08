@@ -113,12 +113,7 @@ json_extract_counts = collection_options['json_extract_counts']
 json_prep_counts = collection_options['json_prep_counts']
 json_train_counts = collection_options['json_train_counts']
 FM_label_type = collection_options['FM_label_type']
-
-
-# In[ ]:
-
-
-len(json_extract_counts)
+metric_names = collection_options['metric_names']
 
 
 # In[ ]:
@@ -132,7 +127,7 @@ trained_models_metrics, data_defn = create_trained_models_metrics (             
 
 df_train_combined = pd.DataFrame()
 df_test_combined = pd.DataFrame()
-for metric_name in ['r2_score', 'rmse', 'medae']:
+for metric_name in metric_names:
     df_train, df_test = plot_trained_models_metrics (FM_label_type, json_extract_counts,                                                      trained_models_metrics, metric_name)
     for col in df_train.columns:
         df_train = df_train.rename(columns = {col: col + '-' + metric_name})
