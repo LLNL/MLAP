@@ -7,7 +7,7 @@
 				"json_train_base": "InputJson/Train/json_train_model"
 			     },
 	"collection_options": {
-				"json_extract_counts": [60, 61], 
+				"json_extract_counts": [60, 61, 62, 63, 64, 65, 66], 
 				"json_prep_train_maps": [
 							 {
 							  "json_label": [6],
@@ -24,7 +24,7 @@
 							],
 				"FM_label_type": "Regression",
 				"metric_names": ["r2_score", "ev_score", "mse", "rmse", "max_err", "mae", "medae"],
-				"metric_on_sets": ["train", "test", "test_p95", "test_p95"]
+				"metric_on_sets": ["train", "test", "test_p90", "test_p95"]
 			      },
 	"evaluation":	     {
 				"max_data_size_scatter": 800,

@@ -153,19 +153,26 @@ data_defn = create_data_definition (json_extract_base, json_extract_counts)
 
 
 metric_name = metric_names[0]
+metric_on_set = metric_on_sets[2]
+eval_metric_col = '{}_{}'.format(metric_name, metric_on_set)
 
 
 # In[ ]:
 
 
-metric_on_set = metric_on_sets[1]
+#eval_metric_col
 
 
 # In[ ]:
 
 
-for (label_count, train_count), col_name in zip(label_train_pair, col_names):
-    print(label_count, train_count, col_name)
+df_metrics = gather_metrics_for_all_label_train_pairs (label_train_pair, col_names,                                                   json_train_base, json_extract_counts,                                                   FM_label_type, eval_metric_col)
+
+
+# In[ ]:
+
+
+#df_metrics
 
 
 # In[ ]:

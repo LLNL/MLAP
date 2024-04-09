@@ -501,6 +501,62 @@ def create_data_definition (json_extract_base, json_extract_counts):
 
 # []
 '''
+Gather metrics for a (label, train) pair
+'''
+def gather_metrics_for_label_train_pair (json_extract_counts, json_content_train_model, \
+                                         label_count, FM_label_type, train_count, \
+                                         eval_metric_col):
+    
+    trained_model_base_loc = json_content_train_model['paths']['trained_model_base_loc']
+    model_name = json_content_train_model['models']['model_name']
+    
+    metrics = []
+    for data_set_count in json_extract_counts:
+        trained_model_name = 'dataset_%03d_label_%03d_%s_model_%03d_%s'%(data_set_count, \
+                                                    label_count, FM_label_type, \
+                                                    train_count, model_name)
+
+        trained_model_loc = os.path.join(trained_model_base_loc, trained_model_name)
+        model_eval_file = '{}_eval'.format(trained_model_name)
+        model_metric_file = os.path.join(trained_model_loc, model_eval_file+'.csv')
+        #print('Trained Model Location: {}'.format(trained_model_loc))
+        #print('Trained Model Metrric File: {}'.format(model_metric_file))
+        
+        eval_metric = pd.read_csv(model_metric_file).to_dict(orient='records')[0]
+        metrics.append(eval_metric[eval_metric_col])
+    
+    #-----------------------------------------------
+    return metrics
+ 
+    
+# []
+'''
+Gather metrics for all (label, train) pairs
+'''
+def gather_metrics_for_all_label_train_pairs (label_train_pair, col_names, \
+                                              json_train_base, json_extract_counts, \
+                                              FM_label_type, eval_metric_col):
+    
+    df_metrics = pd.DataFrame()
+    for (label_count, train_count), col_name in zip(label_train_pair, col_names):
+        #print(label_count, train_count, col_name)
+        json_train   = '%s_%03d.json'%(json_train_base, train_count)
+        #print(json_train)
+        with open(json_train) as json_file_handle:
+            json_content_train_model = json.load(json_file_handle)
+
+
+        metrics = gather_metrics_for_label_train_pair (json_extract_counts, json_content_train_model, \
+                                                       label_count, FM_label_type, train_count, \
+                                                       eval_metric_col)
+        df_metrics[col_name] = metrics
+    
+    #-----------------------------------------------
+    return df_metrics
+
+
+# []
+'''
 Create a dict of metrics from trained models
 '''
 def create_trained_models_metrics (json_prep_base, json_prep_counts, \
