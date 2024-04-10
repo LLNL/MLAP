@@ -230,13 +230,19 @@ def plot_scatter_regression (labels_gt, labels_pred, \
                              plot_loc, fig_name, \
                              max_data_size_scatter, fig_size_x, fig_size_y, \
                              font_size, x_lim, label_log):
-    
+      
     labels_gt_range = [labels_gt.min(), labels_gt.max()]
     data_indices = range(len(labels_gt))
     if (max_data_size_scatter < 1):
         data_ind_subset = data_indices
     else:
         data_ind_subset = random.sample(data_indices, k = max_data_size_scatter)
+    
+    labels_gt_to_plot = labels_gt[data_ind_subset]
+    labels_pred_to_plot = labels_pred[data_ind_subset]
+    
+    labels_error, labels_error_abs, labels_pc_err, labels_pc_err_abs = \
+                                            compute_errors (labels_gt_to_plot, labels_pred_to_plot)
     
     if not os.path.exists(plot_loc):
         os.system('mkdir -p %s' %(plot_loc))
@@ -245,10 +251,12 @@ def plot_scatter_regression (labels_gt, labels_pred, \
     plt.figure(figsize = (fig_size_x, fig_size_y))
 
     if label_log:
-        plt.scatter(np.exp(labels_gt[data_ind_subset]), np.exp(labels_pred[data_ind_subset]))
+        plt.scatter(np.exp(labels_gt_to_plot), np.exp(labels_pred_to_plot), \
+                    c = labels_error_abs)
         plt.plot(np.exp(labels_gt_range), np.exp(labels_gt_range), '--r')
     else:
-        plt.scatter(labels_gt[data_ind_subset], labels_pred[data_ind_subset])
+        plt.scatter(labels_gt_to_plot, labels_pred_to_plot, \
+                    c = labels_error_abs)
         plt.plot(labels_gt_range, labels_gt_range, '--r')
     plt.xlabel('Ground Truth', fontsize = font_size)
     plt.ylabel('Prediction', fontsize = font_size)
