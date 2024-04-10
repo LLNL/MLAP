@@ -172,7 +172,7 @@ df_metrics = gather_metrics_for_all_label_train_pairs (label_train_pair, col_nam
 # In[ ]:
 
 
-#df_metrics
+df_metrics
 
 
 # In[ ]:

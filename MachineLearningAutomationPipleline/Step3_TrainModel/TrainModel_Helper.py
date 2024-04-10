@@ -537,7 +537,7 @@ def gather_metrics_for_all_label_train_pairs (label_train_pair, col_names, \
                                               json_train_base, json_extract_counts, \
                                               FM_label_type, eval_metric_col):
     
-    df_metrics = pd.DataFrame()
+    df_metrics = pd.DataFrame(index = json_extract_counts)
     for (label_count, train_count), col_name in zip(label_train_pair, col_names):
         #print(label_count, train_count, col_name)
         json_train   = '%s_%03d.json'%(json_train_base, train_count)
