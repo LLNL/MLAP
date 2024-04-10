@@ -18,7 +18,8 @@ import pandas as pd
 import csv
 import pickle
 import json
-import seaborn as sns
+import plotly.express as px
+import plotly.graph_objects as go
 from matplotlib import pyplot as plt
 from mpl_toolkits import mplot3d
 from datetime import date, datetime, timedelta, time
@@ -157,4 +158,5 @@ for metric_name in metric_names:
         df_metrics = gather_metrics_for_all_label_train_pairs (                                                  label_train_pair, col_names,                                                   json_train_base, json_extract_counts,                                                   FM_label_type, metric_name, metric_on_set)
         #print (df_metrics)
         create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set)
+        create_heatmap (df_metrics, FM_label_type, metric_name, metric_on_set)
 

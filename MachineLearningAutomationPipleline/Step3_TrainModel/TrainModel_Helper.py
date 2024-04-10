@@ -14,6 +14,8 @@ import pandas as pd
 import xarray as xr
 import pickle
 import json
+import plotly.express as px
+import plotly.graph_objects as go
 from matplotlib import pyplot as plt
 from mpl_toolkits import mplot3d
 from datetime import date, datetime, timedelta, time
@@ -563,7 +565,7 @@ Get labels and titles for plots
 def get_labels_title_for_plots (FM_label_type, metric_name, metric_on_set):
     if (FM_label_type == 'Regression'):
         if (metric_name == 'r2_score'):
-            metric_info = '$R^2$'
+            metric_info = 'R^2'
         elif (metric_name == 'ev_score'):
             metric_info = 'EV Score'
         elif (metric_name == 'mse'):
@@ -609,4 +611,22 @@ def create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set):
     ax.set_xlabel('Data Set Name')
     ax.set_ylabel(metric_info)
     ax.set_title(metric_on_set_info)
+
     
+# []
+'''
+Make a heat map corresponding to a gathered DataFrame of metrics
+'''
+def create_heatmap (df_metrics, FM_label_type, metric_name, metric_on_set):
+    
+    metric_info, metric_on_set_info = get_labels_title_for_plots (FM_label_type, \
+                                                          metric_name, metric_on_set)
+    fig = px.imshow(df_metrics, x=df_metrics.columns, y=df_metrics.index, text_auto=True)
+    fig = go.Figure(data=fig.data, layout=fig.layout)
+    fig = fig.update_traces(text=df_metrics.applymap(lambda x: x).values, texttemplate="%{text}", hovertemplate=None, xgap=1, ygap=1)
+    fig.update_layout(title = {'text'   :'%s on %s'%(metric_info, metric_on_set_info),
+                              'x':0.5, 'y': 0.94, 'xanchor': 'center', 'yanchor': 'top'},
+                      yaxis = {"title": 'Data Set Name'},
+                      font = dict(family="Times, monospace", size=14, color="Black")
+                     )
+    fig.show()
