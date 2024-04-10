@@ -557,6 +557,47 @@ def gather_metrics_for_all_label_train_pairs (label_train_pair, col_names, \
 
 # []
 '''
+Get labels and titles for plots
+'''
+def get_labels_title_for_plots (FM_label_type, metric_name, metric_on_set):
+    if (FM_label_type == 'Regression'):
+        if (metric_name == 'r2_score'):
+            ylabel_text = '$R^2$'
+        elif (metric_name == 'ev_score'):
+            ylabel_text = 'EV Score'
+        elif (metric_name == 'mse'):
+            ylabel_text = 'Mean Sqr Error'
+        elif (metric_name == 'rmse'):
+            ylabel_text = 'RMSE'
+        elif (metric_name == 'max_err'):
+            ylabel_text = 'Max Error'
+        elif (metric_name == 'mae'):
+            ylabel_text = 'Mean Abs Error'
+        elif (metric_name == 'medae'):
+            ylabel_text = 'Median Abs Error'
+        else:
+            raise ValueError('Invalid "metric_name": {}'.format(metric_name))
+    else: # Classification
+            ylabel_text = 'Accuracy'
+
+
+    if (metric_on_set == 'train'):
+        title_text = 'Train Set'
+    elif (metric_on_set == 'test'):
+        title_text = 'Test Set'
+    elif (metric_on_set == 'test_p90'):
+        title_text = 'Test Set [Best 90%]'
+    elif (metric_on_set == 'test_p95'):
+        title_text = 'Test Set [Best 95%]'
+    else:
+        raise ValueError('Invalid "metric_on_set": {}'.format(metric_on_set))
+    
+    #-----------------------------------------------
+    return ylabel_text, title_text
+
+
+# []
+'''
 Create a dict of metrics from trained models
 '''
 def create_trained_models_metrics (json_prep_base, json_prep_counts, \
