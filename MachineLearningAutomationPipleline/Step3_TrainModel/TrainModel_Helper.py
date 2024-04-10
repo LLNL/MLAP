@@ -563,38 +563,38 @@ Get labels and titles for plots
 def get_labels_title_for_plots (FM_label_type, metric_name, metric_on_set):
     if (FM_label_type == 'Regression'):
         if (metric_name == 'r2_score'):
-            ylabel_text = '$R^2$'
+            metric_info = '$R^2$'
         elif (metric_name == 'ev_score'):
-            ylabel_text = 'EV Score'
+            metric_info = 'EV Score'
         elif (metric_name == 'mse'):
-            ylabel_text = 'Mean Sqr Error'
+            metric_info = 'Mean Sqr Error'
         elif (metric_name == 'rmse'):
-            ylabel_text = 'RMSE'
+            metric_info = 'RMSE'
         elif (metric_name == 'max_err'):
-            ylabel_text = 'Max Error'
+            metric_info = 'Max Error'
         elif (metric_name == 'mae'):
-            ylabel_text = 'Mean Abs Error'
+            metric_info = 'Mean Abs Error'
         elif (metric_name == 'medae'):
-            ylabel_text = 'Median Abs Error'
+            metric_info = 'Median Abs Error'
         else:
             raise ValueError('Invalid "metric_name": {}'.format(metric_name))
     else: # Classification
-            ylabel_text = 'Accuracy'
+            metric_info = 'Accuracy'
 
 
     if (metric_on_set == 'train'):
-        title_text = 'Train Set'
+        metric_on_set_info = 'Train Set'
     elif (metric_on_set == 'test'):
-        title_text = 'Test Set'
+        metric_on_set_info = 'Test Set'
     elif (metric_on_set == 'test_p90'):
-        title_text = 'Test Set [Best 90%]'
+        metric_on_set_info = 'Test Set [Best 90%]'
     elif (metric_on_set == 'test_p95'):
-        title_text = 'Test Set [Best 95%]'
+        metric_on_set_info = 'Test Set [Best 95%]'
     else:
         raise ValueError('Invalid "metric_on_set": {}'.format(metric_on_set))
     
     #-----------------------------------------------
-    return ylabel_text, title_text
+    return metric_info, metric_on_set_info
 
 
 # []
@@ -603,10 +603,10 @@ Make a bar plot corresponding to a gathered DataFrame of metrics
 '''
 def create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set):
     
-    ylabel_text, title_text = get_labels_title_for_plots (FM_label_type, \
+    metric_info, metric_on_set_info = get_labels_title_for_plots (FM_label_type, \
                                                           metric_name, metric_on_set)
     ax = df_metrics.plot.bar(rot = 0)
     ax.set_xlabel('Data Set Name')
-    ax.set_ylabel(ylabel_text)
-    ax.set_title(title_text)
+    ax.set_ylabel(metric_info)
+    ax.set_title(metric_on_set_info)
     
