@@ -154,9 +154,7 @@ data_defn = create_data_definition (json_extract_base, json_extract_counts)
 
 for metric_name in metric_names:
     for metric_on_set in metric_on_sets:
-        eval_metric_col = '{}_{}'.format(metric_name, metric_on_set)
-        #print(eval_metric_col)
-        df_metrics = gather_metrics_for_all_label_train_pairs (                                                  label_train_pair, col_names,                                                   json_train_base, json_extract_counts,                                                   FM_label_type, eval_metric_col)
+        df_metrics = gather_metrics_for_all_label_train_pairs (                                                  label_train_pair, col_names,                                                   json_train_base, json_extract_counts,                                                   FM_label_type, metric_name, metric_on_set)
         #print (df_metrics)
         create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set)
 
