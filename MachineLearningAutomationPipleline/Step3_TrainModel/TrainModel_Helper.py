@@ -598,6 +598,19 @@ def get_labels_title_for_plots (FM_label_type, metric_name, metric_on_set):
 
 # []
 '''
+Make a bar plot corresponding to a gathered DataFrame of metrics
+'''
+def create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set):
+    
+    ylabel_text, title_text = get_labels_title_for_plots (FM_label_type, \
+                                                          metric_name, metric_on_set)
+    ax = df_metrics.plot.bar(rot = 0)
+    ax.set_xlabel('Data Set Name')
+    ax.set_ylabel(ylabel_text)
+    ax.set_title(title_text)
+
+# []
+'''
 Create a dict of metrics from trained models
 '''
 def create_trained_models_metrics (json_prep_base, json_prep_counts, \

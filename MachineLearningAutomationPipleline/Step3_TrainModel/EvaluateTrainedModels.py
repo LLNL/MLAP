@@ -147,49 +147,18 @@ data_defn = create_data_definition (json_extract_base, json_extract_counts)
 #data_defn
 
 
-# ## Collect evaluation metrics
-
-# In[ ]:
-
-
-metric_name = metric_names[0]
-metric_on_set = metric_on_sets[3]
-eval_metric_col = '{}_{}'.format(metric_name, metric_on_set)
-
-
-# In[ ]:
-
-
-#eval_metric_col
-
-
-# In[ ]:
-
-
-df_metrics = gather_metrics_for_all_label_train_pairs (label_train_pair, col_names,                                                   json_train_base, json_extract_counts,                                                   FM_label_type, eval_metric_col)
-
-
-# In[ ]:
-
-
-df_metrics
-
-
-# In[ ]:
-
-
-df_metrics.columns
-
-
-# ## Plot the gathered evaluation metrics
+# ## Collect evaluation metrics and plot them
 
 # In[ ]:
 
 
 for metric_name in metric_names:
     for metric_on_set in metric_on_sets:
-        ylabel_text, title_text = get_labels_title_for_plots (FM_label_type,                                                               metric_name, metric_on_set)
-        #print('ylabel_text: {}, title_text: {}'.format(ylabel_text, title_text))
+        eval_metric_col = '{}_{}'.format(metric_name, metric_on_set)
+        #print(eval_metric_col)
+        df_metrics = gather_metrics_for_all_label_train_pairs (                                                  label_train_pair, col_names,                                                   json_train_base, json_extract_counts,                                                   FM_label_type, eval_metric_col)
+        #print (df_metrics)
+        create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set)
 
 
 # In[ ]:
