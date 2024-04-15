@@ -615,9 +615,16 @@ def create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set):
     
     metric_info, metric_on_set_info = get_labels_title_for_plots (FM_label_type, \
                                                           metric_name, metric_on_set)
+    
+    min_val = min(list(df_metrics.min(axis = 0)))
+    max_val = max(list(df_metrics.max(axis = 0)))
+    range_val = max_val - min_val
+    
     ax = df_metrics.plot.bar(rot = 0)
+    ax.legend(loc='center right', bbox_to_anchor=(1.4, 0.5))
     ax.set_xlabel('Data Set Name')
     ax.set_ylabel(metric_info)
+    ax.set_ylim([min_val - 0.05*range_val, max_val + 0.05*range_val])
     ax.set_title(metric_on_set_info)
 
     
