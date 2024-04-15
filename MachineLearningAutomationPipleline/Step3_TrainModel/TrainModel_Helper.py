@@ -615,7 +615,8 @@ def get_labels_title_for_plots (FM_label_type, metric_name, metric_on_set):
 '''
 Make a bar plot corresponding to a gathered DataFrame of metrics
 '''
-def create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set):
+def create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set, \
+                       eval_model_loc, eval_model_name):
     
     metric_info, metric_on_set_info = get_labels_title_for_plots (FM_label_type, \
                                                           metric_name, metric_on_set)
@@ -630,6 +631,10 @@ def create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set):
     ax.set_ylabel(metric_info)
     ax.set_ylim([min_val - 0.05*range_val, max_val + 0.05*range_val])
     ax.set_title(metric_on_set_info)
+    
+    barplot_file_name = os.path.join(eval_model_loc, '{}_barplot_{}_{}.png'.format(\
+                                                      eval_model_name, metric_name, metric_on_set))
+    ax.get_figure().savefig(barplot_file_name)
 
     
 # []

@@ -183,6 +183,6 @@ for metric_name in metric_names:
     for metric_on_set in metric_on_sets:
         df_metrics = gather_metrics_for_all_label_train_pairs (                                                  label_train_pair, col_names,                                                   json_train_base, json_extract_counts,                                                   FM_label_type, metric_name, metric_on_set)
         #print (df_metrics)
-        create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set)
+        create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set,                                            eval_model_loc, eval_model_name)
         create_heatmap (df_metrics, FM_label_type, metric_name, metric_on_set,                                            eval_model_loc, eval_model_name)
 
