@@ -7,18 +7,24 @@
 				"json_train_base": "InputJson/Train/json_train_model"
 			     },
 	"collection_options": {
-				"json_extract_counts": [60, 61, 62, 63], 
+				"json_extract_counts": [39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 51, 52, 53, 55, 56, 59, 60, 61, 62, 63, 64, 65, 66], 
 				"json_prep_train_maps": [
 							 {
 							  "json_label": [6],
 							  "json_train": [3, 6, 7, 8],
-							  "set_info": ["No HGT"],
+							  "set_info": ["UMag10, T2, RH"],
 							  "subset_info": ["PREC, SW", "PREC", "SW", ""]
 							 },
 							 {
                                                           "json_label": [6],
                                                           "json_train": [9, 10, 11, 12],
-							  "set_info": ["HGT"],
+							  "set_info": ["HGT, UMag10, T2, RH"],
+                                                          "subset_info": ["PREC, SW", "PREC", "SW", ""]
+                                                         },
+                                                         {
+                                                          "json_label": [7],
+                                                          "json_train": [13, 14, 15, 16],
+                                                          "set_info": ["HGT, UMag10, VPD"],
                                                           "subset_info": ["PREC, SW", "PREC", "SW", ""]
                                                          }
 							],
@@ -27,7 +33,7 @@
 				"metric_on_sets": ["train", "test", "test_p90", "test_p95"]
 			      },
 	"evaluation":	     {
-				"count": 0,
-				"identifier_text": "test"
+				"count": 1,
+				"identifier_text": "many_cases"
 			     }
 }

@@ -40,7 +40,7 @@ from TrainModel_Helper import *
 # In[ ]:
 
 
-json_file_eval_models = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Eval/json_eval_000.json'
+json_file_eval_models = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Eval/json_eval_001.json'
 
 
 # ### Input file name when using python script on command line
@@ -186,4 +186,10 @@ for metric_name in metric_names:
 
         create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set,                                            eval_model_loc, eval_model_name)
         create_heatmap (df_metrics, FM_label_type, metric_name, metric_on_set,                                            eval_model_loc, eval_model_name)
+
+
+# In[ ]:
+
+
+
 

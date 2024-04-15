@@ -453,7 +453,10 @@ def create_label_train_pair (json_prep_train_maps):
             for train, subset_text in zip (json_train, subset_info):
                 #print (train, subset_text)
                 label_train_pair.append((label, train))
-                col_names.append('{}, {}'.format(set_text, subset_text))
+                if subset_text != '':
+                    col_names.append('{}, {}'.format(set_text, subset_text))
+                else:
+                    col_names.append('{}'.format(set_text))
                 
     return label_train_pair, col_names
 
@@ -631,7 +634,7 @@ def create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set, \
     range_val = max_val - min_val
     
     ax = df_metrics.plot.bar(rot = 0)
-    ax.legend(loc='center right', bbox_to_anchor=(1.4, 0.5))
+    ax.legend(loc='center right', bbox_to_anchor=(1.55, 0.5))
     ax.set_xlabel('Data Set Name')
     ax.set_ylabel(metric_info)
     ax.set_ylim([min_val - 0.05*range_val, max_val + 0.05*range_val])
