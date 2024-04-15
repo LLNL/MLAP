@@ -160,9 +160,3 @@ for metric_name in metric_names:
         create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set)
         create_heatmap (df_metrics, FM_label_type, metric_name, metric_on_set)
 
-
-# In[ ]:
-
-
-
-

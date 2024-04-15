@@ -635,7 +635,7 @@ def create_heatmap (df_metrics, FM_label_type, metric_name, metric_on_set):
     fig = fig.update_traces(text=df_metrics.applymap(lambda x: x).values, texttemplate='%{z:.4f}', hovertemplate=None, xgap=1, ygap=1)
     fig.update_layout(title = {'text'   :'%s on %s'%(metric_info, metric_on_set_info),
                               'x':0.5, 'y': 0.94, 'xanchor': 'center', 'yanchor': 'top'},
-                      yaxis = {"title": 'Data Set Name'},
+                      yaxis = {"title": 'Data Set Name', "tickvals": df_metrics.index},
                       font = dict(family="Times, monospace", size=14, color="Black"),
                      )
     fig.update_coloraxes(colorbar_tickformat = '.4f')
