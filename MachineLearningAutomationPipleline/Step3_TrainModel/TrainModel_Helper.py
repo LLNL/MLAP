@@ -550,7 +550,8 @@ Gather metrics for all (label, train) pairs
 '''
 def gather_metrics_for_all_label_train_pairs (label_train_pair, col_names, \
                                               json_train_base, json_extract_counts, \
-                                              FM_label_type, metric_name, metric_on_set):
+                                              FM_label_type, metric_name, metric_on_set, \
+                                              eval_model_loc, eval_model_name):
     
     df_metrics = pd.DataFrame(index = json_extract_counts)
     for (label_count, train_count), col_name in zip(label_train_pair, col_names):
@@ -565,6 +566,10 @@ def gather_metrics_for_all_label_train_pairs (label_train_pair, col_names, \
                                                        label_count, FM_label_type, train_count, \
                                                        metric_name, metric_on_set)
         df_metrics[col_name] = metrics
+        
+        df_metrics_file_name = os.path.join(eval_model_loc, '{}_metrics_{}_{}.csv'.format(\
+                                              eval_model_name, metric_name, metric_on_set))
+        df_metrics.to_csv(df_metrics_file_name, index=False, float_format = '%.4f')
     
     #-----------------------------------------------
     return df_metrics

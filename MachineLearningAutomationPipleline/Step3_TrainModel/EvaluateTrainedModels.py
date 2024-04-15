@@ -100,12 +100,6 @@ eval_model_loc = os.path.join(eval_model_base_loc, eval_model_name)
 os.system('mkdir -p %s'%eval_model_loc)
 
 
-# In[ ]:
-
-
-eval_model_name
-
-
 # # `json` Input Files
 
 # In[ ]:
@@ -174,6 +168,12 @@ data_defn = create_data_definition (json_extract_base, json_extract_counts)
 #data_defn
 
 
+# In[ ]:
+
+
+data_defn.to_csv(os.path.join(eval_model_loc, eval_model_name+'_data_defn.csv'),                                    index=False, float_format = '%.4f')
+
+
 # ## Collect evaluation metrics and plot them
 
 # In[ ]:
@@ -181,8 +181,9 @@ data_defn = create_data_definition (json_extract_base, json_extract_counts)
 
 for metric_name in metric_names:
     for metric_on_set in metric_on_sets:
-        df_metrics = gather_metrics_for_all_label_train_pairs (                                                  label_train_pair, col_names,                                                   json_train_base, json_extract_counts,                                                   FM_label_type, metric_name, metric_on_set)
-        #print (df_metrics)
+        df_metrics = gather_metrics_for_all_label_train_pairs (                                                  label_train_pair, col_names,                                                   json_train_base, json_extract_counts,                                                   FM_label_type, metric_name, metric_on_set,                                                   eval_model_loc, eval_model_name)
+        #print (df_metrics)       
+
         create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set,                                            eval_model_loc, eval_model_name)
         create_heatmap (df_metrics, FM_label_type, metric_name, metric_on_set,                                            eval_model_loc, eval_model_name)
 
