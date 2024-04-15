@@ -14,6 +14,10 @@ import pandas as pd
 import xarray as xr
 import pickle
 import json
+import kaleido
+import plotly
+plotly.io.orca.config.executable = '/g/g92/jha3/.conda/envs/py3_ml/bin/orca'
+plotly.io.orca.config.save()
 import plotly.express as px
 import plotly.graph_objects as go
 from matplotlib import pyplot as plt
@@ -632,7 +636,8 @@ def create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set):
 '''
 Make a heat map corresponding to a gathered DataFrame of metrics
 '''
-def create_heatmap (df_metrics, FM_label_type, metric_name, metric_on_set):
+def create_heatmap (df_metrics, FM_label_type, metric_name, metric_on_set, \
+                   eval_model_loc, eval_model_name):
     
     metric_info, metric_on_set_info = get_labels_title_for_plots (FM_label_type, \
                                                           metric_name, metric_on_set)
@@ -647,3 +652,7 @@ def create_heatmap (df_metrics, FM_label_type, metric_name, metric_on_set):
                      )
     fig.update_coloraxes(colorbar_tickformat = '.4f')
     fig.show()
+    
+    heatmap_file_name = os.path.join(eval_model_loc, '{}_heatmap_{}_{}.png'.format(\
+                                                      eval_model_name, metric_name, metric_on_set))
+    fig.write_image(heatmap_file_name, engine="orca")

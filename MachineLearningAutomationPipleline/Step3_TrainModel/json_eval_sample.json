@@ -27,11 +27,7 @@
 				"metric_on_sets": ["train", "test", "test_p90", "test_p95"]
 			      },
 	"evaluation":	     {
-				"max_data_size_scatter": 800,
-				"fig_size_x": 15,
-				"fig_size_y": 15,
-				"font_size": 20,
-				"x_lim": [0, 0.35],
-                                "normalize_cm": true
+				"count": 0,
+				"identifier_text": "test"
 			     }
 }

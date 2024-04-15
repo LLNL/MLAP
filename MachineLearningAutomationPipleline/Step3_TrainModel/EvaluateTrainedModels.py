@@ -72,12 +72,38 @@ with open(json_file_eval_models) as json_file_handle:
 #json_content_eval_models
 
 
+# # Evaluation Identifier
+
+# In[ ]:
+
+
+eval_count = json_content_eval_models['evaluation']['count']
+identifier_text = json_content_eval_models['evaluation']['identifier_text']
+
+
 # # Simulation Directory
 
 # In[ ]:
 
 
 sim_dir = json_content_eval_models['paths']['sim_dir']
+
+
+# # Paths and File Names
+
+# In[ ]:
+
+
+eval_model_base_loc = json_content_eval_models['paths']['eval_model_base_loc']
+eval_model_name = 'eval_%03d_%s'%(eval_count, identifier_text)
+eval_model_loc = os.path.join(eval_model_base_loc, eval_model_name)
+os.system('mkdir -p %s'%eval_model_loc)
+
+
+# In[ ]:
+
+
+eval_model_name
 
 
 # # `json` Input Files
@@ -158,5 +184,5 @@ for metric_name in metric_names:
         df_metrics = gather_metrics_for_all_label_train_pairs (                                                  label_train_pair, col_names,                                                   json_train_base, json_extract_counts,                                                   FM_label_type, metric_name, metric_on_set)
         #print (df_metrics)
         create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set)
-        create_heatmap (df_metrics, FM_label_type, metric_name, metric_on_set)
+        create_heatmap (df_metrics, FM_label_type, metric_name, metric_on_set,                                            eval_model_loc, eval_model_name)
 
