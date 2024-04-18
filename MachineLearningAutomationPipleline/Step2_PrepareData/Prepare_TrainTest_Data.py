@@ -216,6 +216,7 @@ os.system('mkdir -p %s'%prepared_data_loc)
 
 prepared_data_file_name = '{}.pkl'.format(prepared_data_set_name)
 sampled_time_ind_file_name = '{}_time_ind.csv'.format(prepared_data_set_name)
+sampled_grid_ind_file_name = '{}_grid_ind.csv'.format(prepared_data_set_name)
 
 
 # # Generate seed for the random number generator
@@ -277,7 +278,7 @@ df_tt_prep = reduce_data_size (df_tt_prep)
 #df_tt_prep.dtypes
 
 
-# ## Assess The sampled Time Indices
+# ## Assess The sampled Time  and Grid Indices
 
 # In[ ]:
 
@@ -290,13 +291,31 @@ df_tt_prep = reduce_data_size (df_tt_prep)
 # In[ ]:
 
 
-df_time_indices = assess_sampled_time_indices (df_tt_prep,                                             prepared_data_loc, sampled_time_ind_file_name)
+df_time_indices = assess_sampled_indices (df_tt_prep, 'FM_time_ind',                                             prepared_data_loc, sampled_time_ind_file_name)
 
 
 # In[ ]:
 
 
-#df_time_indices[120:150]
+df_grid_indices = assess_sampled_indices (df_tt_prep, 'grid_ind',                                             prepared_data_loc, sampled_grid_ind_file_name)
+
+
+# In[ ]:
+
+
+#df_time_indices[0:30]
+
+
+# In[ ]:
+
+
+#len(df_time_indices)
+
+
+# In[ ]:
+
+
+#df_grid_indices[3000:3010]
 
 
 # # Get Column Names in the Train and Test Data

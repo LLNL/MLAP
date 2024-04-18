@@ -78,23 +78,24 @@ def reduce_data_size (df):
 
 # []
 '''
-Assess the sampled time indices
+Assess the sampled time and grid indices
 '''
-def assess_sampled_time_indices (df_tt_prep, prepared_data_loc, sampled_time_ind_file_name):
-    df_time_indices = pd.DataFrame()
+def assess_sampled_indices (df_tt_prep, index_col_name, prepared_data_loc, sampled_ind_file_name):
     
-    df_time_indices['sampled_ind'] = df_tt_prep['FM_time_ind'].unique()
-    df_time_indices['sampled_ind_sorted'] = df_tt_prep['FM_time_ind'].sort_values().unique()
+    df_indices = pd.DataFrame()
     
-    ind_diff = np.diff(df_time_indices['sampled_ind_sorted'])
+    df_indices['sampled_ind'] = df_tt_prep[index_col_name].unique()
+    df_indices['sampled_ind_sorted'] = df_tt_prep[index_col_name].sort_values().unique()
+
+    ind_diff = np.diff(df_indices['sampled_ind_sorted'])
     ind_diff.resize((len(ind_diff)+1,))
     ind_diff[len(ind_diff)-1] = -1
-    df_time_indices['sampled_ind_diff'] = ind_diff
-    df_time_indices['sampled_ind_diff_sorted'] = np.sort(ind_diff)
+    df_indices['sampled_ind_diff'] = ind_diff
+    df_indices['sampled_ind_diff_sorted'] = np.sort(ind_diff)
     
-    df_time_indices.to_csv(os.path.join(prepared_data_loc, sampled_time_ind_file_name), index=True)
+    df_indices.to_csv(os.path.join(prepared_data_loc, sampled_ind_file_name), index=True)
     
-    return df_time_indices
+    return df_indices
 
 # []
 '''
