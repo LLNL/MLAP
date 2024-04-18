@@ -215,6 +215,7 @@ prepared_data_loc = os.path.join(prepared_data_base_loc, prepared_data_set_name)
 os.system('mkdir -p %s'%prepared_data_loc)
 
 prepared_data_file_name = '{}.pkl'.format(prepared_data_set_name)
+sampled_time_ind_file_name = '{}_time_ind.csv'.format(prepared_data_set_name)
 
 
 # # Generate seed for the random number generator
@@ -274,6 +275,28 @@ df_tt_prep = reduce_data_size (df_tt_prep)
 
 
 #df_tt_prep.dtypes
+
+
+# ## Assess The sampled Time Indices
+
+# In[ ]:
+
+
+#df_tt_prep[['FM_time_ind', 'FM_ts', 'his_time_ind','j_ind', 'i_ind']]
+#df_tt_prep['FM_time_ind']
+#sorted_time_indices = df_tt_prep['FM_time_ind'].sort_values().unique()
+
+
+# In[ ]:
+
+
+df_time_indices = assess_sampled_time_indices (df_tt_prep,                                             prepared_data_loc, sampled_time_ind_file_name)
+
+
+# In[ ]:
+
+
+#df_time_indices[120:150]
 
 
 # # Get Column Names in the Train and Test Data
