@@ -186,7 +186,7 @@ def downsample_data_files (data_files_list, percent_files_to_use, max_history_to
     print('\nProcess in the module(): {}'.format(process))
     
     random.setstate(random_state)
-    print('\nRandomly selecting approx {} % of the data files'.format(percent_files_to_use))
+    print('\nSelecting approx {} % of the data files'.format(percent_files_to_use))
     file_indices = set(range(len(data_files_list)))
     invalid_ind = set(range(max_history_to_consider))
     '''
@@ -205,8 +205,8 @@ def downsample_data_files (data_files_list, percent_files_to_use, max_history_to
     if (sampling_type == "random"):
         sampled_file_indices = random.sample(valid_indices, k = downsample_files_count)
     elif (sampling_type == "uniform"):
-        sampled_file_indices = list(range(min(valid_indices), max(valid_indices), \
-                                          downsample_files_count))
+        sampled_file_indices = list(np.linspace(min(valid_indices), max(valid_indices), \
+                                      downsample_files_count).astype(int))
     else:
         raise ValueError('Invalid "sampling_type": "{}". \
                         \nValid types are: "random", and "uniform"'.format(sampling_type))
@@ -1228,23 +1228,23 @@ def create_dataframe_FM_atm_data (data_at_sampled_times_and_grids, data_at_times
     num_data_points    = num_sampled_times*num_sampled_points
     num_hist_indices   = len(history_file_indices[0])
     
-    FM_time_ind  = np.zeros((num_data_points, 1), int)
+    FM_time_ind  = np.zeros((num_data_points, 1), np.int32)
     FM_ts        = np.zeros((num_data_points, 1), '<U13') #list()
-    his_time_ind = np.zeros((num_data_points, num_hist_indices), int)
+    his_time_ind = np.zeros((num_data_points, num_hist_indices), np.int32)
 
-    grid_ind     = np.zeros((num_data_points, 1), int)
-    j_ind        = np.zeros((num_data_points, 1), int)
-    i_ind        = np.zeros((num_data_points, 1), int)
+    grid_ind     = np.zeros((num_data_points, 1), np.int32)
+    j_ind        = np.zeros((num_data_points, 1), np.int32)
+    i_ind        = np.zeros((num_data_points, 1), np.int32)
 
-    HGT          = np.zeros((num_data_points, 1), float)
+    HGT          = np.zeros((num_data_points, 1), np.float16)
 
     label_data_at_ref_time = dict()
     for label in labels_to_read:
-        label_data_at_ref_time[label] = np.zeros((num_data_points, 1), float)
+        label_data_at_ref_time[label] = np.zeros((num_data_points, 1), np.float16)
 
     atm_data_at_hist_times = dict()
     for feature in features_to_read:
-        atm_data_at_hist_times[feature] = np.zeros((num_data_points, num_hist_indices), float)
+        atm_data_at_hist_times[feature] = np.zeros((num_data_points, num_hist_indices), np.float16)
         
         
     ## Fill in the Data Arrays

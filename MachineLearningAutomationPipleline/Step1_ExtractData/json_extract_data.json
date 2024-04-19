@@ -5,8 +5,8 @@
 			     },	     
 	"data_set_defn":     { 
 				"data_set_count": 0,
-				"percent_files_to_use": 0.08148, 
-				"percent_grid_points_to_use": 0.05956, 
+				"percent_files_to_use": 0.008148, 
+				"percent_grid_points_to_use": 0.005956, 
 				"max_history_to_consider": 8, 
 				"history_interval": 2
 			     },
