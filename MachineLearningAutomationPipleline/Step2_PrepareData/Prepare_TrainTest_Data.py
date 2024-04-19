@@ -141,7 +141,7 @@ data_set_count = json_content_extract_data['data_set_defn']['data_set_count']
 
 
 features_labels = json_content_extract_data['features_labels']
-features_to_read = features_labels['features_to_read']
+qois_to_read = features_labels['qois_to_read']
 
 
 # ## Define Label, FM Threshold etc.
@@ -378,7 +378,7 @@ keys_features  = define_features(keys_HGT, keys_UMag10, keys_T2, keys_RH, keys_P
 # In[ ]:
 
 
-if ('UMag10' not in features_to_read):
+if ('UMag10' not in qois_to_read):
     df_tt_prep = compute_wind_mag (df_tt_prep, keys_U10, keys_V10, keys_UMag10)
 
 
@@ -394,7 +394,7 @@ if ('UMag10' not in features_to_read):
 # In[ ]:
 
 
-if ('UMag10' not in features_to_read):
+if ('UMag10' not in qois_to_read):
     df_tt_prep = drop_wind_components (df_tt_prep, keys_U10, keys_V10)
 
 
