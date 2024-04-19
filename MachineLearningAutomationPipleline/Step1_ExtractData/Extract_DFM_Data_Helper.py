@@ -217,6 +217,10 @@ def downsample_data_files (data_files_list, percent_files_to_use, max_history_to
     print('=========================================================================')
     return sampled_file_indices, sampled_data_files
 
+
+
+
+
 # []
 '''
 Get the history file indices corresponding to the sampled reference time indices
@@ -337,13 +341,19 @@ def plot_sampled_datetime (df_sampled_time, extracted_data_loc, xlim = None, yli
         filename = 'Sampled_Datetime_Bounded.png'
     else:
         filename = 'Sampled_Datetime_Unbounded.png'
-    
+
     filedir = extracted_data_loc
     os.system('mkdir -p %s'%filedir)
     
     plt.savefig(os.path.join(filedir, filename), bbox_inches='tight')
     #plt.show()
     #plt.close()
+    
+    plt.figure()
+    count, bins, ignored = plt.hist(sampled_datetime, 30)
+    plt.plot(bins, np.ones_like(bins), linewidth=2, color='r')
+    plt.savefig(os.path.join(filedir, 'Sampled_Datetime_Bounded_Histogram'), bbox_inches='tight')
+    #plt.show()
     
     module_final_memory = process.memory_info().rss
     module_end_time = timer()
