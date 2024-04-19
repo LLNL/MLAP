@@ -108,7 +108,7 @@ history_interval        = data_set_defn['history_interval']
 
 
 features_labels = json_content_extract_data['features_labels']
-features_to_read = features_labels['features_to_read']
+qois_to_read = features_labels['qois_to_read']
 labels_to_read = features_labels['labels_to_read']
 labels_ind_in_nc_file = features_labels['labels_ind_in_nc_file']
 
@@ -486,7 +486,7 @@ time_grid_indices_list_dict, time_grid_indices_list_count, time_grid_indices_set
 # In[ ]:
 
 
-data_at_sampled_times_and_grids, read_data_memory, read_data_time =     read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file,                                          features_to_read, valid_grid_ind_to_coord,                                          time_grid_indices_set_dict,                                          data_files_location, data_files_list,                                          'array')
+data_at_sampled_times_and_grids, read_data_memory, read_data_time =     read_data_at_sampled_times_and_grids(labels_to_read, labels_ind_in_nc_file,                                          qois_to_read, valid_grid_ind_to_coord,                                          time_grid_indices_set_dict,                                          data_files_location, data_files_list,                                          'array')
 
 
 # In[ ]:
@@ -501,7 +501,7 @@ data_at_sampled_times_and_grids, read_data_memory, read_data_time =     read_dat
 # In[ ]:
 
 
-df = create_dataframe_FM_atm_data (data_at_sampled_times_and_grids, data_at_timestamp,                                  sampled_file_indices, history_file_indices,                                   sampled_time_stamps, history_interval,                                   grid_indices_selected,                                   j_indices_selected, i_indices_selected,                                  labels_to_read, features_to_read)
+df = create_dataframe_FM_atm_data (data_at_sampled_times_and_grids, data_at_timestamp,                                  sampled_file_indices, history_file_indices,                                   sampled_time_stamps, history_interval,                                   grid_indices_selected,                                   j_indices_selected, i_indices_selected,                                  labels_to_read, qois_to_read)
 
 
 # In[ ]:
@@ -553,15 +553,15 @@ print('=========================================================================
 # In[ ]:
 
 
-if ('UMag10' in features_to_read and     'U10' not in features_to_read and     'V10' not in features_to_read):
-    num_features = len(history_file_indices[0]) * (len(features_to_read)    )
+if ('UMag10' in qois_to_read and     'U10' not in qois_to_read and     'V10' not in qois_to_read):
+    num_features = len(history_file_indices[0]) * (len(qois_to_read)    )
 else:
-    num_features = len(history_file_indices[0]) * (len(features_to_read) - 1)
+    num_features = len(history_file_indices[0]) * (len(qois_to_read) - 1)
     
-data_for_csv = { 'max_hist':    [max_history_to_consider],
-                 'hist_interval':           [history_interval],
-                 'num_hist':           [len(history_file_indices[0])],
-                 'num_qois': [len(features_to_read) - 1],
+data_for_csv = { 'max_hist':                   [max_history_to_consider],
+                 'hist_interval':              [history_interval],
+                 'num_hist':                   [len(history_file_indices[0])],
+                 'num_qois':                   [len(qois_to_read) - 1],
                  'num_total_files':            [len(data_files_list)],
                  'percent_files_to_use':       [percent_files_to_use],
                  'num_sampled_times':          [grid_indices_selected.shape[0]],
