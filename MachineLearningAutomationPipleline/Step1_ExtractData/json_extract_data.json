@@ -9,7 +9,11 @@
 				"percent_grid_points_to_use": 0.05956, 
 				"max_history_to_consider": 8, 
 				"history_interval": 2
-			     }, 
+			     },
+	"sampling_type":     {
+				"time": "uniform",
+				"space": "random"
+			     },
 	"nevada_data":	     {
 				"remove_nevada":true,
 				"j_nevada": 80,

@@ -177,7 +177,7 @@ the historical atmospheric data
 Get the random reference time where Fuel Moisture is to be read and relative to which 
 historical data is to be collected
 '''
-def downsample_data_files (data_files_list, percent_files_to_use, max_history_to_consider, random_state):
+def downsample_data_files (data_files_list, percent_files_to_use, max_history_to_consider, random_state, sampling_type):
     process = psutil.Process(os.getpid())
     print('=========================================================================')
     module_start_time = timer()
@@ -201,7 +201,16 @@ def downsample_data_files (data_files_list, percent_files_to_use, max_history_to
     valid_indices = list(file_indices - invalid_ind)
     total_files = len(valid_indices)
     downsample_files_count = round(percent_files_to_use*total_files/100.0)
-    sampled_file_indices = random.sample(valid_indices, k = downsample_files_count)
+    
+    if (sampling_type == "random"):
+        sampled_file_indices = random.sample(valid_indices, k = downsample_files_count)
+    elif (sampling_type == "uniform"):
+        sampled_file_indices = list(range(min(valid_indices), max(valid_indices), \
+                                          downsample_files_count))
+    else:
+        raise ValueError('Invalid "sampling_type": "{}". \
+                        \nValid types are: "random", and "uniform"'.format(sampling_type))
+        
     sampled_data_files = list(np.array(data_files_list)[sampled_file_indices])
     
     print('Selected {} data files out of {} total and {} usable considering historical data'.format(len(sampled_data_files), len(data_files_list), len(valid_indices)))
@@ -350,7 +359,7 @@ def plot_sampled_datetime (df_sampled_time, extracted_data_loc, xlim = None, yli
     #plt.close()
     
     plt.figure()
-    count, bins, ignored = plt.hist(sampled_datetime, 30)
+    count, bins, ignored = plt.hist(sampled_datetime, 50)
     plt.plot(bins, np.ones_like(bins), linewidth=2, color='r')
     plt.savefig(os.path.join(filedir, 'Sampled_Datetime_Bounded_Histogram'), bbox_inches='tight')
     #plt.show()

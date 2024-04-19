@@ -107,6 +107,13 @@ history_interval        = data_set_defn['history_interval']
 # In[ ]:
 
 
+sampling_type_time = json_content_extract_data['sampling_type']['time']
+sampling_type_space = json_content_extract_data['sampling_type']['space']
+
+
+# In[ ]:
+
+
 features_labels = json_content_extract_data['features_labels']
 qois_to_read = features_labels['qois_to_read']
 labels_to_read = features_labels['labels_to_read']
@@ -238,7 +245,7 @@ if remove_fire_data_from_train_test:
 # In[ ]:
 
 
-sampled_file_indices, sampled_data_files = downsample_data_files (                                        data_files_list, percent_files_to_use,                                         max_history_to_consider, random_state)
+sampled_file_indices, sampled_data_files = downsample_data_files (                                        data_files_list, percent_files_to_use,                                         max_history_to_consider, random_state,                                         sampling_type_time)
 
 
 # # Get History File Indices
