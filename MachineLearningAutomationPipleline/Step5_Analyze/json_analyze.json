@@ -12,13 +12,13 @@
 	"SJSU": [
 			{
 				"RefTime": "2018-11-08_22",
-				"regions_x_indices": [[20, 50], [40, 80]],
-			        "regions_y_indices": [[30, 60], [50, 90]]	
+				"regions_x_indices": [[250, 390], [100, 250]],
+			        "regions_y_indices": [[100, 200], [300, 450]]	
 			},
 			{
 				"RefTime": "2020-09-04_00",
-                                "regions_x_indices": [[20, 50], [40, 80], [ 90, 110]],
-                                "regions_y_indices": [[30, 60], [50, 90], [110, 130]]
+				"regions_x_indices": [[250, 390], [100, 250]],
+                                "regions_y_indices": [[100, 200], [300, 450]]
 			}
 		],
 	"HRRR": [
