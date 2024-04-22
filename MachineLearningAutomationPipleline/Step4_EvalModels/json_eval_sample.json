@@ -1,6 +1,6 @@
 {
 	"paths": 	     {
-				"eval_model_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/03b_Eval_Models",
+				"eval_model_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/04_Eval_Models",
 				"sim_dir": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI",
 				"json_extract_base": "InputJson/Extract/json_extract_data",
 				"json_prep_base": "InputJson/Prep/json_prep_data_label",
