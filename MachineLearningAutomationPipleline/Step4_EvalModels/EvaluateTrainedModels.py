@@ -5,7 +5,9 @@
 
 # - jupyter nbconvert --to python EvaluateTrainedModels.ipynb
 
-# # Import Packages
+# # Import Modules
+
+# ## Standard Packages
 
 # In[ ]:
 
@@ -27,6 +29,16 @@ from timeit import default_timer as timer
 import time
 
 
+# ## User-Defined Functions
+
+# In[ ]:
+
+
+current_running_file_dir = sys.path[0]
+current_running_file_par = '/'.join(sys.path[0].split('/')[:-1])
+sys.path.insert(0, os.path.join(current_running_file_par, 'Step3_TrainModel'))
+
+
 # In[ ]:
 
 
@@ -40,7 +52,7 @@ from TrainModel_Helper import *
 # In[ ]:
 
 
-json_file_eval_models = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Eval/json_eval_001.json'
+json_file_eval_models = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Eval/json_eval_010.json'
 
 
 # ### Input file name when using python script on command line
