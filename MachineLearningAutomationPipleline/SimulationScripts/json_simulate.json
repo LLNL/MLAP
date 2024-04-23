@@ -1,0 +1,35 @@
+{
+	"paths": 	     {
+				"sim_dir": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI",
+				"sbatch_scripts": {
+					       	   "base": "/g/g92/jha3/Codes/Wildfire_ML/MachineLearningAutomationPipleline/SimulationScripts",
+						   "extract": "sbatch_script_extract.sh",
+						   "prep": "sbatch_script_prep.sh",
+						   "train": "sbatch_script_train.sh"
+						  },
+				"python_scripts": {
+                                                   "base": "/g/g92/jha3/Codes/Wildfire_ML/MachineLearningAutomationPipleline",
+                                                   "extract": "Step1_ExtractData/Extract_DFM_Data.py",
+                                                   "prep": "Step2_PrepareData/Prepare_TrainTest_Data.py",
+                                                   "train": "Step3_TrainModel/TrainModel.py"
+                                                  },
+				"json_base":      {
+		        			   "extract": "InputJson/Extract/json_extract_data",
+						   "prep": "InputJson/Prep/json_prep_data_label",
+						   "train": "InputJson/Train/json_train_model"
+						  }
+			     },
+	"action": 	     "Train",
+	"execution_options": {
+				"print_interactive_command": false,
+				"print_sbatch_command": true,
+				"run_interactively": false,
+				"submit_job":false
+			     },
+	"exempt_flag":       "",
+	"collection_options": {
+				"json_extract_counts": [39, 40, 41], 
+				"json_prep_counts": [6, 7],
+				"json_train_counts": [13, 14]
+			      }
+}

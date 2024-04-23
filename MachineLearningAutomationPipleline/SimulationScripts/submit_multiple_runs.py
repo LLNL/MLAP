@@ -12,6 +12,40 @@
 
 import os
 import os.path as path
+import json
+
+
+# # Read the Input JSON File
+
+# ### Input file name when using jupyter notebook
+
+# In[ ]:
+
+
+json_file_simulate = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Simulate/json_simulate_000.json'
+
+
+# ### Input file name when using python script on command line
+
+# In[ ]:
+
+
+#json_file_simulate = sys.argv[1]
+
+
+# ### Load the JSON file for simulation
+
+# In[ ]:
+
+
+print('Loading the JSON file for simulation: \n {}'.format(json_file_simulate))
+
+
+# In[ ]:
+
+
+with open(json_file_simulate) as json_file_handle:
+    json_content_simulate = json.load(json_file_handle)
 
 
 # ## Action To Be Taken
@@ -19,22 +53,25 @@ import os.path as path
 # In[ ]:
 
 
-action = "Extract" # "Extract", "Prep", "Train", "Analyze"
+action = json_content_simulate['action']
+
+
+# ## Execution Options
+
+# In[ ]:
+
+
+execution_options = json_content_simulate['execution_options']
+print_interactive_command = execution_options['print_interactive_command']
+print_sbatch_command = execution_options['print_sbatch_command']
+run_interactively = execution_options['run_interactively']
+submit_job    = execution_options['submit_job']
 
 
 # In[ ]:
 
 
-print_interactive_command = False
-print_sbatch_command = True
-run_interactively = False
-submit_job    = False
-
-
-# In[ ]:
-
-
-exempt_flag = ''#'--qos=exempt'
+exempt_flag = json_content_simulate['exempt_flag'] #'--qos=exempt'
 
 
 # ## Simulation Directory
@@ -42,7 +79,7 @@ exempt_flag = ''#'--qos=exempt'
 # In[ ]:
 
 
-sim_dir = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI'
+sim_dir = json_content_simulate['paths']['sim_dir']
 
 
 # ## `sbatch` Scripts
@@ -50,9 +87,15 @@ sim_dir = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI'
 # In[ ]:
 
 
-sbatch_script_extract = '/g/g92/jha3/Codes/Wildfire_ML/MachineLearningAutomationPipleline/SimulationScripts/sbatch_script_extract.sh'
-sbatch_script_prep = '/g/g92/jha3/Codes/Wildfire_ML/MachineLearningAutomationPipleline/SimulationScripts/sbatch_script_prep.sh'
-sbatch_script_train = '/g/g92/jha3/Codes/Wildfire_ML/MachineLearningAutomationPipleline/SimulationScripts/sbatch_script_train.sh'
+sbatch_scripts = json_content_simulate['paths']['sbatch_scripts']
+
+
+# In[ ]:
+
+
+sbatch_script_extract = os.path.join(sbatch_scripts['base'], sbatch_scripts['extract'])
+sbatch_script_prep = os.path.join(sbatch_scripts['base'], sbatch_scripts['prep'])
+sbatch_script_train = os.path.join(sbatch_scripts['base'], sbatch_scripts['train'])
 
 
 # ## `python` Scripts
@@ -60,9 +103,15 @@ sbatch_script_train = '/g/g92/jha3/Codes/Wildfire_ML/MachineLearningAutomationPi
 # In[ ]:
 
 
-python_script_extract = '/g/g92/jha3/Codes/Wildfire_ML/MachineLearningAutomationPipleline/Step1_ExtractData/Extract_DFM_Data.py'
-python_script_prep = '/g/g92/jha3/Codes/Wildfire_ML/MachineLearningAutomationPipleline/Step2_PrepareData/Prepare_TrainTest_Data.py'
-python_script_train = '/g/g92/jha3/Codes/Wildfire_ML/MachineLearningAutomationPipleline/Step3_TrainModel/TrainModel.py'
+python_scripts = json_content_simulate['paths']['python_scripts']
+
+
+# In[ ]:
+
+
+python_script_extract = os.path.join(python_scripts['base'], python_scripts['extract'])
+python_script_prep = os.path.join(python_scripts['base'], python_scripts['prep'])
+python_script_train = os.path.join(python_scripts['base'], python_scripts['train'])
 
 
 # ## `json` Input Files
@@ -70,19 +119,32 @@ python_script_train = '/g/g92/jha3/Codes/Wildfire_ML/MachineLearningAutomationPi
 # In[ ]:
 
 
-json_extract_base = os.path.join(sim_dir, 'InputJson/Extract/json_extract_data')
-json_prep_base = os.path.join(sim_dir, 'InputJson/Prep/json_prep_data_label')
-json_train_base = os.path.join(sim_dir, 'InputJson/Train/json_train_model')
+json_base = json_content_simulate['paths']['json_base']
 
 
 # In[ ]:
 
 
-#json_extract_counts = [39]
-json_extract_counts = range(79, 94)
-json_prep_counts = [7] #[1, 2, 3]
-#json_prep_counts = [1, 2, 4] #[1, 2, 3]
-json_train_counts = [13]
+json_extract_base = os.path.join(sim_dir, json_base['extract'])
+json_prep_base = os.path.join(sim_dir, json_base['prep'])
+json_train_base = os.path.join(sim_dir, json_base['train'])
+
+
+# ## `json` Collections
+
+# In[ ]:
+
+
+collection_options = json_content_simulate['collection_options']
+json_extract_counts = collection_options['json_extract_counts']
+json_prep_counts = collection_options['json_prep_counts']
+json_train_counts = collection_options['json_train_counts']
+
+
+# In[ ]:
+
+
+json_extract_counts, json_prep_counts, json_train_counts
 
 
 # ## Generate and Execute `command`
