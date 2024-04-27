@@ -1322,6 +1322,7 @@ def create_dataframe_FM_atm_data (data_at_sampled_times_and_grids, data_at_times
 '''
 Create DataFrame of FM and Historical Data For a Desired Time Stamp. Also Extract Time and Grid Info.
 '''
+# Account for if (feature == 'UMag10') and change accordingly in Step 5
 def create_dataframe_FM_atm_at_timestamp (sampled_time_stamps, hist_stamps, data_read_SJSU, \
                                        history_interval, \
                                        grid_indices_valid_flat, valid_grid_ind_to_coord):
