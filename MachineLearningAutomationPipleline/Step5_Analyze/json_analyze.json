@@ -1,6 +1,6 @@
 {
 	"paths": {
-			"analysis_data_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/04_Analysis",
+			"analysis_data_base_loc": "/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/05_Analysis",
 			"raw_data": {
 					"SJSU": "/p/vast1/climres/DFM_reanalysis",
 					"HRRR": "/p/vast1/climres/hrrr_liner1/monthly",
