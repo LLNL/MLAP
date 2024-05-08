@@ -2,7 +2,8 @@
 #SBATCH -J wildfire_data
 #SBATCH -N 1
 #SBATCH --partition=quartz
-#SBATCH -t 20-00:00:00
+#SBATCH -t 24:00:00
+##SBATCH -t 20-00:00:00
 #SBATCH -A cr4ns
 #SBATCH -p pbatch
 ##SBATCH --mail-type=ALL
