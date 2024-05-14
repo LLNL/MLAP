@@ -11,6 +11,7 @@
 				"history_interval": 2
 			     },
 	"sampling_type":     {
+				"sample_first": "time",
 				"time": "uniform",
 				"space": "random"
 			     },
