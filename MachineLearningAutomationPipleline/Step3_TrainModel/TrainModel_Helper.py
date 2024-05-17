@@ -239,9 +239,11 @@ def plot_scatter_regression (labels_gt, labels_pred, \
     data_indices = range(len(labels_gt))
     if (max_data_size_scatter < 1):
         data_ind_subset = data_indices
-    else:
+    elif (max_data_size_scatter < len(labels_gt)):
         data_ind_subset = random.sample(data_indices, k = max_data_size_scatter)
-    
+    else:
+        data_ind_subset = data_indices
+        
     labels_gt_to_plot = labels_gt[data_ind_subset]
     labels_pred_to_plot = labels_pred[data_ind_subset]
     
