@@ -587,7 +587,7 @@ Get labels and titles for plots
 def get_labels_title_for_plots (FM_label_type, metric_name, metric_on_set):
     if (FM_label_type == 'Regression'):
         if (metric_name == 'r2_score'):
-            metric_info = 'R^2'
+            metric_info = 'R_Sqr'
         elif (metric_name == 'ev_score'):
             metric_info = 'EV Score'
         elif (metric_name == 'mse'):
@@ -636,7 +636,7 @@ def create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set, \
     range_val = max_val - min_val
     
     ax = df_metrics.plot.bar(rot = 0)
-    ax.legend(loc='center right', bbox_to_anchor=(1.55, 0.5))
+    ax.legend(loc='center right', bbox_to_anchor=(1.4, 0.5))
     ax.set_xlabel('Data Set Name')
     ax.set_ylabel(metric_info)
     ax.set_ylim([min_val - 0.05*range_val, max_val + 0.05*range_val])
@@ -644,7 +644,7 @@ def create_bar_plots (df_metrics, FM_label_type, metric_name, metric_on_set, \
     
     barplot_file_name = os.path.join(eval_model_loc, '{}_barplot_{}_{}.png'.format(\
                                                       eval_model_name, metric_name, metric_on_set))
-    ax.get_figure().savefig(barplot_file_name)
+    ax.get_figure().savefig(barplot_file_name, bbox_inches='tight')
 
     
 # []
