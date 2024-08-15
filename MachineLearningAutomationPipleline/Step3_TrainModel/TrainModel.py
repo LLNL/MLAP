@@ -65,9 +65,9 @@ global_initial_memory = process.memory_info().rss
 # In[ ]:
 
 
-json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_000.json'
-json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_007.json'
-json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Train/json_train_model_013.json'
+json_file_extract_data = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Extract/json_extract_data_022.json'
+json_file_prep_data    = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Prep/json_prep_data_label_002.json'
+json_file_train_model  = '/p/lustre2/jha3/Wildfire/Wildfire_LDRD_SI/InputJson/Train/json_train_model_003.json'
 
 
 # ### Input file name when using python script on command line
@@ -566,6 +566,7 @@ if (FM_label_type == 'Regression'):
 if (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
     conf_mat_train = get_confusion_matrix (FM_label_type, labels_train, labels_pred_train,                                       "Train Data", class_labels)
     get_classification_report (FM_label_type, labels_train, labels_pred_train,                           "Train Data", class_labels)
+    accuracy_train = accuracy_score(labels_train, labels_pred_train)
 else:
     conf_mat_train = None
     print('Confusion Matrix is not suitable for label_type: {}'.format(FM_label_type))
@@ -663,6 +664,7 @@ if (FM_label_type == 'Regression'):
 if (FM_label_type == 'Binary' or FM_label_type == 'MultiClass'):
     conf_mat_test = get_confusion_matrix (FM_label_type, labels_test, labels_pred_test,                                       "Test Data", class_labels)
     get_classification_report (FM_label_type, labels_test, labels_pred_test,                           "Test Data", class_labels)
+    accuracy_test = accuracy_score(labels_test, labels_pred_test)
 else:
     conf_mat_test = None
     print('Confusion Matrix is not suitable for label_type: {}'.format(FM_label_type))
@@ -698,9 +700,10 @@ if (FM_label_type == 'Regression'):
 # In[ ]:
 
 
-more_data_for_df = { 'conf_mat_train':    [conf_mat_train],
-                     'conf_mat_test':     [conf_mat_test]
-                   }
+if (FM_label_type != 'Regression'):
+    data_for_csv = { 'conf_mat_train':    [conf_mat_train],
+                         'conf_mat_test':     [conf_mat_test]
+                       }
 
 
 # In[ ]:
@@ -713,7 +716,7 @@ model_eval_csv.to_csv(os.path.join(trained_model_loc,                           
 # In[ ]:
 
 
-model_eval_df = pd.DataFrame(data_for_csv | more_data_for_df) # Merge two dicts
+model_eval_df = pd.DataFrame(data_for_csv) # Merge two dicts
 model_eval_df.to_pickle(os.path.join(trained_model_loc, model_eval_file_name))
 
 
