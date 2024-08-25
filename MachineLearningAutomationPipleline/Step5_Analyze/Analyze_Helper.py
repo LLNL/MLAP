@@ -133,5 +133,49 @@ def get_history_time_stamps_all_data_types (time_region_info, max_history_to_con
     
     #'========================================================================='    
     return time_region_info
+
+def read_single_RRM_file (base_data_loc, year_range, base_file_name, var_name):
+    process = psutil.Process(os.getpid())
+    print('=========================================================================')
+    module_start_time = timer()
+    module_initial_memory = process.memory_info().rss
+    print('MODULE Name: "read_single_data_file"')
+    print('\nProcess in the module(): {}'.format(process))
+
+    file_to_read = os.path.join(base_data_loc, year_range, base_file_name)
+    file_to_read = file_to_read.replace('VARIABLE', var_name)
+    data_read =  xr.open_dataset(file_to_read)
+
+    module_final_memory = process.memory_info().rss
+    module_end_time = timer()
+    module_memory_consumed = (module_final_memory - module_initial_memory)/(1024*1024)
+    module_compute_time = module_end_time - module_start_time
+    print('Module memory consumed: {:.3f} MB'.format(module_memory_consumed))
+    print('Module computing time: {:.3f} s'.format(module_compute_time))
+    print('=========================================================================')
     
+    return data_read
+
+
+def get_time_diff_hours(start_time_stamp, desired_time_stamp):
+    difference = datetime.fromisoformat(desired_time_stamp) - datetime.fromisoformat(start_time_stamp)
+    return int(difference.total_seconds()/3600)
     
+
+def create_df_at_timestamp (fuel_moisture_time_index, max_history_to_consider, history_interval, \
+                           data_U, data_T, data_RH, data_SW):
+    #fuel_moisture_time_index = get_time_diff_hours(start_time_stamp, desired_time_stamp)
+    atm_data_time_indices = np.arange(fuel_moisture_time_index - history_interval, \
+                                  fuel_moisture_time_index - max_history_to_consider - 1,\
+                                  - history_interval)
+    
+    df_features = pd.DataFrame()
+    for hist_ind in sorted(atm_data_time_indices):
+        time_wrt_ref = fuel_moisture_time_index - hist_ind
+        #print(time_wrt_ref)
+        df_features['UMag10[-{}hr]'.format(time_wrt_ref)] = np.array(data_U['WINDSPD_10M'][hist_ind])
+        df_features['T2[-{}hr]'.format(time_wrt_ref)] = np.array(data_T['TREFHT'][hist_ind])
+        df_features['RH[-{}hr]'.format(time_wrt_ref)] = np.array(data_RH['RHREFHT'][hist_ind])
+        df_features['SWDOWN[-{}hr]'.format(time_wrt_ref)] = np.array(data_SW['FSDS'][hist_ind])
+    
+    return df_features
